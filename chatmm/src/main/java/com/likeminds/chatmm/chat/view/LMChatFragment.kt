@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.net.ConnectivityManager
 import android.os.Build
+import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
@@ -31,6 +32,7 @@ import com.likeminds.chatmm.utils.connectivity.ConnectivityBroadcastReceiver
 import com.likeminds.chatmm.utils.connectivity.ConnectivityReceiverListener
 import com.likeminds.chatmm.utils.customview.BaseFragment
 import com.likeminds.chatmm.utils.snackbar.CustomSnackBar
+import com.likeminds.chatmm.xapp.XAppInstance
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
@@ -54,6 +56,7 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
     companion object {
         const val CHAT_EXTRAS = "chat_extras"
         const val TAG = "ChatFragment"
+        private const val ARG_SESSION_ID = "ARG_SESSION_ID"
 
         @RequiresApi(Build.VERSION_CODES.TIRAMISU)
         private const val POST_NOTIFICATIONS = Manifest.permission.POST_NOTIFICATIONS
@@ -62,6 +65,22 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
             val fragment = LMChatFragment()
             return fragment
         }
+
+        fun newInstance(sessionId: String): LMChatFragment {
+            val fragment = LMChatFragment()
+            val args = Bundle()
+            args.putString(ARG_SESSION_ID, sessionId)
+            fragment.arguments = args
+            return fragment
+        }
+    }
+
+    override fun receiveExtras() {
+        super.receiveExtras()
+        // Retrieve sessionId from arguments
+        val sessionId = arguments?.getString(ARG_SESSION_ID)
+        XAppInstance.sessionID = sessionId
+        Log.e(TAG, "receiveExtras: SessionId : $sessionId XAppInstance : ${XAppInstance.sessionID}")
     }
 
     private lateinit var pagerAdapter: ChatPagerAdapter
@@ -168,6 +187,10 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
     private fun initData() {
         viewModel.checkDMTab()
         initToolbar()
+        Log.e(
+            TAG,
+            "initData: SessionId : $ARG_SESSION_ID ,XAppInstance : ${XAppInstance.sessionID}",
+        )
     }
 
     //init tab adapter and perform operations are per selected tab

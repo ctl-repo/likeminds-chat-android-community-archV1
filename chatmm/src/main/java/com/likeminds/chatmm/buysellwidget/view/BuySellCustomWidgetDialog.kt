@@ -2,12 +2,14 @@ package com.likeminds.chatmm.buysellwidget.view
 
 import android.app.Dialog
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.likeminds.chatmm.databinding.DialogBuySellCustomWidgetBinding
+import com.likeminds.chatmm.xapp.XAppInstance
 
 class BuySellCustomWidgetDialog : BottomSheetDialogFragment() {
 
@@ -20,6 +22,8 @@ class BuySellCustomWidgetDialog : BottomSheetDialogFragment() {
     ): View? {
         // Inflate the layout using DataBindingUtil
         _binding = DialogBuySellCustomWidgetBinding.inflate(inflater, container, false)
+
+        Log.e("ChatFragment", "onCreateView: ${XAppInstance.sessionID}", )
 
         return binding.root
     }
