@@ -38,6 +38,7 @@ import com.giphy.sdk.ui.views.GiphyDialogFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.likeminds.chatmm.*
 import com.likeminds.chatmm.R
+import com.likeminds.chatmm.buysellwidget.view.BuySellCustomWidgetDialog
 import com.likeminds.chatmm.chatroom.detail.model.*
 import com.likeminds.chatmm.chatroom.detail.util.*
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil.getTypeName
@@ -693,7 +694,7 @@ class ChatroomDetailFragment :
             requireContext(),
             String(Base64.decode(InternalKeys.GIPHY_SDK, Base64.DEFAULT))
         )
-        val settings = GPHSettings(GridType.waterfall,GPHTheme.Light)
+        val settings = GPHSettings(GridType.waterfall, GPHTheme.Light)
         settings.mediaTypeConfig = arrayOf(GPHContentType.recents, GPHContentType.gif)
         settings.selectedContentType = GPHContentType.gif
         val giphyDialog = GiphyDialogFragment.newInstance(settings)
@@ -820,7 +821,11 @@ class ChatroomDetailFragment :
     }
 
     //on click function when custom widget A is clicked
-    private fun onCustomWidgetAAttachmentClicked() {}
+    private fun onCustomWidgetAAttachmentClicked() {
+        Log.e("Tag", "Buy/Sell Widget is clicked")
+        val bottomSheetFragment = BuySellCustomWidgetDialog()
+        bottomSheetFragment.show(childFragmentManager, bottomSheetFragment.tag)
+    }
 
     private fun disableAnswerPosting() {
         editAnswerEnableState(false)
