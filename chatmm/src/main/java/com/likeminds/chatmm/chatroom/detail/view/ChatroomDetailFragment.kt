@@ -5827,7 +5827,7 @@ class ChatroomDetailFragment :
 
                 "21" -> {
                     val item = actionsMenu?.findItem(R.id.view_profile)
-                    item?.isVisible = true
+                    item?.isVisible = false
                     item?.title = chatroomActionViewData.title
                 }
 
