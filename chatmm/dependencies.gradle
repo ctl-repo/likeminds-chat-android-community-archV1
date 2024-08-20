@@ -94,4 +94,13 @@ dependencies {
 
     // chat-sdk
     api 'community.likeminds:likemindschat:2.3.3'
+
+    //retrofit
+    def retrofit_version = "2.9.0"
+
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+
+    //logging interceptor
+    implementation "com.squareup.okhttp3:logging-interceptor:4.10.0"
 }
