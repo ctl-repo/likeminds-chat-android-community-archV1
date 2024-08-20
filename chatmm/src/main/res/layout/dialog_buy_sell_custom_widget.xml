@@ -34,14 +34,24 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:hint="Search"
+                app:endIconMode="dropdown_menu"
                 app:layout_constraintEnd_toEndOf="@id/end_vertical_gl"
                 app:layout_constraintStart_toStartOf="@id/start_vertical_gl"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/search_edit_text"
+                <!--                <com.google.android.material.textfield.TextInputEditText-->
+                <!--                    android:id="@+id/search_edit_text"-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:inputType="text" />-->
+
+                <AutoCompleteTextView
+                    android:id="@+id/search_auto_complete"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:padding="20dp"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
                     android:inputType="text" />
 
             </com.google.android.material.textfield.TextInputLayout>

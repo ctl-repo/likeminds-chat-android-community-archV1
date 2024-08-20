@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -15,6 +16,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.likeminds.chatmm.buysellwidget.data.ApiCallState
 import com.likeminds.chatmm.buysellwidget.data.FinXService
 import com.likeminds.chatmm.buysellwidget.data.RetrofitHelper
+import com.likeminds.chatmm.buysellwidget.domain.model.Response
 import com.likeminds.chatmm.buysellwidget.domain.repository.FinXRepository
 import com.likeminds.chatmm.buysellwidget.viewmodel.FinXViewModel
 import com.likeminds.chatmm.buysellwidget.viewmodel.FinXViewModelFactory
@@ -26,7 +28,9 @@ class BuySellCustomWidgetDialog : BottomSheetDialogFragment() {
     private var _binding: DialogBuySellCustomWidgetBinding? = null
     private val binding get() = _binding!!
 
-    lateinit var finXViewModel: FinXViewModel
+    private lateinit var finXViewModel: FinXViewModel
+    private lateinit var adapter: ArrayAdapter<String>
+    private val searchResults = mutableListOf<Response>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,7 +54,7 @@ class BuySellCustomWidgetDialog : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViewModel()
-        setOnClickListners()
+        setupSearchHandler()
         setUpObservers()
     }
 
@@ -59,8 +63,17 @@ class BuySellCustomWidgetDialog : BottomSheetDialogFragment() {
             when (it) {
                 is ApiCallState.Loading -> {}
                 is ApiCallState.Success -> {
-                    it.data?.let {
-                        Log.e("TAG", "setUpObservers: Response : $it")
+                    it.data?.let { response ->
+                        Log.e("TAG", "setUpObservers: Response : $response")
+                        searchResults.clear()
+                        searchResults.addAll(response.response?.filterNotNull() ?: emptyList())
+
+                        val secDescList = searchResults.mapNotNull { it.secDesc }
+                        Log.e("TAG", "setUpObservers: secDescList : $secDescList")
+                        adapter.clear()
+                        adapter.addAll(secDescList)
+                        adapter.notifyDataSetChanged()
+                        binding.searchAutoComplete.showDropDown()
                     }
                 }
 
@@ -71,14 +84,23 @@ class BuySellCustomWidgetDialog : BottomSheetDialogFragment() {
         })
     }
 
-    private fun setOnClickListners() {
-        binding.searchEditText.addTextChangedListener(object : TextWatcher {
+    private fun setupSearchHandler() {
+
+        adapter = ArrayAdapter(
+            requireContext(), android.R.layout.simple_dropdown_item_1line,
+            mutableListOf()
+        )
+        binding.searchAutoComplete.setAdapter(adapter)
+
+        binding.searchAutoComplete.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                performSearch(s.toString())
+                if (s != null && s.length > 2) {
+                    performSearch(s.toString())
+                }
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -86,6 +108,14 @@ class BuySellCustomWidgetDialog : BottomSheetDialogFragment() {
             }
 
         })
+
+        binding.searchAutoComplete.setOnItemClickListener { parent, view, position, id ->
+            val selectedItem = adapter.getItem(position)
+            val selectedScrip = searchResults.find { it.secDesc == selectedItem }
+
+            Log.e("TAG", "setupSearchHandler: $selectedScrip")
+
+        }
     }
 
     private fun performSearch(query: String) {
