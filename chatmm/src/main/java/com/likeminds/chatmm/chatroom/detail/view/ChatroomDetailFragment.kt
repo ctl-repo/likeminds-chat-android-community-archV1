@@ -173,6 +173,9 @@ class ChatroomDetailFragment :
 
     private var isChatroomReaction = false
 
+    // variable to hold the last date that was inserted locally while sending a conversation
+    private var lastInsertedDate: String? = null
+
     @Inject
     lateinit var sdkPreferences: SDKPreferences
 
@@ -2978,6 +2981,12 @@ class ChatroomDetailFragment :
                     if (!isConversationAlreadyPresent(response.conversation.id)) {
                         val indexToAdd = getIndexOfAnyGraphicItem()
                         var index = indexToAdd
+
+                        if (lastInsertedDate == null || lastInsertedDate != response.conversation.date) {
+                            lastInsertedDate = response.conversation.date
+                            chatroomDetailAdapter.add(viewModel.getDateView(response.conversation.date))
+                        }
+
                         if (indexToAdd.isValidIndex()) {
                             chatroomDetailAdapter.add(indexToAdd, response.conversation)
                         } else {
