@@ -2982,7 +2982,18 @@ class ChatroomDetailFragment :
                         val indexToAdd = getIndexOfAnyGraphicItem()
                         var index = indexToAdd
 
-                        if (lastInsertedDate == null || lastInsertedDate != response.conversation.date) {
+                        // find the last date in the chatroom if [lastInsertedDate] is null
+                        if (lastInsertedDate == null) {
+                            chatroomDetailAdapter.items().forEach { item ->
+                                if (item is ChatroomDateViewData) {
+                                    lastInsertedDate = item.date
+                                    return@forEach
+                                }
+                            }
+                        }
+
+                        // adds the date view only if the [lastInsertedDate] is different from the current conversation date and updates [lastInsertedDate]
+                        if (lastInsertedDate != response.conversation.date) {
                             lastInsertedDate = response.conversation.date
                             chatroomDetailAdapter.add(viewModel.getDateView(response.conversation.date))
                         }
