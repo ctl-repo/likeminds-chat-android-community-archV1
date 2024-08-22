@@ -20,10 +20,10 @@ class FinXRepository(private val finXService: FinXService) {
         val result = finXService.searchScrip(
             XAppInstance.sessionID.toString(),
             searchScripReq = SearchScripRequest(
-                5,
-                0,
-                strScripName,
-                ""
+                noOfRecords = 5,
+                startPos = 0,
+                strScripName = strScripName,
+                strSegment = ""
             )
         )
         if (result.body() != null) {

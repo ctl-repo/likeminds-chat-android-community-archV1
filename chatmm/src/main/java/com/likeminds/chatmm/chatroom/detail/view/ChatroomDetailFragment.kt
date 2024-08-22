@@ -474,6 +474,14 @@ class ChatroomDetailFragment :
         isGuestUser = userPreferences.getIsGuestUser()
         checkForExplicitActions()
         fetchInitialData()
+//        val entryPrice = arguments?.getString("entryPrice")
+//        val slPrice = arguments?.getString("slPrice")
+//        val targetPrice = arguments?.getString("targetPrice")
+//        val orderType = arguments?.getString("orderType")
+//        Log.e(
+//            TAG,
+//            "receiveExtras: EntryPrice:$entryPrice ,slPriveValue:$slPrice ,targetPriveValue: $targetPrice , orderType: $orderType"
+//        )
     }
 
     /**

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -29,32 +30,47 @@
                 android:orientation="vertical"
                 app:layout_constraintGuide_percent="0.99" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/search_input_layout"
-                android:layout_width="0dp"
+            <!--            <com.google.android.material.textfield.TextInputLayout-->
+            <!--                android:id="@+id/search_input_layout"-->
+            <!--                android:layout_width="0dp"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:hint="Search"-->
+            <!--                app:endIconMode="dropdown_menu"-->
+            <!--                app:layout_constraintEnd_toEndOf="@id/end_vertical_gl"-->
+            <!--                app:layout_constraintStart_toStartOf="@id/start_vertical_gl"-->
+            <!--                app:layout_constraintTop_toTopOf="parent">-->
+
+            <!--                &lt;!&ndash;                <com.google.android.material.textfield.TextInputEditText&ndash;&gt;-->
+            <!--                &lt;!&ndash;                    android:id="@+id/search_edit_text"&ndash;&gt;-->
+            <!--                &lt;!&ndash;                    android:layout_width="match_parent"&ndash;&gt;-->
+            <!--                &lt;!&ndash;                    android:layout_height="wrap_content"&ndash;&gt;-->
+            <!--                &lt;!&ndash;                    android:inputType="text" />&ndash;&gt;-->
+
+            <!--            </com.google.android.material.textfield.TextInputLayout>-->
+
+            <!--            <AutoCompleteTextView-->
+            <!--                android:id="@+id/search_auto_complete"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:padding="10dp"-->
+            <!--                android:focusable="true"-->
+            <!--                android:completionThreshold="1"-->
+            <!--                android:focusableInTouchMode="true"-->
+            <!--                android:inputType="text"-->
+            <!--                android:hint="Search"-->
+            <!--                app:layout_constraintEnd_toEndOf="@id/end_vertical_gl"-->
+            <!--                app:layout_constraintStart_toStartOf="@id/start_vertical_gl"-->
+            <!--                app:layout_constraintTop_toTopOf="parent"/>-->
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/search_view"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Search"
-                app:endIconMode="dropdown_menu"
+                android:layout_marginTop="10dp"
+                android:queryHint="Search..."
                 app:layout_constraintEnd_toEndOf="@id/end_vertical_gl"
                 app:layout_constraintStart_toStartOf="@id/start_vertical_gl"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <!--                <com.google.android.material.textfield.TextInputEditText-->
-                <!--                    android:id="@+id/search_edit_text"-->
-                <!--                    android:layout_width="match_parent"-->
-                <!--                    android:layout_height="wrap_content"-->
-                <!--                    android:inputType="text" />-->
-
-                <AutoCompleteTextView
-                    android:id="@+id/search_auto_complete"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="20dp"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true"
-                    android:inputType="text" />
-
-            </com.google.android.material.textfield.TextInputLayout>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/order_type_tv"
@@ -65,7 +81,7 @@
                 android:textColor="#000000"
                 android:textSize="20sp"
                 app:layout_constraintStart_toStartOf="@id/start_vertical_gl"
-                app:layout_constraintTop_toBottomOf="@id/search_input_layout" />
+                app:layout_constraintTop_toBottomOf="@id/search_view" />
 
 
             <!--        <com.google.android.material.radiobutton.MaterialRadioButton-->
@@ -101,6 +117,7 @@
                     android:id="@+id/radio_buy"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:checked="true"
                     android:text="Buy" />
 
                 <RadioButton
@@ -170,12 +187,42 @@
                 android:id="@+id/post_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="200dp"
                 android:text="Post"
                 android:textColor="#000000"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@id/end_vertical_gl"
                 app:layout_constraintStart_toStartOf="@id/start_vertical_gl"
                 app:layout_constraintTop_toBottomOf="@id/sl_price_input_layout" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/search_result_rv"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@color/lm_chat_white"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@id/end_vertical_gl"
+                app:layout_constraintStart_toStartOf="@id/start_vertical_gl"
+                app:layout_constraintTop_toBottomOf="@id/search_view"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:itemCount="3"
+                tools:listitem="@layout/item_search_scrip_lm" />
+
+            <ProgressBar
+                android:id="@+id/search_progress_indicator"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center"
+                android:indeterminate="true"
+                android:elevation="20dp"
+                android:layout_marginEnd="5dp"
+                android:indeterminateTint="@color/lm_chat_blue"
+                android:indeterminateTintMode="src_in"
+                style="?android:attr/progressBarStyle"
+                android:visibility="gone"
+                app:layout_constraintTop_toTopOf="@id/search_view"
+                app:layout_constraintEnd_toEndOf="@id/search_view"
+                app:layout_constraintBottom_toBottomOf="@id/search_view"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
