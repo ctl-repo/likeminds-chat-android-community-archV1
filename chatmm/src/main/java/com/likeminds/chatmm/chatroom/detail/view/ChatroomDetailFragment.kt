@@ -474,14 +474,6 @@ class ChatroomDetailFragment :
         isGuestUser = userPreferences.getIsGuestUser()
         checkForExplicitActions()
         fetchInitialData()
-//        val entryPrice = arguments?.getString("entryPrice")
-//        val slPrice = arguments?.getString("slPrice")
-//        val targetPrice = arguments?.getString("targetPrice")
-//        val orderType = arguments?.getString("orderType")
-//        Log.e(
-//            TAG,
-//            "receiveExtras: EntryPrice:$entryPrice ,slPriveValue:$slPrice ,targetPriveValue: $targetPrice , orderType: $orderType"
-//        )
     }
 
     /**
@@ -830,8 +822,19 @@ class ChatroomDetailFragment :
 
     //on click function when custom widget A is clicked
     private fun onCustomWidgetAAttachmentClicked() {
-        Log.e("Tag", "Buy/Sell Widget is clicked")
-        val bottomSheetFragment = BuySellCustomWidgetDialog()
+        val bottomSheetFragment = BuySellCustomWidgetDialog() {
+            val metaData = JSONObject().apply {
+                put("entryPrice", it.getString("entryPrice"))
+                put("slPrice", it.getString("slPrice"))
+                put("targetPrice", it.getString("targetPrice"))
+                put("isBuy", it.getBoolean("isBuy"))
+                put("segment", it.getInt("segment"))
+                put("token", it.getInt("token"))
+                put("symbol", it.getString("symbol"))
+            }
+            Log.e(TAG, "onCustomWidgetAAttachmentClicked: $metaData")
+            postConversation(metadata = metaData)
+        }
         bottomSheetFragment.show(childFragmentManager, bottomSheetFragment.tag)
     }
 

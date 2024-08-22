@@ -9,18 +9,5 @@
         android:id="@+id/fragment_search"
         android:name="com.likeminds.chatmm.search.view.SearchFragment"
         android:label="SearchFragment"
-        tools:layout="@layout/fragment_search" >
-<!--        <argument-->
-<!--            android:name="entryPrice"-->
-<!--            app:argType="string"/>-->
-<!--        <argument-->
-<!--            android:name="slPrice"-->
-<!--            app:argType="string"/>-->
-<!--        <argument-->
-<!--            android:name="targetPrice"-->
-<!--            app:argType="string"/>-->
-<!--        <argument-->
-<!--            android:name="orderTypeZ"-->
-<!--            app:argType="string"/>-->
-    </fragment>
+        tools:layout="@layout/fragment_search" />
 </navigation>

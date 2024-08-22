@@ -50,6 +50,8 @@ class ConversationWidgetItemViewDataBinder(
             //Custom Widget Data
             val metadata = JSONObject(data.widgetViewData?.metadata.toString())
 
+            tvCustomWidgetMsg.text = metadata.toString()
+
             ChatroomConversationItemViewDataBinderUtil.initConversationBubbleView(
                 clConversationRoot,
                 clConversationBubble,
