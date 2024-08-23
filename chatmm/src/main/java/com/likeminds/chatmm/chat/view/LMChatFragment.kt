@@ -101,7 +101,7 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
         viewModel.checkDMTabResponse.observe(viewLifecycleOwner) { response ->
             if (response != null) {
                 setDMMeta(response)
-                updateUnreadDMCount(response.unreadDMCount)
+//                updateUnreadDMCount(response.unreadDMCount)
             }
         }
     }
