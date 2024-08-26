@@ -1,4 +1,4 @@
-package com.likeminds.chatmm.buysellwidget.view
+package com.likeminds.chatmm.buysellwidget.presentation.view
 
 import android.annotation.SuppressLint
 import android.app.Dialog
@@ -15,7 +15,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.likeminds.chatmm.buysellwidget.adapter.SearchAdapter
+import com.likeminds.chatmm.buysellwidget.presentation.adapter.SearchAdapter
 import com.likeminds.chatmm.buysellwidget.data.ApiCallState
 import com.likeminds.chatmm.buysellwidget.data.FinXService
 import com.likeminds.chatmm.buysellwidget.data.RetrofitHelper
@@ -23,8 +23,8 @@ import com.likeminds.chatmm.buysellwidget.domain.model.Response
 import com.likeminds.chatmm.buysellwidget.domain.repository.FinXRepository
 import com.likeminds.chatmm.buysellwidget.domain.util.gone
 import com.likeminds.chatmm.buysellwidget.domain.util.visible
-import com.likeminds.chatmm.buysellwidget.viewmodel.FinXViewModel
-import com.likeminds.chatmm.buysellwidget.viewmodel.FinXViewModelFactory
+import com.likeminds.chatmm.buysellwidget.presentation.viewmodel.FinXViewModel
+import com.likeminds.chatmm.buysellwidget.presentation.viewmodel.FinXViewModelFactory
 import com.likeminds.chatmm.databinding.DialogBuySellCustomWidgetBinding
 
 class BuySellCustomWidgetDialog(val onPostClicked: (Bundle) -> Unit) : BottomSheetDialogFragment() {

@@ -1,4 +1,4 @@
-package com.likeminds.chatmm.buysellwidget.viewmodel
+package com.likeminds.chatmm.buysellwidget.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel

@@ -1,8 +1,11 @@
 package com.likeminds.chatmm.conversation.view.adapter.databinder
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import com.google.gson.Gson
 import com.likeminds.chatmm.LMAnalytics
+import com.likeminds.chatmm.buysellwidget.domain.model.PostConversationMetadata
 import com.likeminds.chatmm.theme.model.LMTheme
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomConversationItemViewDataBinderUtil
 import com.likeminds.chatmm.chatroom.detail.view.adapter.ChatroomDetailAdapterListener
@@ -49,8 +52,15 @@ class ConversationWidgetItemViewDataBinder(
 
             //Custom Widget Data
             val metadata = JSONObject(data.widgetViewData?.metadata.toString())
+            val postConversationMetadata =
+                Gson().fromJson(metadata.toString(), PostConversationMetadata::class.java)
 
-            tvCustomWidgetMsg.text = metadata.toString()
+            tvCustomWidgetMsg.text =
+                "${if (postConversationMetadata.isBuy == true) "Buy" else "Sell"} ${postConversationMetadata.symbol} at ${postConversationMetadata.entryPrice} SL ${postConversationMetadata.slPrice} target Price ${postConversationMetadata.targetPrice}"
+            Log.e(
+                "TAG",
+                "Meta Data String: \"${if (postConversationMetadata.isBuy == true) "Buy" else "Sell"} ${postConversationMetadata.symbol} at ${postConversationMetadata.entryPrice} SL ${postConversationMetadata.slPrice} target Price ${postConversationMetadata.targetPrice}\""
+            )
 
             ChatroomConversationItemViewDataBinderUtil.initConversationBubbleView(
                 clConversationRoot,

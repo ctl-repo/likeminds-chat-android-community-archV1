@@ -38,7 +38,7 @@ import com.giphy.sdk.ui.views.GiphyDialogFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.likeminds.chatmm.*
 import com.likeminds.chatmm.R
-import com.likeminds.chatmm.buysellwidget.view.BuySellCustomWidgetDialog
+import com.likeminds.chatmm.buysellwidget.presentation.view.BuySellCustomWidgetDialog
 import com.likeminds.chatmm.chatroom.detail.model.*
 import com.likeminds.chatmm.chatroom.detail.util.*
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil.getTypeName

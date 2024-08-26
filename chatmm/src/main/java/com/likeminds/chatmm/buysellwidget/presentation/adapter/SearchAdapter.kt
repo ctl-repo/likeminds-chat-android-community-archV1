@@ -1,4 +1,4 @@
-package com.likeminds.chatmm.buysellwidget.adapter
+package com.likeminds.chatmm.buysellwidget.presentation.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
