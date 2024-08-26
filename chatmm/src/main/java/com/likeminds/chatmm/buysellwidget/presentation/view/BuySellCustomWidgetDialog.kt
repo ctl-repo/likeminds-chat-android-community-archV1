@@ -20,7 +20,7 @@ import com.likeminds.chatmm.buysellwidget.data.ApiCallState
 import com.likeminds.chatmm.buysellwidget.data.FinXService
 import com.likeminds.chatmm.buysellwidget.data.RetrofitHelper
 import com.likeminds.chatmm.buysellwidget.domain.model.Response
-import com.likeminds.chatmm.buysellwidget.domain.repository.FinXRepository
+import com.likeminds.chatmm.buysellwidget.domain.repository.FinXRepositoryImpl
 import com.likeminds.chatmm.buysellwidget.domain.util.gone
 import com.likeminds.chatmm.buysellwidget.domain.util.visible
 import com.likeminds.chatmm.buysellwidget.presentation.viewmodel.FinXViewModel
@@ -188,7 +188,7 @@ class BuySellCustomWidgetDialog(val onPostClicked: (Bundle) -> Unit) : BottomShe
     private fun initSetup() {
         //init ViewModel
         val finXService = RetrofitHelper.getInstance().create(FinXService::class.java)
-        val repository = FinXRepository(finXService)
+        val repository = FinXRepositoryImpl(finXService)
         finXViewModel =
             ViewModelProvider(this, FinXViewModelFactory(repository))[FinXViewModel::class.java]
 
