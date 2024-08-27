@@ -80,7 +80,6 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
         // Retrieve sessionId from arguments
         val sessionId = arguments?.getString(ARG_SESSION_ID)
         XAppInstance.sessionID = sessionId
-        Log.e(TAG, "receiveExtras: SessionId : $sessionId XAppInstance : ${XAppInstance.sessionID}")
     }
 
     private lateinit var pagerAdapter: ChatPagerAdapter
@@ -187,10 +186,6 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
     private fun initData() {
         viewModel.checkDMTab()
         initToolbar()
-        Log.e(
-            TAG,
-            "initData: SessionId : $ARG_SESSION_ID ,XAppInstance : ${XAppInstance.sessionID}",
-        )
     }
 
     //init tab adapter and perform operations are per selected tab

@@ -3,8 +3,10 @@ package com.likeminds.chatmm.conversation.view.adapter.databinder
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import com.google.gson.Gson
 import com.likeminds.chatmm.LMAnalytics
+import com.likeminds.chatmm.R
 import com.likeminds.chatmm.buysellwidget.domain.model.PostConversationMetadata
 import com.likeminds.chatmm.theme.model.LMTheme
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomConversationItemViewDataBinderUtil
@@ -62,11 +64,19 @@ class ConversationWidgetItemViewDataBinder(
 //                "Meta Data String: \"${if (postConversationMetadata.isBuy == true) "Buy" else "Sell"} ${postConversationMetadata.symbol} at ${postConversationMetadata.entryPrice} SL ${postConversationMetadata.slPrice} target Price ${postConversationMetadata.targetPrice}\""
 //            )
             with(postConversationMetadata) {
-                tvCustomWidgetMsg.text = this.symbol
-                tvCwStopLossValue.text = this.slPrice
-                tvCwEntryPriceValue.text = this.entryPrice
-                tvCwTargetPriceValue.text = this.targetPrice
-                btnCustomWidgetBuy.text = if (this.isBuy == true) "Buy" else "Sell"
+                tvCustomWidgetMsg.text = secDesc
+                tvCwStopLossValue.text = slPrice
+                tvCwEntryPriceValue.text = entryPrice
+                tvCwTargetPriceValue.text = targetPrice
+                btnCustomWidgetBuy.let {
+                    it.text = if (isBuy == true) "Buy" else "Sell"
+                    it.setBackgroundColor(
+                        ContextCompat.getColor(
+                            context,
+                            if (isBuy == true) R.color.lm_chat_blue else R.color.lm_chat_green
+                        )
+                    )
+                }
             }
 
             btnCustomWidgetBuy.setOnClickListener {

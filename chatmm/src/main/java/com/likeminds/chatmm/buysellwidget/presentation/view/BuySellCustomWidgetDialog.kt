@@ -166,6 +166,7 @@ class BuySellCustomWidgetDialog(val onPostClicked: (Bundle) -> Unit) : BottomShe
                         putInt("segment", it.segmentId ?: 0)
                         putInt("token", it.token ?: 0)
                         putString("symbol", it.symbol)
+                        putString("secDesc", it.secDesc)
                     }
                 }
                 onPostClicked(stockMetadata)

@@ -834,6 +834,7 @@ class ChatroomDetailFragment :
                 put("segment", it.getInt("segment"))
                 put("token", it.getInt("token"))
                 put("symbol", it.getString("symbol"))
+                put("secDesc", it.getString("secDesc"))
             }
             Log.e(TAG, "onCustomWidgetAAttachmentClicked: $metaData")
             postConversation(metadata = metaData)

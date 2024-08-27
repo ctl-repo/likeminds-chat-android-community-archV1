@@ -7,5 +7,6 @@ data class PostConversationMetadata(
     val isBuy: Boolean? = true,
     val segment: Int? = 0,
     val token: Int? = 0,
-    val symbol: String? = ""
+    val symbol: String? = "",
+    val secDesc: String? = ""
 )
