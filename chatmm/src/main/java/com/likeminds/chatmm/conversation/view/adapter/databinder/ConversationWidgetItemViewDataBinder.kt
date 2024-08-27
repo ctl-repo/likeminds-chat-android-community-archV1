@@ -1,8 +1,8 @@
 package com.likeminds.chatmm.conversation.view.adapter.databinder
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import com.google.gson.Gson
 import com.likeminds.chatmm.LMAnalytics
 import com.likeminds.chatmm.buysellwidget.domain.model.PostConversationMetadata
@@ -55,12 +55,27 @@ class ConversationWidgetItemViewDataBinder(
             val postConversationMetadata =
                 Gson().fromJson(metadata.toString(), PostConversationMetadata::class.java)
 
-            tvCustomWidgetMsg.text =
-                "${if (postConversationMetadata.isBuy == true) "Buy" else "Sell"} ${postConversationMetadata.symbol} at ${postConversationMetadata.entryPrice} SL ${postConversationMetadata.slPrice} target Price ${postConversationMetadata.targetPrice}"
-            Log.e(
-                "TAG",
-                "Meta Data String: \"${if (postConversationMetadata.isBuy == true) "Buy" else "Sell"} ${postConversationMetadata.symbol} at ${postConversationMetadata.entryPrice} SL ${postConversationMetadata.slPrice} target Price ${postConversationMetadata.targetPrice}\""
-            )
+//            tvCustomWidgetMsg.text =
+//                "${if (postConversationMetadata.isBuy == true) "Buy" else "Sell"} ${postConversationMetadata.symbol} at ${postConversationMetadata.entryPrice} SL ${postConversationMetadata.slPrice} target Price ${postConversationMetadata.targetPrice}"
+//            Log.e(
+//                "TAG",
+//                "Meta Data String: \"${if (postConversationMetadata.isBuy == true) "Buy" else "Sell"} ${postConversationMetadata.symbol} at ${postConversationMetadata.entryPrice} SL ${postConversationMetadata.slPrice} target Price ${postConversationMetadata.targetPrice}\""
+//            )
+            with(postConversationMetadata) {
+                tvCustomWidgetMsg.text = this.symbol
+                tvCwStopLossValue.text = this.slPrice
+                tvCwEntryPriceValue.text = this.entryPrice
+                tvCwTargetPriceValue.text = this.targetPrice
+                btnCustomWidgetBuy.text = if (this.isBuy == true) "Buy" else "Sell"
+            }
+
+            btnCustomWidgetBuy.setOnClickListener {
+                Toast.makeText(context, "Buy is Clicked", Toast.LENGTH_SHORT).show()
+            }
+
+            btnCustomWidgetScripInfo.setOnClickListener {
+                Toast.makeText(context, "Scrip Info is Clicked", Toast.LENGTH_SHORT).show()
+            }
 
             ChatroomConversationItemViewDataBinderUtil.initConversationBubbleView(
                 clConversationRoot,
