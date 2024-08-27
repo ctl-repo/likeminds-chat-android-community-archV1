@@ -26,7 +26,7 @@ import com.likeminds.chatmm.databinding.FragmentChatBinding
 import com.likeminds.chatmm.dm.model.CheckDMTabViewData
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.member.util.MemberImageUtil
-import com.likeminds.chatmm.search.view.SearchActivity
+import com.likeminds.chatmm.search.view.LMChatSearchActivity
 import com.likeminds.chatmm.theme.model.LMTheme
 import com.likeminds.chatmm.utils.connectivity.ConnectivityBroadcastReceiver
 import com.likeminds.chatmm.utils.connectivity.ConnectivityReceiverListener
@@ -120,7 +120,7 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
         viewModel.checkDMTabResponse.observe(viewLifecycleOwner) { response ->
             if (response != null) {
                 setDMMeta(response)
-                updateUnreadDMCount(response.unreadDMCount)
+//                updateUnreadDMCount(response.unreadDMCount)
             }
         }
     }
@@ -177,7 +177,7 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
             viewModel.getUserFromLocalDb()
 
             ivSearch.setOnClickListener {
-                SearchActivity.start(requireContext())
+                LMChatSearchActivity.start(requireContext())
                 Log.d(SDKApplication.LOG_TAG, "search started")
             }
         }
@@ -213,27 +213,28 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
                 1 -> {
                     tab.apply {
                         text = getString(R.string.lm_chat_dms)
-                        val unreadDMCount = dmMeta?.unreadDMCount ?: 0
-                        if (unreadDMCount > 0) {
-                            val badge = orCreateBadge
-                            badge.apply {
-                                horizontalOffset =
-                                    resources.getDimension(R.dimen.lm_chat_dm_badge_horizontal_margin)
-                                        .roundToInt()
-                                verticalOffset =
-                                    resources.getDimension(R.dimen.lm_chat_dm_badge_vertical_margin)
-                                        .roundToInt()
-
-                                number = unreadDMCount
-                                maxCharacterCount = 2
-                                backgroundColor = LMTheme.getButtonsColor()
-
-                                badgeTextColor =
-                                    ContextCompat.getColor(requireContext(), R.color.lm_chat_white)
-                            }
-                        } else {
-                            removeBadge()
-                        }
+                        removeBadge()
+//                        val unreadDMCount = dmMeta?.unreadDMCount ?: 0
+//                        if (unreadDMCount > 0) {
+//                            val badge = orCreateBadge
+//                            badge.apply {
+//                                horizontalOffset =
+//                                    resources.getDimension(R.dimen.lm_chat_dm_badge_horizontal_margin)
+//                                        .roundToInt()
+//                                verticalOffset =
+//                                    resources.getDimension(R.dimen.lm_chat_dm_badge_vertical_margin)
+//                                        .roundToInt()
+//
+//                                number = unreadDMCount
+//                                maxCharacterCount = 2
+//                                backgroundColor = LMTheme.getButtonsColor()
+//
+//                                badgeTextColor =
+//                                    ContextCompat.getColor(requireContext(), R.color.lm_chat_white)
+//                            }
+//                        } else {
+//                            removeBadge()
+//                        }
                     }
                 }
 

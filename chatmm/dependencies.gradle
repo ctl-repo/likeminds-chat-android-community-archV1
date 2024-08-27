@@ -93,7 +93,7 @@ dependencies {
     androidTestImplementation deps.android_test.espresso
 
     // chat-sdk
-    api 'community.likeminds:likemindschat:2.3.3'
+    api 'community.likeminds:likemindschat:2.3.4'
 
     //retrofit
     def retrofit_version = "2.9.0"
@@ -103,4 +103,5 @@ dependencies {
 
     //logging interceptor
     implementation "com.squareup.okhttp3:logging-interceptor:4.10.0"
+
 }
