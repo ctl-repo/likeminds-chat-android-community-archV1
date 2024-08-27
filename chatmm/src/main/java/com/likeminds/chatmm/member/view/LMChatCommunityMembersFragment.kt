@@ -132,8 +132,8 @@ class LMChatCommunityMembersFragment :
     }
 
     private fun initData() {
-        ProgressHelper.showProgress(binding.progressBar, true)
-        viewModel.getAllMembers(extras.showList, 1)
+//        ProgressHelper.showProgress(binding.progressBar, true)
+//        viewModel.getAllMembers(extras.showList, 1)
     }
 
     private fun initRecyclerView() {
@@ -146,7 +146,7 @@ class LMChatCommunityMembersFragment :
             override fun onLoadMore(currentPage: Int) {
                 if (currentPage > 0) {
                     if (searchKeyword == null) {
-                        viewModel.getAllMembers(extras.showList, currentPage)
+//                        viewModel.getAllMembers(extras.showList, currentPage)
                     } else {
                         viewModel.searchMembers(extras.showList, currentPage, searchKeyword ?: "")
                     }
@@ -300,6 +300,6 @@ class LMChatCommunityMembersFragment :
         scrollListener.resetData()
         mAdapter.clearAndNotify()
         searchKeyword = null
-        viewModel.getAllMembers(extras.showList, 1)
+//        viewModel.getAllMembers(extras.showList, 1)
     }
 }
