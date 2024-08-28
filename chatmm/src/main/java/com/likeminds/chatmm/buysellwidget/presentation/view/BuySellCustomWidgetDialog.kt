@@ -2,6 +2,7 @@ package com.likeminds.chatmm.buysellwidget.presentation.view
 
 import android.annotation.SuppressLint
 import android.app.Dialog
+import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -56,6 +57,14 @@ class BuySellCustomWidgetDialog(val onPostClicked: (Bundle) -> Unit) : BottomShe
         val dialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
         dialog.setCancelable(true)
         dialog.setCanceledOnTouchOutside(true)
+        dialog.setOnShowListener { dialogInterface ->
+            val bottomSheetDialog = dialogInterface as BottomSheetDialog
+            val bottomSheet =
+                bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+            bottomSheet?.let {
+                it.setBackgroundColor(Color.TRANSPARENT) // Set the background color to transparent
+            }
+        }
         return dialog
     }
 
