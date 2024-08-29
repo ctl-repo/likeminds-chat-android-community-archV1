@@ -6,20 +6,20 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import androidx.annotation.Keep
 import androidx.core.app.*
 import androidx.core.app.Person
 import androidx.core.app.RemoteInput
 import com.google.gson.Gson
-import com.likeminds.chatmm.LMAnalytics
-import com.likeminds.chatmm.R
-import com.likeminds.chatmm.theme.model.LMTheme
+import com.likeminds.chatmm.*
 import com.likeminds.chatmm.di.DaggerLikeMindsChatComponent
 import com.likeminds.chatmm.di.LikeMindsChatComponent
 import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.media.util.MediaUtils
 import com.likeminds.chatmm.pushnotification.model.*
 import com.likeminds.chatmm.pushnotification.viewmodel.LMNotificationViewModel
+import com.likeminds.chatmm.theme.model.LMTheme
 import com.likeminds.chatmm.utils.Route
 import com.likeminds.chatmm.utils.ValueUtils
 import com.likeminds.chatmm.utils.file.util.FileUtil
@@ -275,6 +275,11 @@ class LMChatNotificationHandler {
         return Route.getQueryParam(route, "community_id")
     }
 
+    private fun getChatroomId(route: String?): String? {
+        return Route.getQueryParam(route, "collabcard_id")
+            ?: Route.getQueryParam(route, "chatroom_id")
+    }
+
     //handle and show notification
     fun handleNotification(data: MutableMap<String, String>) {
         val title = data[NOTIFICATION_TITLE] ?: return
@@ -330,25 +335,38 @@ class LMChatNotificationHandler {
             //chatroom notification -> for messages only
             Route.ROUTE_CHATROOM == routeHost -> {
                 getCommunityId(route)?.let { _ ->
-                    lmNotificationViewModel.fetchUnreadConversations() {
-                        if (it != null) {
-                            val conversations = it.filter { notificationData ->
-                                !notificationData.chatroomLastConversationUserName.isNullOrEmpty()
+                    val chatroomIdReceivedFromRoute = getChatroomId(route)
+                    val chatroomIdOpened = SDKApplication.getInstance().openedChatroomId
+
+                    Log.d(
+                        "PUI", """
+                        notificationReceived:
+                        chatroomIdReceivedFromRoute: $chatroomIdReceivedFromRoute
+                        chatroomIdOpened: $chatroomIdOpened
+                    """.trimIndent()
+                    )
+
+                    if (chatroomIdOpened != chatroomIdReceivedFromRoute) {
+                        lmNotificationViewModel.fetchUnreadConversations {
+                            if (it != null) {
+                                val conversations = it.filter { notificationData ->
+                                    !notificationData.chatroomLastConversationUserName.isNullOrEmpty()
+                                }
+                                initConversationsGroupNotification(
+                                    mApplication,
+                                    conversations,
+                                    title,
+                                    subTitle,
+                                    category,
+                                    subcategory
+                                )
                             }
-                            initConversationsGroupNotification(
-                                mApplication,
-                                conversations,
-                                title,
-                                subTitle,
-                                category,
-                                subcategory
-                            )
                         }
                     }
                 }
             }
 
-            !title.isBlank() && !subTitle.isBlank() && !route.isBlank() -> {
+            title.isNotBlank() && subTitle.isNotBlank() && route.isNotBlank() -> {
                 when (routeHost) {
                     //for poll chatroom
                     Route.ROUTE_POLL_CHATROOM -> {
@@ -363,14 +381,25 @@ class LMChatNotificationHandler {
                     }
                     //for other cases
                     else -> {
-                        sendNormalNotification(
-                            mApplication,
-                            title,
-                            subTitle,
-                            route,
-                            category,
-                            subcategory
+                        val chatroomIdReceivedFromRoute = getChatroomId(route)
+                        val chatroomIdOpened = SDKApplication.getInstance().openedChatroomId
+                        Log.d(
+                            "PUI", """
+                        notificationReceived:
+                        chatroomIdReceivedFromRoute: $chatroomIdReceivedFromRoute
+                        chatroomIdOpened: $chatroomIdOpened
+                    """.trimIndent()
                         )
+                        if (chatroomIdOpened != chatroomIdReceivedFromRoute) {
+                            sendNormalNotification(
+                                mApplication,
+                                title,
+                                subTitle,
+                                route,
+                                category,
+                                subcategory
+                            )
+                        }
                     }
                 }
             }
@@ -387,7 +416,8 @@ class LMChatNotificationHandler {
     private fun createGeneralNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = mApplication.getString(R.string.lm_chat_general_channel_name)
-            val descriptionText = mApplication.getString(R.string.lm_chat_general_channel_description)
+            val descriptionText =
+                mApplication.getString(R.string.lm_chat_general_channel_description)
             val importance = NotificationManager.IMPORTANCE_HIGH
             val channel = NotificationChannel(GENERAL_CHANNEL_ID, name, importance).apply {
                 description = descriptionText
@@ -402,7 +432,8 @@ class LMChatNotificationHandler {
     private fun createChatroomNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = mApplication.getString(R.string.lm_chat_chatroom_channel_name)
-            val descriptionText = mApplication.getString(R.string.lm_chat_chatroom_channel_description)
+            val descriptionText =
+                mApplication.getString(R.string.lm_chat_chatroom_channel_description)
             val importance = NotificationManager.IMPORTANCE_HIGH
             val channel = NotificationChannel(CHATROOM_CHANNEL_ID, name, importance).apply {
                 description = descriptionText
