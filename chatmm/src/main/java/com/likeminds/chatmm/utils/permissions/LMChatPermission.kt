@@ -48,8 +48,8 @@ class LMChatPermission private constructor(
             return LMChatPermission(
                 WRITE_STORAGE,
                 REQUEST_STORAGE,
-                "To easily receive and send photos, videos and other files, allow CommunityHood access to your device’s photos, media and files.",
-                "To send media, allow CommunityHood access to your device’s photos, media and files. Tap on Settings > Permission, and turn Storage on.",
+                "To easily receive and send photos, videos and other files, allow Choice FinX access to your device’s photos, media and files.",
+                "To send media, allow Choice FinX access to your device’s photos, media and files. Tap on Settings > Permission, and turn Storage on.",
                 R.drawable.lm_chat_ic_folder
             )
         }
@@ -58,8 +58,8 @@ class LMChatPermission private constructor(
             return LMChatPermission(
                 RECORD_AUDIO,
                 REQUEST_RECORD_AUDIO,
-                "To record a Voice Message, allow CommunityHood access to your microphone.",
-                "To record a Voice Message, allow CommunityHood access to your microphone. Tap Settings > Permissions, and turn Microphone on.",
+                "To record a Voice Message, allow Choice FinX access to your microphone.",
+                "To record a Voice Message, allow Choice FinX access to your microphone. Tap Settings > Permissions, and turn Microphone on.",
                 R.drawable.lm_chat_ic_mic
             )
         }
