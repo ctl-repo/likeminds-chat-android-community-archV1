@@ -253,9 +253,9 @@ class SDKApplication : LMChatSDKCallback {
     override fun onRefreshTokenExpired(): Pair<String?, String?> {
         val apiKey = mChatClient.getAPIKey().data
 
-        return if (apiKey != null) {
+        return if (!apiKey.isNullOrEmpty()) {
             runBlocking {
-                val user = mChatClient.getLoggedInUser()?.data?.user
+                val user = mChatClient.getLoggedInUser().data?.user
                 if (user != null) {
                     val initiateUserRequest = InitiateUserRequest.Builder()
                         .apiKey(apiKey)
@@ -269,15 +269,14 @@ class SDKApplication : LMChatSDKCallback {
                         val refreshToken = response.data?.refreshToken ?: ""
                         Pair(accessToken, refreshToken)
                     } else {
-                        Pair("", "")
+                        Pair(null, null)
                     }
-
                 } else {
-                    Pair("", "")
+                    Pair(null, null)
                 }
             }
         } else {
-            lmChatCoreCallback?.onRefreshTokenExpired() ?: Pair("", "")
+            lmChatCoreCallback?.onRefreshTokenExpired() ?: Pair(null, null)
         }
     }
 }
