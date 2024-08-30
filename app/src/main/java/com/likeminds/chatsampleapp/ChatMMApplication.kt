@@ -40,7 +40,7 @@ class ChatMMApplication : Application(), LMChatCoreCallback {
             application = this,
             lmChatCoreCallback = this,
             theme = chatTheme,
-            domain = "",
+            domain = deviceId(),
             enablePushNotifications = true,
             deviceId = deviceId()
         )
