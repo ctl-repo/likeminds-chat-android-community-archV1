@@ -5,8 +5,6 @@ import android.content.Context
 import android.util.Log
 import com.amazonaws.mobile.client.*
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility
-import com.likeminds.chatmm.theme.model.LMTheme
-import com.likeminds.chatmm.theme.model.LMChatTheme
 import com.likeminds.chatmm.di.DaggerLikeMindsChatComponent
 import com.likeminds.chatmm.di.LikeMindsChatComponent
 import com.likeminds.chatmm.di.chat.ChatComponent
@@ -20,6 +18,8 @@ import com.likeminds.chatmm.di.polls.PollsComponent
 import com.likeminds.chatmm.di.reactions.ReactionsComponent
 import com.likeminds.chatmm.di.report.ReportComponent
 import com.likeminds.chatmm.di.search.SearchComponent
+import com.likeminds.chatmm.theme.model.LMChatTheme
+import com.likeminds.chatmm.theme.model.LMTheme
 import com.likeminds.chatmm.utils.user.LMChatUserMetaData
 import com.likeminds.likemindschat.LMChatClient
 import com.likeminds.likemindschat.LMChatSDKCallback
@@ -251,9 +251,22 @@ class SDKApplication : LMChatSDKCallback {
     override fun onRefreshTokenExpired(): Pair<String?, String?> {
         val apiKey = mChatClient.getAPIKey().data
 
-        return if (apiKey != null) {
+        Log.d(
+            "PUI", """
+            in chat mm layer
+            apikey: $apiKey
+        """.trimIndent()
+        )
+
+        return if (!apiKey.isNullOrEmpty()) {
+            Log.d(
+                "PUI", """
+            in chat mm layer
+            apikey not null: $apiKey
+        """.trimIndent()
+            )
             runBlocking {
-                val user = mChatClient.getLoggedInUser()?.data?.user
+                val user = mChatClient.getLoggedInUser().data?.user
                 if (user != null) {
                     val initiateUserRequest = InitiateUserRequest.Builder()
                         .apiKey(apiKey)
@@ -265,17 +278,49 @@ class SDKApplication : LMChatSDKCallback {
                     if (response.success) {
                         val accessToken = response.data?.accessToken ?: ""
                         val refreshToken = response.data?.refreshToken ?: ""
+                        Log.d(
+                            "PUI", """
+                                in chat mm layer
+                                initiate API success: $accessToken $refreshToken
+                            """.trimIndent()
+                        )
                         Pair(accessToken, refreshToken)
                     } else {
-                        Pair("", "")
+                        Log.d(
+                            "PUI", """
+                                in chat mm layer
+                                initiate API failed
+                            """.trimIndent()
+                        )
+                        Pair(null, null)
                     }
-
                 } else {
-                    Pair("", "")
+                    Log.d(
+                        "PUI", """
+                                in chat mm layer
+                                user is emprt
+                            """.trimIndent()
+                    )
+                    Pair(null, null)
                 }
             }
         } else {
-            lmChatCoreCallback?.onRefreshTokenExpired() ?: Pair("", "")
+            Log.d(
+                "PUI", """
+            in chat mm layer
+            apikey is null: $apiKey
+        """.trimIndent()
+            )
+            val tokens = lmChatCoreCallback?.onRefreshTokenExpired() ?: Pair(null, null)
+
+            Log.d(
+                "PUI", """
+                in chat mm layer
+                tokens from customer:$tokens
+            """.trimIndent()
+            )
+
+            tokens
         }
     }
 }
