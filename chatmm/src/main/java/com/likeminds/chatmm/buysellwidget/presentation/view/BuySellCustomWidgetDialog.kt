@@ -73,6 +73,7 @@ class BuySellCustomWidgetDialog(val onPostClicked: (Bundle) -> Unit) : BottomShe
         initSetup()
         setUpOnClickListners()
         setUpObservers()
+
     }
 
     private fun setUpObservers() {
