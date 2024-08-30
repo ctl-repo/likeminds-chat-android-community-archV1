@@ -93,7 +93,7 @@ dependencies {
     androidTestImplementation deps.android_test.espresso
 
     // chat-sdk
-    api 'community.likeminds:likemindschat:2.3.5'
+    api 'community.likeminds:likemindschat:2.3.5' //updated on 2024Aug30
 
     //retrofit
     def retrofit_version = "2.9.0"
