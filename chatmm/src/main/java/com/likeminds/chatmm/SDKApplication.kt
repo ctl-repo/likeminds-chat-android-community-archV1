@@ -41,6 +41,7 @@ class SDKApplication : LMChatSDKCallback {
 
     private var likeMindsChatComponent: LikeMindsChatComponent? = null
 
+    //used to track opened chatroom
     var openedChatroomId: String? = null
 
     private var homeFeedComponent: HomeFeedComponent? = null

@@ -6,7 +6,6 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
-import android.util.Log
 import androidx.annotation.Keep
 import androidx.core.app.*
 import androidx.core.app.Person
@@ -337,15 +336,6 @@ class LMChatNotificationHandler {
                 getCommunityId(route)?.let { _ ->
                     val chatroomIdReceivedFromRoute = getChatroomId(route)
                     val chatroomIdOpened = SDKApplication.getInstance().openedChatroomId
-
-                    Log.d(
-                        "PUI", """
-                        notificationReceived:
-                        chatroomIdReceivedFromRoute: $chatroomIdReceivedFromRoute
-                        chatroomIdOpened: $chatroomIdOpened
-                    """.trimIndent()
-                    )
-
                     if (chatroomIdOpened != chatroomIdReceivedFromRoute) {
                         lmNotificationViewModel.fetchUnreadConversations {
                             if (it != null) {
@@ -383,13 +373,6 @@ class LMChatNotificationHandler {
                     else -> {
                         val chatroomIdReceivedFromRoute = getChatroomId(route)
                         val chatroomIdOpened = SDKApplication.getInstance().openedChatroomId
-                        Log.d(
-                            "PUI", """
-                        notificationReceived:
-                        chatroomIdReceivedFromRoute: $chatroomIdReceivedFromRoute
-                        chatroomIdOpened: $chatroomIdOpened
-                    """.trimIndent()
-                        )
                         if (chatroomIdOpened != chatroomIdReceivedFromRoute) {
                             sendNormalNotification(
                                 mApplication,
