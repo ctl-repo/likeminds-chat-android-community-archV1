@@ -2,7 +2,6 @@ package com.likeminds.chatmm
 
 import android.app.Application
 import android.content.Context
-import android.util.Log
 import com.amazonaws.mobile.client.*
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility
 import com.likeminds.chatmm.di.DaggerLikeMindsChatComponent
@@ -251,20 +250,7 @@ class SDKApplication : LMChatSDKCallback {
     override fun onRefreshTokenExpired(): Pair<String?, String?> {
         val apiKey = mChatClient.getAPIKey().data
 
-        Log.d(
-            "PUI", """
-            in chat mm layer
-            apikey: $apiKey
-        """.trimIndent()
-        )
-
         return if (!apiKey.isNullOrEmpty()) {
-            Log.d(
-                "PUI", """
-            in chat mm layer
-            apikey not null: $apiKey
-        """.trimIndent()
-            )
             runBlocking {
                 val user = mChatClient.getLoggedInUser().data?.user
                 if (user != null) {
@@ -278,49 +264,16 @@ class SDKApplication : LMChatSDKCallback {
                     if (response.success) {
                         val accessToken = response.data?.accessToken ?: ""
                         val refreshToken = response.data?.refreshToken ?: ""
-                        Log.d(
-                            "PUI", """
-                                in chat mm layer
-                                initiate API success: $accessToken $refreshToken
-                            """.trimIndent()
-                        )
                         Pair(accessToken, refreshToken)
                     } else {
-                        Log.d(
-                            "PUI", """
-                                in chat mm layer
-                                initiate API failed
-                            """.trimIndent()
-                        )
                         Pair(null, null)
                     }
                 } else {
-                    Log.d(
-                        "PUI", """
-                                in chat mm layer
-                                user is emprt
-                            """.trimIndent()
-                    )
                     Pair(null, null)
                 }
             }
         } else {
-            Log.d(
-                "PUI", """
-            in chat mm layer
-            apikey is null: $apiKey
-        """.trimIndent()
-            )
-            val tokens = lmChatCoreCallback?.onRefreshTokenExpired() ?: Pair(null, null)
-
-            Log.d(
-                "PUI", """
-                in chat mm layer
-                tokens from customer:$tokens
-            """.trimIndent()
-            )
-
-            tokens
+            lmChatCoreCallback?.onRefreshTokenExpired() ?: Pair(null, null)
         }
     }
 }

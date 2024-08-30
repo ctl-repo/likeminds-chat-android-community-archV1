@@ -71,7 +71,6 @@ object LMChatCore {
             val deviceId = lmChatUserMeta.deviceId
 
 
-            Log.d("PUI", "show chat without security: accessToken ${tokens?.first} refreshToken ${tokens?.second}")
             if (tokens?.first.isNullOrEmpty()|| tokens?.second.isNullOrEmpty()) {
                 val initiateUserRequest = InitiateUserRequest.Builder()
                     .apiKey(apiKey)
@@ -118,7 +117,6 @@ object LMChatCore {
         error: ((String?) -> Unit)?
     ) {
         CoroutineScope(Dispatchers.IO).launch {
-            Log.d("PUI", "show chat with security: accessToken ${accessToken} refreshToken ${refreshToken}")
             val lmChatUserMeta = LMChatUserMetaData.getInstance()
             val deviceId = lmChatUserMeta.deviceId
 
