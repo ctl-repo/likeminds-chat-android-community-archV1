@@ -11,8 +11,7 @@ import androidx.core.app.*
 import androidx.core.app.Person
 import androidx.core.app.RemoteInput
 import com.google.gson.Gson
-import com.likeminds.chatmm.LMAnalytics
-import com.likeminds.chatmm.R
+import com.likeminds.chatmm.*
 import com.likeminds.chatmm.di.DaggerLikeMindsChatComponent
 import com.likeminds.chatmm.di.LikeMindsChatComponent
 import com.likeminds.chatmm.media.model.*
@@ -276,6 +275,11 @@ class LMChatNotificationHandler {
         return Route.getQueryParam(route, "community_id")
     }
 
+    private fun getChatroomId(route: String?): String? {
+        return Route.getQueryParam(route, "collabcard_id")
+            ?: Route.getQueryParam(route, "chatroom_id")
+    }
+
     //handle and show notification
     fun handleNotification(data: MutableMap<String, String>) {
         // new conversation insertion, unseen count update
@@ -340,6 +344,9 @@ class LMChatNotificationHandler {
                         unreadFollowNotification,
                         ChatroomNotificationViewData::class.java
                     )
+                    val chatroomIdReceivedFromRoute = getChatroomId(route)
+                    val chatroomIdOpened = SDKApplication.getInstance().openedChatroomId
+                    if (chatroomIdOpened != chatroomIdReceivedFromRoute) {
                     lmNotificationViewModel.fetchUnreadConversations(unreadFollowNotificationData) {
                         if (it != null) {
                             val conversations = it.filter { notificationData ->
@@ -355,11 +362,16 @@ class LMChatNotificationHandler {
                             )
                         }
                     }
+                        }
                 }
             }
 
             title.isNotBlank() && subTitle.isNotBlank() && route.isNotBlank() -> {
                 //for other cases
+
+                val chatroomIdReceivedFromRoute = getChatroomId(route)
+                val chatroomIdOpened = SDKApplication.getInstance().openedChatroomId
+                if (chatroomIdOpened != chatroomIdReceivedFromRoute) {
                 sendNormalNotification(
                     mApplication,
                     title,
@@ -369,6 +381,7 @@ class LMChatNotificationHandler {
                     subcategory
                 )
             }
+                }
         }
     }
 
