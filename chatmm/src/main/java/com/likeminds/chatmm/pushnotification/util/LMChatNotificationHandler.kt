@@ -13,13 +13,13 @@ import androidx.core.app.RemoteInput
 import com.google.gson.Gson
 import com.likeminds.chatmm.LMAnalytics
 import com.likeminds.chatmm.R
-import com.likeminds.chatmm.theme.model.LMTheme
 import com.likeminds.chatmm.di.DaggerLikeMindsChatComponent
 import com.likeminds.chatmm.di.LikeMindsChatComponent
 import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.media.util.MediaUtils
 import com.likeminds.chatmm.pushnotification.model.*
 import com.likeminds.chatmm.pushnotification.viewmodel.LMNotificationViewModel
+import com.likeminds.chatmm.theme.model.LMTheme
 import com.likeminds.chatmm.utils.Route
 import com.likeminds.chatmm.utils.ValueUtils
 import com.likeminds.chatmm.utils.file.util.FileUtil
@@ -58,6 +58,7 @@ class LMChatNotificationHandler {
         const val NOTIFICATION_UNREAD_NEW_CHATROOM = "unread_new_chatroom"
         const val NOTIFICATION_CATEGORY = "category"
         const val NOTIFICATION_SUBCATEGORY = "subcategory"
+        const val NOTIFICATION_UNREAD_FOLLOW_NOTIFICATION = "unread_follow_notification"
         const val NOTIFICATION_UNREAD_CONVERSATION_GROUP_ID = 101
 
         private const val NOTIFICATION_DATA = "notification_data"
@@ -277,6 +278,8 @@ class LMChatNotificationHandler {
 
     //handle and show notification
     fun handleNotification(data: MutableMap<String, String>) {
+        // new conversation insertion, unseen count update
+        // function -> lastConversationRO, unseen count ->
         val title = data[NOTIFICATION_TITLE] ?: return
         val subTitle = data[NOTIFICATION_SUB_TITLE] ?: return
         val route = data[NOTIFICATION_ROUTE] ?: return
@@ -284,6 +287,7 @@ class LMChatNotificationHandler {
         val category = data[NOTIFICATION_CATEGORY]
         val subcategory = data[NOTIFICATION_SUBCATEGORY]
         val unreadNewChatroom = data[NOTIFICATION_UNREAD_NEW_CHATROOM]
+        val unreadFollowNotification = data[NOTIFICATION_UNREAD_FOLLOW_NOTIFICATION]
 
         //validate data
         if (category.isNullOrEmpty() && subcategory.isNullOrEmpty()) {
@@ -327,10 +331,16 @@ class LMChatNotificationHandler {
                     )
                 }
             }
+
             //chatroom notification -> for messages only
             Route.ROUTE_CHATROOM == routeHost -> {
+                // case -> Inside chatroom -> Notification received (update lastConversationRO, unseenCount), but sync is also.
                 getCommunityId(route)?.let { _ ->
-                    lmNotificationViewModel.fetchUnreadConversations() {
+                    val unreadFollowNotificationData = gson.fromJson(
+                        unreadFollowNotification,
+                        ChatroomNotificationViewData::class.java
+                    )
+                    lmNotificationViewModel.fetchUnreadConversations(unreadFollowNotificationData) {
                         if (it != null) {
                             val conversations = it.filter { notificationData ->
                                 !notificationData.chatroomLastConversationUserName.isNullOrEmpty()
@@ -348,31 +358,16 @@ class LMChatNotificationHandler {
                 }
             }
 
-            !title.isBlank() && !subTitle.isBlank() && !route.isBlank() -> {
-                when (routeHost) {
-                    //for poll chatroom
-                    Route.ROUTE_POLL_CHATROOM -> {
-                        sendNewPollChatRoomSingleNotification(
-                            mApplication,
-                            title,
-                            subTitle,
-                            route,
-                            category,
-                            subcategory
-                        )
-                    }
-                    //for other cases
-                    else -> {
-                        sendNormalNotification(
-                            mApplication,
-                            title,
-                            subTitle,
-                            route,
-                            category,
-                            subcategory
-                        )
-                    }
-                }
+            title.isNotBlank() && subTitle.isNotBlank() && route.isNotBlank() -> {
+                //for other cases
+                sendNormalNotification(
+                    mApplication,
+                    title,
+                    subTitle,
+                    route,
+                    category,
+                    subcategory
+                )
             }
         }
     }
@@ -387,7 +382,8 @@ class LMChatNotificationHandler {
     private fun createGeneralNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = mApplication.getString(R.string.lm_chat_general_channel_name)
-            val descriptionText = mApplication.getString(R.string.lm_chat_general_channel_description)
+            val descriptionText =
+                mApplication.getString(R.string.lm_chat_general_channel_description)
             val importance = NotificationManager.IMPORTANCE_HIGH
             val channel = NotificationChannel(GENERAL_CHANNEL_ID, name, importance).apply {
                 description = descriptionText
@@ -402,7 +398,8 @@ class LMChatNotificationHandler {
     private fun createChatroomNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = mApplication.getString(R.string.lm_chat_chatroom_channel_name)
-            val descriptionText = mApplication.getString(R.string.lm_chat_chatroom_channel_description)
+            val descriptionText =
+                mApplication.getString(R.string.lm_chat_chatroom_channel_description)
             val importance = NotificationManager.IMPORTANCE_HIGH
             val channel = NotificationChannel(CHATROOM_CHANNEL_ID, name, importance).apply {
                 description = descriptionText
@@ -775,7 +772,7 @@ class LMChatNotificationHandler {
                     }
                     //Individual notification in message style
                     val unreadConversationPerson = Person.Builder()
-                        .setKey(chatroomId.toString())
+                        .setKey(chatroomId)
                         .setName(unreadConversation.chatroomLastConversationUserName)
                         .build()
                     val messages = getMessages(

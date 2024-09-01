@@ -1,6 +1,7 @@
 package com.likeminds.chatmm.utils
 
 import android.net.Uri
+import android.util.Log
 import com.likeminds.chatmm.chatroom.detail.model.*
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil
 import com.likeminds.chatmm.chatroom.explore.model.ExploreViewData

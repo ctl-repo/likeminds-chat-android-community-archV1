@@ -1,24 +1,46 @@
 package com.likeminds.chatmm.pushnotification.model
 
+import com.google.gson.annotations.SerializedName
 import com.likeminds.chatmm.conversation.model.AttachmentViewData
 
 class ChatroomNotificationViewData private constructor(
+    @SerializedName("community_name")
     val communityName: String,
+    @SerializedName("chatroom_name")
     val chatroomName: String,
+    @SerializedName("chatroom_title")
     val chatroomTitle: String,
+    @SerializedName("chatroom_user_name")
     val chatroomUserName: String,
+    @SerializedName("chatroom_user_image")
     val chatroomUserImage: String,
+    @SerializedName("chatroom_id")
     val chatroomId: String,
+    @SerializedName("community_image")
     val communityImage: String,
+    @SerializedName("community_id")
     val communityId: Int,
+    @SerializedName("route")
     val route: String,
+    @SerializedName("chatroom_unread_conversation_count")
     val chatroomUnreadConversationCount: Int,
+    @SerializedName("chatroom_last_conversation")
     val chatroomLastConversation: String?,
+    @SerializedName("chatroom_last_conversation_id")
+    val chatroomLastConversationId: String?,
+    @SerializedName("chatroom_last_conversation_user_name")
     val chatroomLastConversationUserName: String?,
+    @SerializedName("chatroom_last_conversation_user_image")
     val chatroomLastConversationUserImage: String?,
+    @SerializedName("route_child")
     val routeChild: String,
+    @SerializedName("chatroom_last_conversation_user_timestamp")
     val chatroomLastConversationUserTimestamp: Long?,
+    @SerializedName("chatroom_last_conversation_timestamp")
+    val chatroomLastConversationTimestamp: Long?,
+    @SerializedName("chatroom_last_conversation_timestamp_attachments")
     val attachments: List<AttachmentViewData>?,
+    @SerializedName("sort_key")
     val sortKey: String?
 ) {
     class Builder {
@@ -33,10 +55,12 @@ class ChatroomNotificationViewData private constructor(
         private var route: String = ""
         private var chatroomUnreadConversationCount: Int = 0
         private var chatroomLastConversation: String? = null
+        private var chatroomLastConversationId: String? = null
         private var chatroomLastConversationUserName: String? = null
         private var chatroomLastConversationUserImage: String? = null
         private var routeChild: String = ""
         private var chatroomLastConversationUserTimestamp: Long? = null
+        private var chatroomLastConversationTimestamp: Long? = null
         private var attachments: List<AttachmentViewData>? = null
         private var sortKey: String? = null
 
@@ -59,6 +83,9 @@ class ChatroomNotificationViewData private constructor(
         fun chatroomLastConversation(chatroomLastConversation: String?) =
             apply { this.chatroomLastConversation = chatroomLastConversation }
 
+        fun chatroomLastConversationId(chatroomLastConversationId: String?) =
+            apply { this.chatroomLastConversationId = chatroomLastConversationId }
+
         fun chatroomLastConversationUserName(chatroomLastConversationUserName: String?) =
             apply { this.chatroomLastConversationUserName = chatroomLastConversationUserName }
 
@@ -69,6 +96,11 @@ class ChatroomNotificationViewData private constructor(
         fun chatroomLastConversationUserTimestamp(chatroomLastConversationUserTimestamp: Long?) =
             apply {
                 this.chatroomLastConversationUserTimestamp = chatroomLastConversationUserTimestamp
+            }
+
+        fun chatroomLastConversationTimestamp(chatroomLastConversationTimestamp: Long?) =
+            apply {
+                this.chatroomLastConversationTimestamp = chatroomLastConversationTimestamp
             }
 
         fun attachments(attachments: List<AttachmentViewData>?) =
@@ -88,10 +120,12 @@ class ChatroomNotificationViewData private constructor(
             route,
             chatroomUnreadConversationCount,
             chatroomLastConversation,
+            chatroomLastConversationId,
             chatroomLastConversationUserName,
             chatroomLastConversationUserImage,
             routeChild,
             chatroomLastConversationUserTimestamp,
+            chatroomLastConversationTimestamp,
             attachments,
             sortKey
         )
@@ -109,10 +143,12 @@ class ChatroomNotificationViewData private constructor(
             .route(route)
             .chatroomUnreadConversationCount(chatroomUnreadConversationCount)
             .chatroomLastConversation(chatroomLastConversation)
+            .chatroomLastConversationId(chatroomLastConversationId)
             .chatroomLastConversationUserName(chatroomLastConversationUserName)
             .chatroomLastConversationUserImage(chatroomLastConversationUserImage)
             .routeChild(routeChild)
             .chatroomLastConversationUserTimestamp(chatroomLastConversationUserTimestamp)
+            .chatroomLastConversationTimestamp(chatroomLastConversationTimestamp)
             .attachments(attachments)
             .sortKey(sortKey)
     }

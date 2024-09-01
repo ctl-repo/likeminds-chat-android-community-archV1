@@ -1,6 +1,7 @@
 package com.likeminds.chatmm.utils.user
 
 import android.content.Context
+import android.provider.Settings
 import android.util.Log
 import com.google.firebase.messaging.FirebaseMessaging
 import com.likeminds.chatmm.SDKApplication
@@ -58,7 +59,9 @@ class LMChatUserMetaData {
 
         saveUserPreferences(context, userName, uuid, memberId)
         getConfig(context)
-        pushToken()
+        val id = Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
+            ?: ""
+        pushToken(id)
         getCommunityConfiguration(context)
         saveCommunitySettings(communitySettings)
     }
@@ -118,8 +121,8 @@ class LMChatUserMetaData {
     }
 
     //register device for the notification
-    private fun pushToken() {
-        if (enablePushNotifications && !deviceId.isNullOrEmpty()) {
+    private fun pushToken(id: String) {
+//        if (enablePushNotifications && !deviceId.isNullOrEmpty()) {
             try {
                 FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
                     if (!task.isSuccessful) {
@@ -132,23 +135,23 @@ class LMChatUserMetaData {
                     }
 
                     val token = task.result.toString()
-                    registerDevice(token)
+                    registerDevice(token, id)
                 }
             } catch (e: Exception) {
                 Log.w(
                     SDKApplication.LOG_TAG,
                     "Please add firebase to your project to enable notifications"
                 )
-            }
+//            }
         }
     }
 
     //call register device api
-    private fun registerDevice(token: String) {
+    private fun registerDevice(token: String, id: String) {
         CoroutineScope(Dispatchers.IO).launch {
             //create request
             val request = RegisterDeviceRequest.Builder()
-                .deviceId(deviceId ?: "")
+                .deviceId(id )
                 .token(token)
                 .build()
 
