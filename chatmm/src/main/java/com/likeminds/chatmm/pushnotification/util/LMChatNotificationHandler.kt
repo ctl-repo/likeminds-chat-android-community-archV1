@@ -347,22 +347,24 @@ class LMChatNotificationHandler {
                     val chatroomIdReceivedFromRoute = getChatroomId(route)
                     val chatroomIdOpened = SDKApplication.getInstance().openedChatroomId
                     if (chatroomIdOpened != chatroomIdReceivedFromRoute) {
-                    lmNotificationViewModel.fetchUnreadConversations(unreadFollowNotificationData) {
-                        if (it != null) {
-                            val conversations = it.filter { notificationData ->
-                                !notificationData.chatroomLastConversationUserName.isNullOrEmpty()
+                        lmNotificationViewModel.fetchUnreadConversations(
+                            unreadFollowNotificationData
+                        ) {
+                            if (it != null) {
+                                val conversations = it.filter { notificationData ->
+                                    !notificationData.chatroomLastConversationUserName.isNullOrEmpty()
+                                }
+                                initConversationsGroupNotification(
+                                    mApplication,
+                                    conversations,
+                                    title,
+                                    subTitle,
+                                    category,
+                                    subcategory
+                                )
                             }
-                            initConversationsGroupNotification(
-                                mApplication,
-                                conversations,
-                                title,
-                                subTitle,
-                                category,
-                                subcategory
-                            )
                         }
                     }
-                        }
                 }
             }
 
@@ -372,16 +374,16 @@ class LMChatNotificationHandler {
                 val chatroomIdReceivedFromRoute = getChatroomId(route)
                 val chatroomIdOpened = SDKApplication.getInstance().openedChatroomId
                 if (chatroomIdOpened != chatroomIdReceivedFromRoute) {
-                sendNormalNotification(
-                    mApplication,
-                    title,
-                    subTitle,
-                    route,
-                    category,
-                    subcategory
-                )
-            }
+                    sendNormalNotification(
+                        mApplication,
+                        title,
+                        subTitle,
+                        route,
+                        category,
+                        subcategory
+                    )
                 }
+            }
         }
     }
 
@@ -498,75 +500,6 @@ class LMChatNotificationHandler {
         }
     }
 
-    private fun sendNewPollChatRoomSingleNotification(
-        context: Context,
-        title: String,
-        subTitle: String,
-        route: String,
-        category: String?,
-        subcategory: String?,
-    ) {
-        createNotificationChannel()
-        // notificationId is a unique int for each notification that you must define
-        val notificationId = route.hashCode()
-        val routeData = Route.getPollRouteQueryParameters(route)
-        val resultPendingIntent: PendingIntent? =
-            getRoutePendingIntent(
-                context,
-                notificationId,
-                route,
-                title,
-                subTitle,
-                category,
-                subcategory
-            )
-        val notificationBuilder = NotificationCompat.Builder(mApplication, CHATROOM_CHANNEL_ID)
-            .setContentTitle(title)
-            .setContentText(subTitle)
-            .setSmallIcon(notificationIcon)
-            .setAutoCancel(true)
-            .setColor(notificationTextColor)
-            .setStyle(NotificationCompat.BigTextStyle().bigText(subTitle))
-            .setDefaults(NotificationCompat.DEFAULT_ALL)
-
-        if (!routeData.second) {
-            notificationBuilder
-                .addAction(
-                    getVoteAction(
-                        context, NotificationActionData.Builder()
-                            .groupRoute(route)
-                            .childRoute(route)
-                            .notificationTitle(title)
-                            .notificationMessage(subTitle)
-                            .category(category)
-                            .subcategory(subcategory)
-                            .build()
-                    )
-                )
-                .addAction(
-                    getFollowAction(
-                        mApplication,
-                        NotificationActionData.Builder()
-                            .groupRoute(route)
-                            .childRoute(route)
-                            .chatroomId(routeData.first)
-                            .notificationTitle(title)
-                            .notificationMessage(subTitle)
-                            .category(category)
-                            .subcategory(subcategory)
-                            .build()
-                    )
-                )
-        }
-
-        if (resultPendingIntent != null) {
-            notificationBuilder.setContentIntent(resultPendingIntent)
-        }
-        with(NotificationManagerCompat.from(mApplication)) {
-            notify(notificationId, notificationBuilder.build())
-        }
-    }
-
     private fun sendChatroomGroupNotification(
         context: Context,
         chatroom: ChatroomNotificationViewData,
@@ -602,7 +535,7 @@ class LMChatNotificationHandler {
                 .setContentTitle(mApplication.getString(R.string.lm_chat_app_name))
                 .setContentText(chatroomName)
         val chatroomPerson = Person.Builder()
-            .setKey(chatroomId.toString())
+            .setKey(chatroomId)
             .setName(chatroom.chatroomUserName)
             .build()
 
@@ -778,9 +711,7 @@ class LMChatNotificationHandler {
                     )
                     var notificationTime =
                         unreadConversation.chatroomLastConversationUserTimestamp
-                    if (notificationTime != null) {
-                        notificationTime *= 1000
-                    } else {
+                    if (notificationTime == null) {
                         notificationTime = System.currentTimeMillis()
                     }
                     //Individual notification in message style
@@ -894,12 +825,14 @@ class LMChatNotificationHandler {
         val totalUnreadConversations = sortedUnreadConversations.sumOf {
             it.chatroomUnreadConversationCount
         }
+
         val unreadConversationsSize = sortedUnreadConversations.size
         val groupSummaryText = if (unreadConversationsSize == 1) {
             "1 new message"
         } else {
             "$totalUnreadConversations messages from $unreadConversationsSize chatrooms"
         }
+
         //To display on locked screen
         val lockScreenGroupNotification =
             NotificationCompat.Builder(context, GENERAL_CHANNEL_ID)
@@ -907,6 +840,7 @@ class LMChatNotificationHandler {
                 .setContentTitle(mApplication.getString(R.string.lm_chat_app_name))
                 .setColor(notificationTextColor)
                 .setContentText(groupSummaryText)
+
         //Group summary
         val groupNotification =
             NotificationCompat.Builder(context, CHATROOM_CHANNEL_ID)
@@ -921,6 +855,7 @@ class LMChatNotificationHandler {
                 .setPublicVersion(lockScreenGroupNotification.build())
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
+
         //Click of group notification
         val groupPendingIntent: PendingIntent? = getRoutePendingIntent(
             context,
@@ -934,6 +869,7 @@ class LMChatNotificationHandler {
         if (groupPendingIntent != null) {
             groupNotification.setContentIntent(groupPendingIntent)
         }
+
         //Notify group notification
         with(notificationManagerCompat) {
             notify(
