@@ -1,5 +1,6 @@
 package com.likeminds.chatmm
 
+import com.likeminds.chatmm.buysellwidget.domain.model.PostConversationMetadata
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.widget.model.WidgetViewData
 
@@ -27,5 +28,9 @@ interface LMChatCoreCallback {
     fun onRefreshTokenExpired(): Pair<String?, String?> {
         //implement to handle refresh token refresh
         return Pair(null, null)
+    }
+
+    fun navigateToTransactionPage(postConversationMetadata: PostConversationMetadata){
+
     }
 }

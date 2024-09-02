@@ -80,7 +80,7 @@ class ConversationWidgetItemViewDataBinder(
             }
 
             btnCustomWidgetBuy.setOnClickListener {
-                Toast.makeText(context, "Buy is Clicked", Toast.LENGTH_SHORT).show()
+                adapterListener.onBuySellItemClicked(postConversationMetadata)
             }
 
             btnCustomWidgetScripInfo.setOnClickListener {

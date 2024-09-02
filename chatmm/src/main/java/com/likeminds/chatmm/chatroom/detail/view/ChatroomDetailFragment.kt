@@ -38,6 +38,7 @@ import com.giphy.sdk.ui.views.GiphyDialogFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.likeminds.chatmm.*
 import com.likeminds.chatmm.R
+import com.likeminds.chatmm.buysellwidget.domain.model.PostConversationMetadata
 import com.likeminds.chatmm.buysellwidget.presentation.view.BuySellCustomWidgetDialog
 import com.likeminds.chatmm.chatroom.detail.model.*
 import com.likeminds.chatmm.chatroom.detail.util.*
@@ -115,6 +116,7 @@ import com.likeminds.chatmm.utils.permissions.*
 import com.likeminds.chatmm.utils.recyclerview.LMSwipeController
 import com.likeminds.chatmm.utils.recyclerview.SwipeControllerActions
 import com.likeminds.chatmm.widget.model.WidgetViewData
+import com.likeminds.chatmm.xapp.XAppInstance
 import com.likeminds.likemindschat.chatroom.model.ChatRequestState
 import com.likeminds.likemindschat.user.model.MemberBlockState
 import com.vanniktech.emoji.EmojiPopup
@@ -637,6 +639,10 @@ class ChatroomDetailFragment :
                 false
             attachPagination(linearLayoutManager)
         }
+    }
+
+    override fun onBuySellItemClicked(postConversationMetadata: PostConversationMetadata) {
+        SDKApplication.getLikeMindsCallback()?.navigateToTransactionPage(postConversationMetadata)
     }
 
     private fun initEmojiView() {
