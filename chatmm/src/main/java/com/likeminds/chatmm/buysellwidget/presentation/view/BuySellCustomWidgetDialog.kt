@@ -70,10 +70,10 @@ class BuySellCustomWidgetDialog(val onPostClicked: (Bundle) -> Unit) : BottomShe
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         initSetup()
         setUpOnClickListners()
         setUpObservers()
-
     }
 
     private fun setUpObservers() {
