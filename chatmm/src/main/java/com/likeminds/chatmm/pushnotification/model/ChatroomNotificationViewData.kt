@@ -38,7 +38,7 @@ class ChatroomNotificationViewData private constructor(
     val chatroomLastConversationUserTimestamp: Long?,
     @SerializedName("chatroom_last_conversation_timestamp")
     val chatroomLastConversationTimestamp: Long?,
-    @SerializedName("chatroom_last_conversation_timestamp_attachments")
+    @SerializedName("attachments")
     val attachments: List<AttachmentViewData>?,
     @SerializedName("sort_key")
     val sortKey: String?

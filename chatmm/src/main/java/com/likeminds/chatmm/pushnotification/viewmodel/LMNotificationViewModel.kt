@@ -12,11 +12,6 @@ import com.likeminds.chatmm.pushnotification.model.ChatroomNotificationViewData
 import com.likeminds.chatmm.utils.ViewDataConverter
 import com.likeminds.chatmm.utils.coroutine.launchIO
 import com.likeminds.likemindschat.LMChatClient
-import com.likeminds.likemindschat.chatroom.model.Chatroom
-import com.likeminds.likemindschat.community.model.Member
-import com.likeminds.likemindschat.conversation.model.Conversation
-import com.likeminds.likemindschat.notification.model.GetUnreadConversationNotificationRequest
-import com.likeminds.likemindschat.user.model.SDKClientInfo
 import javax.inject.Inject
 
 class LMNotificationViewModel @Inject constructor(
@@ -26,44 +21,16 @@ class LMNotificationViewModel @Inject constructor(
 
     private val lmChatClient = LMChatClient.getInstance()
 
+    // fetches the list of unread conversations to show in notification stack
     fun fetchUnreadConversations(
         unreadFollowNotification: ChatroomNotificationViewData,
         cb: (List<ChatroomNotificationViewData>?) -> Unit
     ) {
         viewModelScope.launchIO {
-            val request = GetUnreadConversationNotificationRequest.Builder()
-                .chatroom(
-                    Chatroom.Builder()
-                        .id(unreadFollowNotification.chatroomId)
-                        .title(unreadFollowNotification.chatroomTitle)
-                        .header(unreadFollowNotification.chatroomName)
-                        .communityName(unreadFollowNotification.communityName)
-                        .communityId(unreadFollowNotification.communityId.toString())
-                        .build()
-                )
-                .chatroomLastConversation(
-                    Conversation.Builder()
-                        .id(unreadFollowNotification.chatroomLastConversationId)
-                        .answer(unreadFollowNotification.chatroomLastConversation ?: "")
-                        .createdEpoch(unreadFollowNotification.chatroomLastConversationTimestamp)
-                        .chatroomId(unreadFollowNotification.chatroomId)
-                        .communityId(unreadFollowNotification.communityId.toString())
-                        .member(
-                            Member.Builder().id("1234").uuid("1234")
-                                .imageUrl("https://www.google.com").userUniqueId("1234").name(
-                                unreadFollowNotification.chatroomLastConversationUserName ?: ""
-                            ).sdkClientInfo(
-                                SDKClientInfo(
-                                    unreadFollowNotification.communityId,
-                                    "1234",
-                                    "1234",
-                                    "1234"
-                                )
-                            ).build()
-                        )
-                        .build()
-                )
-                .build()
+            // creates request to fetch unread conversations for notification stack
+            val request = ViewDataConverter.createGetUnreadConversationNotificationRequest(
+                unreadFollowNotification
+            )
 
             val response = lmChatClient.getUnreadConversationNotification(request)
             if (response.success) {

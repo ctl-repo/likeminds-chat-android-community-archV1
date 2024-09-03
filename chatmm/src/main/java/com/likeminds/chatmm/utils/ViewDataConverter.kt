@@ -1,7 +1,6 @@
 package com.likeminds.chatmm.utils
 
 import android.net.Uri
-import android.util.Log
 import com.likeminds.chatmm.chatroom.detail.model.*
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil
 import com.likeminds.chatmm.chatroom.explore.model.ExploreViewData
@@ -14,7 +13,7 @@ import com.likeminds.chatmm.member.model.*
 import com.likeminds.chatmm.member.util.MemberImageUtil
 import com.likeminds.chatmm.polls.model.PollInfoData
 import com.likeminds.chatmm.polls.model.PollViewData
-import com.likeminds.chatmm.pushnotification.model.ChatroomNotificationViewData
+import com.likeminds.chatmm.pushnotification.model.*
 import com.likeminds.chatmm.reactions.model.ReactionViewData
 import com.likeminds.chatmm.report.model.ReportTagViewData
 import com.likeminds.chatmm.search.model.*
@@ -30,6 +29,7 @@ import com.likeminds.likemindschat.dm.model.CheckDMTabResponse
 import com.likeminds.likemindschat.helper.model.GroupTag
 import com.likeminds.likemindschat.moderation.model.ReportTag
 import com.likeminds.likemindschat.notification.model.ChatroomNotificationData
+import com.likeminds.likemindschat.notification.model.GetUnreadConversationNotificationRequest
 import com.likeminds.likemindschat.poll.model.Poll
 import com.likeminds.likemindschat.search.model.SearchChatroom
 import com.likeminds.likemindschat.search.model.SearchConversation
@@ -772,6 +772,85 @@ object ViewDataConverter {
             .noVotes(pollViewData.noVotes)
             .percentage(pollViewData.percentage)
             .text(pollViewData.text)
+            .build()
+    }
+
+    // creates [GetUnreadConversationNotificationRequest] from [ChatroomNotificationViewData]
+     fun createGetUnreadConversationNotificationRequest(
+        chatroomNotificationViewData: ChatroomNotificationViewData
+    ) : GetUnreadConversationNotificationRequest {
+
+        chatroomNotificationViewData.apply {
+            return GetUnreadConversationNotificationRequest.Builder()
+                .chatroom(
+                    Chatroom.Builder()
+                        .id(chatroomId)
+                        .title(chatroomTitle)
+                        .header(chatroomName)
+                        .communityName(communityName)
+                        .communityId(communityId.toString())
+                        .build()
+                )
+                .chatroomLastConversation(
+                    Conversation.Builder()
+                        .id(chatroomLastConversationId)
+                        .answer(chatroomLastConversation ?: "")
+                        .createdEpoch(chatroomLastConversationTimestamp)
+                        .chatroomId(chatroomId)
+                        .communityId(communityId.toString())
+                        .attachments(createAttachmentsFromNotification(attachments))
+                        .member(
+                            //todo:
+                            Member.Builder().id("1234").uuid("1234")
+                                .imageUrl(chatroomLastConversationUserImage ?: "")
+                                .userUniqueId("1234")
+                                .name(chatroomLastConversationUserName ?: "")
+                                .sdkClientInfo(
+                                    SDKClientInfo(
+                                        communityId,
+                                        "1234",
+                                        "1234",
+                                        "1234"
+                                    )
+                                ).build()
+                        )
+                        .build()
+                )
+                .build()
+        }
+    }
+
+    // creates list of [Attachment] from list of attachments received in notification
+    private fun createAttachmentsFromNotification(attachments: List<AttachmentViewData>?) : List<Attachment>? {
+        return attachments?.map { notificationAttachment ->
+            createAttachmentFromNotification(notificationAttachment)
+        }
+    }
+
+    // creates [Attachment] from the attachment received in notification
+    private fun createAttachmentFromNotification(attachment: AttachmentViewData): Attachment {
+        return Attachment.Builder()
+            //todo:
+            .id("-${System.currentTimeMillis()}")
+            .type(attachment.type)
+            .url(attachment.url ?: "")
+            .height(attachment.height)
+            .width(attachment.width)
+            .name(attachment.name)
+            .meta(createAttachmentMetaFromNotification(attachment.meta))
+            .build()
+    }
+
+    // creates [Attachment] from the attachment meta received in notification
+    private fun createAttachmentMetaFromNotification(attachmentMetaData: AttachmentMetaViewData?): AttachmentMeta? {
+        if (attachmentMetaData == null) {
+            return null
+        }
+
+        return AttachmentMeta.Builder()
+            .duration(attachmentMetaData.duration)
+            .size(attachmentMetaData.size)
+            .numberOfPage(attachmentMetaData.numberOfPage)
             .build()
     }
 
