@@ -16,25 +16,25 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.likeminds.chatmm.buysellwidget.presentation.adapter.SearchAdapter
 import com.likeminds.chatmm.buysellwidget.data.ApiCallState
 import com.likeminds.chatmm.buysellwidget.data.FinXService
 import com.likeminds.chatmm.buysellwidget.data.RetrofitHelper
-import com.likeminds.chatmm.buysellwidget.domain.model.Response
+import com.likeminds.chatmm.buysellwidget.domain.model.FinxSmSearchApiRsp
 import com.likeminds.chatmm.buysellwidget.domain.repository.FinXRepositoryImpl
 import com.likeminds.chatmm.buysellwidget.domain.util.gone
 import com.likeminds.chatmm.buysellwidget.domain.util.visible
+import com.likeminds.chatmm.buysellwidget.presentation.adapter.SearchAdapter
 import com.likeminds.chatmm.buysellwidget.presentation.viewmodel.FinXViewModel
 import com.likeminds.chatmm.buysellwidget.presentation.viewmodel.FinXViewModelFactory
 import com.likeminds.chatmm.databinding.DialogBuySellCustomWidgetBinding
 
-class BuySellCustomWidgetDialog(val onPostClicked: (Bundle) -> Unit) : BottomSheetDialogFragment() {
+class FinXRecommendationWidgetDialog(val onPostClicked: (Bundle) -> Unit) : BottomSheetDialogFragment() {
 
     private var _binding: DialogBuySellCustomWidgetBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var finXViewModel: FinXViewModel
-    private val searchResults = mutableListOf<Response>()
+    private val searchResults = mutableListOf<FinxSmSearchApiRsp>()
     private lateinit var adapter: SearchAdapter
 
     // Variables to hold the input values
@@ -42,7 +42,7 @@ class BuySellCustomWidgetDialog(val onPostClicked: (Bundle) -> Unit) : BottomShe
     private var slPrice: String? = null
     private var targetPrice: String? = null
     private var orderType: Boolean = true
-    private var selectedScrip: Response? = null
+    private var selectedScrip: FinxSmSearchApiRsp? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -173,10 +173,11 @@ class BuySellCustomWidgetDialog(val onPostClicked: (Bundle) -> Unit) : BottomShe
                     putString("targetPrice", targetPriceValue)
                     putBoolean("isBuy", orderType)
                     selectedScrip?.let {
-                        putInt("segment", it.segmentId ?: 0)
+                        putInt("segment", it.segment ?: 0)
                         putInt("token", it.token ?: 0)
                         putString("symbol", it.symbol)
                         putString("secDesc", it.secDesc)
+
                     }
                 }
                 onPostClicked(stockMetadata)

@@ -1,6 +1,6 @@
 package com.likeminds.chatmm
 
-import com.likeminds.chatmm.buysellwidget.domain.model.PostConversationMetadata
+import com.likeminds.chatmm.buysellwidget.domain.model.FinxRecommendationMetadata
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.widget.model.WidgetViewData
 
@@ -30,7 +30,7 @@ interface LMChatCoreCallback {
         return Pair(null, null)
     }
 
-    fun navigateToTransactionPage(postConversationMetadata: PostConversationMetadata){
+    fun navigateToTransactionPage(postConversationMetadata: FinxRecommendationMetadata){
 
     }
 }

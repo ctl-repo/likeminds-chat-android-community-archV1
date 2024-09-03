@@ -38,8 +38,8 @@ import com.giphy.sdk.ui.views.GiphyDialogFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.likeminds.chatmm.*
 import com.likeminds.chatmm.R
-import com.likeminds.chatmm.buysellwidget.domain.model.PostConversationMetadata
-import com.likeminds.chatmm.buysellwidget.presentation.view.BuySellCustomWidgetDialog
+import com.likeminds.chatmm.buysellwidget.domain.model.FinxRecommendationMetadata
+import com.likeminds.chatmm.buysellwidget.presentation.view.FinXRecommendationWidgetDialog
 import com.likeminds.chatmm.chatroom.detail.model.*
 import com.likeminds.chatmm.chatroom.detail.util.*
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil.getTypeName
@@ -642,7 +642,7 @@ class ChatroomDetailFragment :
         }
     }
 
-    override fun onBuySellItemClicked(postConversationMetadata: PostConversationMetadata) {
+    override fun onBuySellItemClicked(postConversationMetadata: FinxRecommendationMetadata) {
         SDKApplication.getLikeMindsCallback()?.navigateToTransactionPage(postConversationMetadata)
     }
 
@@ -841,7 +841,7 @@ class ChatroomDetailFragment :
 
     //on click function when custom widget A is clicked
     private fun onCustomWidgetAAttachmentClicked() {
-        val bottomSheetFragment = BuySellCustomWidgetDialog() {
+        val bottomSheetFragment = FinXRecommendationWidgetDialog() {
             val metaData = JSONObject().apply {
                 put("entryPrice", it.getString("entryPrice"))
                 put("slPrice", it.getString("slPrice"))

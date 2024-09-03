@@ -7,7 +7,7 @@ import androidx.core.content.ContextCompat
 import com.google.gson.Gson
 import com.likeminds.chatmm.LMAnalytics
 import com.likeminds.chatmm.R
-import com.likeminds.chatmm.buysellwidget.domain.model.PostConversationMetadata
+import com.likeminds.chatmm.buysellwidget.domain.model.FinxRecommendationMetadata
 import com.likeminds.chatmm.theme.model.LMTheme
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomConversationItemViewDataBinderUtil
 import com.likeminds.chatmm.chatroom.detail.view.adapter.ChatroomDetailAdapterListener
@@ -56,7 +56,7 @@ class ConversationWidgetItemViewDataBinder(
             //Custom Widget Data
             val metadata = JSONObject(data.widgetViewData?.metadata.toString())
             val postConversationMetadata =
-                Gson().fromJson(metadata.toString(), PostConversationMetadata::class.java)
+                Gson().fromJson(metadata.toString(), FinxRecommendationMetadata::class.java)
 
 //            tvCustomWidgetMsg.text =
 //                "${if (postConversationMetadata.isBuy == true) "Buy" else "Sell"} ${postConversationMetadata.symbol} at ${postConversationMetadata.entryPrice} SL ${postConversationMetadata.slPrice} target Price ${postConversationMetadata.targetPrice}"

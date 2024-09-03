@@ -7,6 +7,6 @@ data class SearchScripResponse(
 //    var Response: List<Response?>? = listOf(),
 //    var Status: String? = ""
     @SerializedName("Reason") var reason: String? = null,
-    @SerializedName("Response") var response: List<Response?>? = null,
+    @SerializedName("Response") var response: List<FinxSmSearchApiRsp?>? = null,
     @SerializedName("Status") var status: String? = null
 )

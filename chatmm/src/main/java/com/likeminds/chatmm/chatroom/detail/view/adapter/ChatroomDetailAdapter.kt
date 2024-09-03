@@ -1,7 +1,7 @@
 package com.likeminds.chatmm.chatroom.detail.view.adapter
 
 import android.net.Uri
-import com.likeminds.chatmm.buysellwidget.domain.model.PostConversationMetadata
+import com.likeminds.chatmm.buysellwidget.domain.model.FinxRecommendationMetadata
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
 import com.likeminds.chatmm.chatroom.detail.view.adapter.databinder.ChatroomDateItemViewDataBinder
 import com.likeminds.chatmm.chatroom.detail.view.adapter.databinder.ChatroomItemViewDataBinder
@@ -275,5 +275,5 @@ interface ChatroomDetailAdapterListener {
     fun blockMember(index: Int, state: MemberBlockState) {}
     fun onMemberTagClicked(memberTag: Uri) {}
 
-    fun onBuySellItemClicked(postConversationMetadata: PostConversationMetadata){}
+    fun onBuySellItemClicked(postConversationMetadata: FinxRecommendationMetadata){}
 }
