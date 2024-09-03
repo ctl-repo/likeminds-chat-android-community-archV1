@@ -25,7 +25,8 @@ import org.json.JSONObject
 class ConversationWidgetItemViewDataBinder(
     private val userPreferences: UserPreferences,
     private val reactionsPreferences: ReactionsPreferences,
-    private val adapterListener: ChatroomDetailAdapterListener
+    private val adapterListener: ChatroomDetailAdapterListener,
+    private val onClick: () -> Unit
 ) : ViewDataBinder<ItemConversationCustomWidgetBinding, ConversationViewData>() {
     override val viewType: Int
         get() = ITEM_CONVERSATION_CUSTOM_WIDGET
@@ -81,6 +82,7 @@ class ConversationWidgetItemViewDataBinder(
 
             btnCustomWidgetBuy.setOnClickListener {
                 adapterListener.onBuySellItemClicked(postConversationMetadata)
+                onClick.invoke()
             }
 
             btnCustomWidgetScripInfo.setOnClickListener {

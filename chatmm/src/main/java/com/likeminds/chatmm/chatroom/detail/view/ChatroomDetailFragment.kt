@@ -116,7 +116,6 @@ import com.likeminds.chatmm.utils.permissions.*
 import com.likeminds.chatmm.utils.recyclerview.LMSwipeController
 import com.likeminds.chatmm.utils.recyclerview.SwipeControllerActions
 import com.likeminds.chatmm.widget.model.WidgetViewData
-import com.likeminds.chatmm.xapp.XAppInstance
 import com.likeminds.likemindschat.chatroom.model.ChatRequestState
 import com.likeminds.likemindschat.user.model.MemberBlockState
 import com.vanniktech.emoji.EmojiPopup
@@ -633,7 +632,9 @@ class ChatroomDetailFragment :
                     userPreferences,
                     reactionsPreferences,
                     this@ChatroomDetailFragment
-                )
+                ) {
+                    requireActivity().finish()
+                }
             adapter = chatroomDetailAdapter
             (itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations =
                 false
