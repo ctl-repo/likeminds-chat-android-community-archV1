@@ -28,6 +28,13 @@
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.99" />
 
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/mid_vertical_gl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.78" />
+
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvScripName"
             android:layout_width="0dp"
@@ -37,13 +44,15 @@
             android:maxLength="35"
             app:layout_constraintStart_toStartOf="@id/start_vertical_gl"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/mid_vertical_gl"
             tools:text="Xxxxx Xxxx Xxxxxxx" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvExchangeName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="40dp"
+            android:gravity="start"
+            app:layout_constraintStart_toStartOf="@id/mid_vertical_gl"
             app:layout_constraintEnd_toEndOf="@id/end_vertical_gl"
             app:layout_constraintBottom_toBottomOf="@id/tvScripName"
             tools:text="Xxxxxx" />

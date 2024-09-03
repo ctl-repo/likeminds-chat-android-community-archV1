@@ -19,6 +19,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.likeminds.chatmm.buysellwidget.data.ApiCallState
 import com.likeminds.chatmm.buysellwidget.data.FinXService
 import com.likeminds.chatmm.buysellwidget.data.RetrofitHelper
+import com.likeminds.chatmm.buysellwidget.domain.model.FinxRecommendationMetadata
 import com.likeminds.chatmm.buysellwidget.domain.model.FinxSmSearchApiRsp
 import com.likeminds.chatmm.buysellwidget.domain.repository.FinXRepositoryImpl
 import com.likeminds.chatmm.buysellwidget.domain.util.gone
@@ -28,7 +29,8 @@ import com.likeminds.chatmm.buysellwidget.presentation.viewmodel.FinXViewModel
 import com.likeminds.chatmm.buysellwidget.presentation.viewmodel.FinXViewModelFactory
 import com.likeminds.chatmm.databinding.DialogBuySellCustomWidgetBinding
 
-class FinXRecommendationWidgetDialog(val onPostClicked: (Bundle) -> Unit) : BottomSheetDialogFragment() {
+class FinXRecommendationWidgetDialog(val onPostClicked: (FinxRecommendationMetadata?) -> Unit) :
+    BottomSheetDialogFragment() {
 
     private var _binding: DialogBuySellCustomWidgetBinding? = null
     private val binding get() = _binding!!
@@ -42,6 +44,7 @@ class FinXRecommendationWidgetDialog(val onPostClicked: (Bundle) -> Unit) : Bott
     private var slPrice: String? = null
     private var targetPrice: String? = null
     private var orderType: Boolean = true
+    private var finxRecommendationMetadata: FinxRecommendationMetadata? = null
     private var selectedScrip: FinxSmSearchApiRsp? = null
 
     override fun onCreateView(
@@ -180,7 +183,14 @@ class FinXRecommendationWidgetDialog(val onPostClicked: (Bundle) -> Unit) : Bott
 
                     }
                 }
-                onPostClicked(stockMetadata)
+                finxRecommendationMetadata = FinxRecommendationMetadata(
+                    entryPrice = entryPriceValue,
+                    slPrice = slPriceValue,
+                    targetPrice = targetPriceValue,
+                    isBuy = orderType,
+                    searchRsp = selectedScrip
+                )
+                onPostClicked(finxRecommendationMetadata)
                 dismiss()
             } else {
                 Toast.makeText(context, "Please fill in all fields", Toast.LENGTH_SHORT).show()

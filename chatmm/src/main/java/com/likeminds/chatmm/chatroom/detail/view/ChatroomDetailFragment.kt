@@ -36,6 +36,7 @@ import com.giphy.sdk.ui.themes.GPHTheme
 import com.giphy.sdk.ui.themes.GridType
 import com.giphy.sdk.ui.views.GiphyDialogFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.gson.Gson
 import com.likeminds.chatmm.*
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.buysellwidget.domain.model.FinxRecommendationMetadata
@@ -842,17 +843,7 @@ class ChatroomDetailFragment :
     //on click function when custom widget A is clicked
     private fun onCustomWidgetAAttachmentClicked() {
         val bottomSheetFragment = FinXRecommendationWidgetDialog() {
-            val metaData = JSONObject().apply {
-                put("entryPrice", it.getString("entryPrice"))
-                put("slPrice", it.getString("slPrice"))
-                put("targetPrice", it.getString("targetPrice"))
-                put("isBuy", it.getBoolean("isBuy"))
-                put("segment", it.getInt("segment"))
-                put("token", it.getInt("token"))
-                put("symbol", it.getString("symbol"))
-                put("secDesc", it.getString("secDesc"))
-            }
-            Log.e(TAG, "onCustomWidgetAAttachmentClicked: $metaData")
+            val metaData = JSONObject(Gson().toJson(it))
             postConversation(metadata = metaData)
         }
         bottomSheetFragment.show(childFragmentManager, bottomSheetFragment.tag)

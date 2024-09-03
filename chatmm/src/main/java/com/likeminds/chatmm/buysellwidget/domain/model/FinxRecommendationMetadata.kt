@@ -11,5 +11,5 @@ data class FinxRecommendationMetadata(
     @SerializedName("isBuy") val isBuy: Boolean? = true,
 
     //Scrip Data
-    @SerializedName("searchRsp") val searchRsp: FinxSmSearchApiRsp,
+    @SerializedName("searchRsp") val searchRsp: FinxSmSearchApiRsp? = null,
 )
