@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class FinxSmSearchApiRsp(
     //@SerializedName("EqORFO") var eqORFO: Int? = null,
-    //@SerializedName("ExchangeSegment") var exchangeSegment: String? = null,
+    @SerializedName("ExchangeSegment") var exchangeSegment: String? = null,
     //@SerializedName("Expiry") var expiry: Int? = null,
     @SerializedName("InstrumentName") var instrumentName: String? = null,
     //@SerializedName("IsIndex") var isIndex: Int? = null,
