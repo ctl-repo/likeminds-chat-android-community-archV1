@@ -1,6 +1,7 @@
 package com.likeminds.chatmm.chatroom.detail.view.adapter
 
 import android.net.Uri
+import com.likeminds.chatmm.buysellwidget.domain.model.PostConversationMetadata
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
 import com.likeminds.chatmm.chatroom.detail.view.adapter.databinder.ChatroomDateItemViewDataBinder
 import com.likeminds.chatmm.chatroom.detail.view.adapter.databinder.ChatroomItemViewDataBinder
@@ -44,6 +45,7 @@ class ChatroomDetailAdapter(
     val userPreferences: UserPreferences,
     val reactionsPreferences: ReactionsPreferences,
     val listener: ChatroomDetailAdapterListener,
+    private val onClick:()->Unit
 ) : BaseRecyclerAdapter<BaseViewType>() {
     init {
         initViewDataBinders()
@@ -164,7 +166,9 @@ class ChatroomDetailAdapter(
                 userPreferences,
                 reactionsPreferences,
                 listener
-            )
+            ){
+                onClick()
+            }
         viewDataBinders.add(conversationWidgetItemViewDataBinder)
 
         return viewDataBinders
@@ -270,4 +274,6 @@ interface ChatroomDetailAdapterListener {
 
     fun blockMember(index: Int, state: MemberBlockState) {}
     fun onMemberTagClicked(memberTag: Uri) {}
+
+    fun onBuySellItemClicked(postConversationMetadata: PostConversationMetadata){}
 }

@@ -255,7 +255,7 @@ class LMChatNotificationHandler {
 
         appComponent!!.inject(this)
 
-        notificationIcon = R.drawable.lm_chat_ic_notification
+        notificationIcon = R.mipmap.ic_launcher
 
         notificationTextColor = LMTheme.getButtonsColor()
 

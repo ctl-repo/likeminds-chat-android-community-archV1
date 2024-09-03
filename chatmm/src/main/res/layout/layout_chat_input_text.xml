@@ -41,7 +41,7 @@
                 android:id="@+id/group_edit_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:constraint_referenced_ids="tv_gifs,et_answer,iv_attachment"
+                app:constraint_referenced_ids="tv_gifs,et_answer,iv_attachment,iv_custom_widget"
                 tools:visibility="visible" />
 
             <androidx.constraintlayout.widget.Group
@@ -137,7 +137,7 @@
                 app:font_style="regular"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toRightOf="@id/guideline"
-                app:layout_constraintRight_toLeftOf="@+id/iv_attachment"
+                app:layout_constraintRight_toLeftOf="@+id/iv_custom_widget"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.likeminds.chatmm.theme.customview.LikeMindsTextView
@@ -158,6 +158,17 @@
                 app:layout_constraintStart_toEndOf="@id/guideline"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="15:00" />
+
+            <ImageView
+                android:id="@+id/iv_custom_widget"
+                style="@style/ClickableImageView"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:padding="12dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/iv_attachment"
+                app:srcCompat="@drawable/ic_create_custom_widget_a"
+                tools:ignore="ContentDescription" />
 
             <ImageView
                 android:id="@+id/iv_attachment"
