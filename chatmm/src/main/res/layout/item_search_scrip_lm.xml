@@ -15,21 +15,21 @@
         android:layout_margin="5dp">
 
         <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/start_vertical_gl"
+            android:id="@+id/glStartVertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.01" />
 
         <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/end_vertical_gl"
+            android:id="@+id/glEndVertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.99" />
 
         <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/mid_vertical_gl"
+            android:id="@+id/glMidVertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -42,9 +42,9 @@
             android:maxLines="2"
             android:ellipsize="end"
             android:maxLength="35"
-            app:layout_constraintStart_toStartOf="@id/start_vertical_gl"
+            app:layout_constraintStart_toStartOf="@id/glStartVertical"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/mid_vertical_gl"
+            app:layout_constraintEnd_toStartOf="@id/glMidVertical"
             tools:text="Xxxxx Xxxx Xxxxxxx" />
 
         <com.google.android.material.textview.MaterialTextView
@@ -52,8 +52,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="start"
-            app:layout_constraintStart_toStartOf="@id/mid_vertical_gl"
-            app:layout_constraintEnd_toEndOf="@id/end_vertical_gl"
+            app:layout_constraintStart_toStartOf="@id/glMidVertical"
+            app:layout_constraintEnd_toEndOf="@id/glEndVertical"
             app:layout_constraintBottom_toBottomOf="@id/tvScripName"
             tools:text="Xxxxxx" />
 

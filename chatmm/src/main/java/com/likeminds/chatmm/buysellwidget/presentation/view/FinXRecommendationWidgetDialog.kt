@@ -27,12 +27,12 @@ import com.likeminds.chatmm.buysellwidget.domain.util.visible
 import com.likeminds.chatmm.buysellwidget.presentation.adapter.SearchAdapter
 import com.likeminds.chatmm.buysellwidget.presentation.viewmodel.FinXViewModel
 import com.likeminds.chatmm.buysellwidget.presentation.viewmodel.FinXViewModelFactory
-import com.likeminds.chatmm.databinding.DialogBuySellCustomWidgetBinding
+import com.likeminds.chatmm.databinding.DialogFinxRecommendationWidgetBinding
 
 class FinXRecommendationWidgetDialog(val onPostClicked: (FinxRecommendationMetadata?) -> Unit) :
     BottomSheetDialogFragment() {
 
-    private var _binding: DialogBuySellCustomWidgetBinding? = null
+    private var _binding: DialogFinxRecommendationWidgetBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var finXViewModel: FinXViewModel
@@ -52,7 +52,7 @@ class FinXRecommendationWidgetDialog(val onPostClicked: (FinxRecommendationMetad
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout using DataBindingUtil
-        _binding = DialogBuySellCustomWidgetBinding.inflate(inflater, container, false)
+        _binding = DialogFinxRecommendationWidgetBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -64,9 +64,7 @@ class FinXRecommendationWidgetDialog(val onPostClicked: (FinxRecommendationMetad
             val bottomSheetDialog = dialogInterface as BottomSheetDialog
             val bottomSheet =
                 bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
-            bottomSheet?.let {
-                it.setBackgroundColor(Color.TRANSPARENT) // Set the background color to transparent
-            }
+            bottomSheet?.setBackgroundColor(Color.TRANSPARENT)
         }
         return dialog
     }
@@ -83,12 +81,12 @@ class FinXRecommendationWidgetDialog(val onPostClicked: (FinxRecommendationMetad
         finXViewModel.searchScrip.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is ApiCallState.Loading -> {
-                    binding.searchProgressIndicator.visible()
+                    binding.pbSearchProgressIndicator.visible()
                 }
 
                 is ApiCallState.Success -> {
                     it.data?.let { response ->
-                        binding.searchProgressIndicator.gone()
+                        binding.pbSearchProgressIndicator.gone()
                         searchResults.clear()
                         searchResults.addAll(response.response?.filterNotNull() ?: emptyList())
                         adapter.updateData(searchResults)
@@ -96,7 +94,7 @@ class FinXRecommendationWidgetDialog(val onPostClicked: (FinxRecommendationMetad
                 }
 
                 is ApiCallState.Error -> {
-                    binding.searchProgressIndicator.gone()
+                    binding.pbSearchProgressIndicator.gone()
                     Log.e("TAG", "setUpObservers: Error ${it.errorMessage}")
                 }
             }
@@ -106,7 +104,7 @@ class FinXRecommendationWidgetDialog(val onPostClicked: (FinxRecommendationMetad
     @SuppressLint("LogNotTimber")
     private fun setUpOnClickListners() {
 
-        binding.searchView.setOnQueryTextListener(object :
+        binding.svFinXSearchScrip.setOnQueryTextListener(object :
             androidx.appcompat.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 // Handle query submission if needed
@@ -126,7 +124,7 @@ class FinXRecommendationWidgetDialog(val onPostClicked: (FinxRecommendationMetad
             }
         })
 
-        binding.entryEditText.addTextChangedListener(object : TextWatcher {
+        binding.etEntryPriceValue.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -136,7 +134,7 @@ class FinXRecommendationWidgetDialog(val onPostClicked: (FinxRecommendationMetad
             override fun afterTextChanged(s: Editable?) {}
         })
 
-        binding.slPriceEditText.addTextChangedListener(object : TextWatcher {
+        binding.etSlPriceValue.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -146,7 +144,7 @@ class FinXRecommendationWidgetDialog(val onPostClicked: (FinxRecommendationMetad
             override fun afterTextChanged(s: Editable?) {}
         })
 
-        binding.targetPriceEditText.addTextChangedListener(object : TextWatcher {
+        binding.etTargetPriceValue.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -156,14 +154,14 @@ class FinXRecommendationWidgetDialog(val onPostClicked: (FinxRecommendationMetad
             override fun afterTextChanged(s: Editable?) {}
         })
 
-        binding.orderTypeRadioGroup.setOnCheckedChangeListener { group, checkedId ->
+        binding.rgOrderType.setOnCheckedChangeListener { group, checkedId ->
             when (checkedId) {
-                binding.radioBuy.id -> orderType = true
-                binding.radioSell.id -> orderType = false
+                binding.rbBuy.id -> orderType = true
+                binding.rbSell.id -> orderType = false
             }
         }
 
-        binding.postButton.setOnClickListener {
+        binding.btnPost.setOnClickListener {
             // Collect all the data
             val entryPriceValue = entryPrice.orEmpty()
             val slPriceValue = slPrice.orEmpty()
@@ -201,7 +199,7 @@ class FinXRecommendationWidgetDialog(val onPostClicked: (FinxRecommendationMetad
     private fun performSearch(query: String) {
         if (query.isNotEmpty() && query.length > 2) {
             finXViewModel.getSearchScrip(query)
-            binding.searchResultRv.visible()
+            binding.rvSearchScripResult.visible()
         } else {
             Log.e("TAG", "performSearch: Search Query is empty")
         }
@@ -217,11 +215,11 @@ class FinXRecommendationWidgetDialog(val onPostClicked: (FinxRecommendationMetad
         //init RecyclerView
         adapter = SearchAdapter(emptyList()) { selectedItem ->
             selectedScrip = selectedItem
-            binding.searchView.setQuery(selectedItem.secDesc, false)
-            binding.searchResultRv.gone()
+            binding.svFinXSearchScrip.setQuery(selectedItem.secDesc, false)
+            binding.rvSearchScripResult.gone()
         }
-        binding.searchResultRv.adapter = adapter
-        binding.searchResultRv.layoutManager = LinearLayoutManager(context)
+        binding.rvSearchScripResult.adapter = adapter
+        binding.rvSearchScripResult.layoutManager = LinearLayoutManager(context)
     }
 
     override fun onDestroyView() {

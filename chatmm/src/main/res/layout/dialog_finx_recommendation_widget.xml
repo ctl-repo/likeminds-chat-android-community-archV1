@@ -22,14 +22,14 @@
             app:layout_constraintBottom_toBottomOf="parent">
 
             <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/start_vertical_gl"
+                android:id="@+id/glStartVertical"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 app:layout_constraintGuide_percent="0.04" />
 
             <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/end_vertical_gl"
+                android:id="@+id/glEndVertical"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -41,8 +41,8 @@
             <!--                android:layout_height="wrap_content"-->
             <!--                android:hint="Search"-->
             <!--                app:endIconMode="dropdown_menu"-->
-            <!--                app:layout_constraintEnd_toEndOf="@id/end_vertical_gl"-->
-            <!--                app:layout_constraintStart_toStartOf="@id/start_vertical_gl"-->
+            <!--                app:layout_constraintEnd_toEndOf="@id/glEndVertical"-->
+            <!--                app:layout_constraintStart_toStartOf="@id/glStartVertical"-->
             <!--                app:layout_constraintTop_toTopOf="parent">-->
 
             <!--                &lt;!&ndash;                <com.google.android.material.textfield.TextInputEditText&ndash;&gt;-->
@@ -63,70 +63,70 @@
             <!--                android:focusableInTouchMode="true"-->
             <!--                android:inputType="text"-->
             <!--                android:hint="Search"-->
-            <!--                app:layout_constraintEnd_toEndOf="@id/end_vertical_gl"-->
-            <!--                app:layout_constraintStart_toStartOf="@id/start_vertical_gl"-->
+            <!--                app:layout_constraintEnd_toEndOf="@id/glEndVertical"-->
+            <!--                app:layout_constraintStart_toStartOf="@id/glStartVertical"-->
             <!--                app:layout_constraintTop_toTopOf="parent"/>-->
 
             <androidx.appcompat.widget.SearchView
-                android:id="@+id/search_view"
+                android:id="@+id/svFinXSearchScrip"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:queryHint="Search..."
-                app:layout_constraintEnd_toEndOf="@id/end_vertical_gl"
-                app:layout_constraintStart_toStartOf="@id/start_vertical_gl"
+                app:layout_constraintEnd_toEndOf="@id/glEndVertical"
+                app:layout_constraintStart_toStartOf="@id/glStartVertical"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/order_type_tv"
+                android:id="@+id/tvOrderType"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="Order Type:"
                 android:textColor="#000000"
                 android:textSize="20sp"
-                app:layout_constraintStart_toStartOf="@id/start_vertical_gl"
-                app:layout_constraintTop_toBottomOf="@id/search_view" />
+                app:layout_constraintStart_toStartOf="@id/glStartVertical"
+                app:layout_constraintTop_toBottomOf="@id/svFinXSearchScrip" />
 
 
             <!--        <com.google.android.material.radiobutton.MaterialRadioButton-->
-            <!--            android:id="@+id/radio_buy_btn"-->
+            <!--            android:id="@+id/rbBuy_btn"-->
             <!--            android:layout_width="wrap_content"-->
             <!--            android:layout_height="wrap_content"-->
             <!--            android:layout_marginStart="16dp"-->
             <!--            android:layout_marginTop="16dp"-->
             <!--            android:text="Buy"-->
-            <!--            app:layout_constraintStart_toEndOf="@id/order_type_tv"-->
+            <!--            app:layout_constraintStart_toEndOf="@id/tvOrderType"-->
             <!--            app:layout_constraintTop_toBottomOf="@id/search_input_layout" />-->
 
             <!--        <com.google.android.material.radiobutton.MaterialRadioButton-->
-            <!--            android:id="@+id/radio_sell_btn"-->
+            <!--            android:id="@+id/rbSell"-->
             <!--            android:layout_width="wrap_content"-->
             <!--            android:layout_height="wrap_content"-->
             <!--            android:layout_marginStart="16dp"-->
             <!--            android:layout_marginTop="16dp"-->
             <!--            android:text="Sell"-->
-            <!--            app:layout_constraintStart_toEndOf="@id/radio_buy_btn"-->
+            <!--            app:layout_constraintStart_toEndOf="@id/rbBuy"-->
             <!--            app:layout_constraintTop_toBottomOf="@id/search_input_layout" />-->
             <RadioGroup
-                android:id="@+id/order_type_radio_group"
+                android:id="@+id/rgOrderType"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:orientation="horizontal"
-                app:layout_constraintBottom_toBottomOf="@id/order_type_tv"
-                app:layout_constraintStart_toEndOf="@id/order_type_tv"
-                app:layout_constraintTop_toTopOf="@id/order_type_tv">
+                app:layout_constraintBottom_toBottomOf="@id/tvOrderType"
+                app:layout_constraintStart_toEndOf="@id/tvOrderType"
+                app:layout_constraintTop_toTopOf="@id/tvOrderType">
 
                 <RadioButton
-                    android:id="@+id/radio_buy"
+                    android:id="@+id/rbBuy"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="true"
                     android:text="Buy" />
 
                 <RadioButton
-                    android:id="@+id/radio_sell"
+                    android:id="@+id/rbSell"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -134,17 +134,17 @@
             </RadioGroup>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/entry_input_layout"
+                android:id="@+id/tlEntryPrice"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:hint="Entry Price"
-                app:layout_constraintEnd_toEndOf="@id/end_vertical_gl"
-                app:layout_constraintStart_toStartOf="@id/start_vertical_gl"
-                app:layout_constraintTop_toBottomOf="@id/order_type_radio_group">
+                app:layout_constraintEnd_toEndOf="@id/glEndVertical"
+                app:layout_constraintStart_toStartOf="@id/glStartVertical"
+                app:layout_constraintTop_toBottomOf="@id/rgOrderType">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/entry_edit_text"
+                    android:id="@+id/etEntryPriceValue"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="numberDecimal" />
@@ -152,17 +152,17 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/sl_price_input_layout"
+                android:id="@+id/tlSlPrice"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:hint="SL Price"
-                app:layout_constraintEnd_toStartOf="@id/target_price_input_layout"
-                app:layout_constraintStart_toStartOf="@id/start_vertical_gl"
-                app:layout_constraintTop_toBottomOf="@id/entry_input_layout">
+                app:layout_constraintEnd_toStartOf="@id/tlTargetPrice"
+                app:layout_constraintStart_toStartOf="@id/glStartVertical"
+                app:layout_constraintTop_toBottomOf="@id/tlEntryPrice">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/sl_price_edit_text"
+                    android:id="@+id/etSlPriceValue"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="numberDecimal" />
@@ -170,18 +170,18 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/target_price_input_layout"
+                android:id="@+id/tlTargetPrice"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:hint="Target Price"
-                app:layout_constraintEnd_toEndOf="@id/end_vertical_gl"
-                app:layout_constraintStart_toEndOf="@id/sl_price_input_layout"
-                app:layout_constraintTop_toBottomOf="@id/entry_input_layout">
+                app:layout_constraintEnd_toEndOf="@id/glEndVertical"
+                app:layout_constraintStart_toEndOf="@id/tlSlPrice"
+                app:layout_constraintTop_toBottomOf="@id/tlEntryPrice">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/target_price_edit_text"
+                    android:id="@+id/etTargetPriceValue"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="numberDecimal" />
@@ -189,32 +189,32 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/post_button"
+                android:id="@+id/btnPost"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="250dp"
                 android:text="Post"
                 android:textColor="#000000"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@id/end_vertical_gl"
-                app:layout_constraintStart_toStartOf="@id/start_vertical_gl"
-                app:layout_constraintTop_toBottomOf="@id/sl_price_input_layout" />
+                app:layout_constraintEnd_toEndOf="@id/glEndVertical"
+                app:layout_constraintStart_toStartOf="@id/glStartVertical"
+                app:layout_constraintTop_toBottomOf="@id/tlSlPrice" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/search_result_rv"
+                android:id="@+id/rvSearchScripResult"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:background="@color/lm_chat_white"
                 android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="@id/end_vertical_gl"
-                app:layout_constraintStart_toStartOf="@id/start_vertical_gl"
-                app:layout_constraintTop_toBottomOf="@id/search_view"
+                app:layout_constraintEnd_toEndOf="@id/glEndVertical"
+                app:layout_constraintStart_toStartOf="@id/glStartVertical"
+                app:layout_constraintTop_toBottomOf="@id/svFinXSearchScrip"
                 app:layout_constraintBottom_toBottomOf="parent"
                 tools:itemCount="3"
                 tools:listitem="@layout/item_search_scrip_lm" />
 
             <ProgressBar
-                android:id="@+id/search_progress_indicator"
+                android:id="@+id/pbSearchProgressIndicator"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_gravity="center"
@@ -225,9 +225,9 @@
                 android:indeterminateTintMode="src_in"
                 style="?android:attr/progressBarStyle"
                 android:visibility="gone"
-                app:layout_constraintTop_toTopOf="@id/search_view"
-                app:layout_constraintEnd_toEndOf="@id/search_view"
-                app:layout_constraintBottom_toBottomOf="@id/search_view"/>
+                app:layout_constraintTop_toTopOf="@id/svFinXSearchScrip"
+                app:layout_constraintEnd_toEndOf="@id/svFinXSearchScrip"
+                app:layout_constraintBottom_toBottomOf="@id/svFinXSearchScrip"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
