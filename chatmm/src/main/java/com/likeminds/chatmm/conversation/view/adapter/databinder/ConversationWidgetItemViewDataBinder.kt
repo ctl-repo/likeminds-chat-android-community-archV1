@@ -2,7 +2,6 @@ package com.likeminds.chatmm.conversation.view.adapter.databinder
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.google.gson.Gson
 import com.likeminds.chatmm.LMAnalytics
@@ -55,17 +54,11 @@ class ConversationWidgetItemViewDataBinder(
 
             //Custom Widget Data
             val metadata = JSONObject(data.widgetViewData?.metadata.toString())
-            val postConversationMetadata =
+            val recomData =
                 Gson().fromJson(metadata.toString(), FinxRecommendationMetadata::class.java)
 
-//            tvCustomWidgetMsg.text =
-//                "${if (postConversationMetadata.isBuy == true) "Buy" else "Sell"} ${postConversationMetadata.symbol} at ${postConversationMetadata.entryPrice} SL ${postConversationMetadata.slPrice} target Price ${postConversationMetadata.targetPrice}"
-//            Log.e(
-//                "TAG",
-//                "Meta Data String: \"${if (postConversationMetadata.isBuy == true) "Buy" else "Sell"} ${postConversationMetadata.symbol} at ${postConversationMetadata.entryPrice} SL ${postConversationMetadata.slPrice} target Price ${postConversationMetadata.targetPrice}\""
-//            )
-            with(postConversationMetadata) {
-                tvCustomWidgetMsg.text = searchRsp.secDesc
+            with(recomData) {
+                tvCustomWidgetMsg.text = searchRsp?.secDesc ?: ""
                 tvCwStopLossValue.text = slPrice
                 tvCwEntryPriceValue.text = entryPrice
                 tvCwTargetPriceValue.text = targetPrice
@@ -74,19 +67,35 @@ class ConversationWidgetItemViewDataBinder(
                     it.setBackgroundColor(
                         ContextCompat.getColor(
                             context,
-                            if (isBuy == true) R.color.lm_chat_blue else R.color.lm_chat_green
+                            if (isBuy == true) R.color.finx_primary1_dull else R.color.finx_negative1_dull
+                        )
+                    )
+
+                    it.setTextColor(
+                        ContextCompat.getColor(
+                            context,
+                            if (isBuy == true) R.color.finx_primary1 else R.color.finx_negative1
                         )
                     )
                 }
+
+                btnCustomWidgetScripInfo.setBackgroundColor(
+                    ContextCompat.getColor(
+                        context,
+                        R.color.lm_chat_background_v1
+                    )
+                )
+
             }
 
             btnCustomWidgetBuy.setOnClickListener {
-                adapterListener.onBuySellItemClicked(postConversationMetadata)
+                adapterListener.onClickFinxSmBuySell(recomData)
                 onClick.invoke()
             }
 
             btnCustomWidgetScripInfo.setOnClickListener {
-                Toast.makeText(context, "Scrip Info is Clicked", Toast.LENGTH_SHORT).show()
+                adapterListener.onClickFinxSmCompany(recomData)
+                onClick.invoke()
             }
 
             ChatroomConversationItemViewDataBinderUtil.initConversationBubbleView(

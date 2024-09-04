@@ -133,4 +133,11 @@
     <color name="lm_chat_blue_separator">#DAE1EE</color>
     <color name="lm_chat_text_power">#484F67</color>
 
+
+    <color name="finx_primary1">#004393</color>
+    <color name="finx_primary1_dull">#b3c7df</color>
+
+    <color name="finx_negative1">#D04439</color>
+    <color name="finx_negative1_dull">#ffebef</color>
+
 </resources>

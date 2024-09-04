@@ -643,8 +643,12 @@ class ChatroomDetailFragment :
         }
     }
 
-    override fun onBuySellItemClicked(postConversationMetadata: FinxRecommendationMetadata) {
-        SDKApplication.getLikeMindsCallback()?.navigateToTransactionPage(postConversationMetadata)
+    override fun onClickFinxSmBuySell(recomData: FinxRecommendationMetadata) {
+        SDKApplication.getLikeMindsCallback()?.navigateToFinXSmPlaceOrder(recomData)
+    }
+
+    override fun onClickFinxSmCompany(recomData: FinxRecommendationMetadata) {
+        SDKApplication.getLikeMindsCallback()?.navigateToFinXSmCompany(recomData)
     }
 
     private fun initEmojiView() {

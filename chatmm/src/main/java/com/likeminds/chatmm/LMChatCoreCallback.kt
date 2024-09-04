@@ -30,7 +30,6 @@ interface LMChatCoreCallback {
         return Pair(null, null)
     }
 
-    fun navigateToTransactionPage(postConversationMetadata: FinxRecommendationMetadata){
-
-    }
+    fun navigateToFinXSmPlaceOrder(recomData: FinxRecommendationMetadata)
+    fun navigateToFinXSmCompany(recomData: FinxRecommendationMetadata)
 }

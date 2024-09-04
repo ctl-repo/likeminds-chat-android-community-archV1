@@ -8,23 +8,7 @@ import com.likeminds.chatmm.chatroom.detail.view.adapter.databinder.ChatroomItem
 import com.likeminds.chatmm.conversation.model.AttachmentViewData
 import com.likeminds.chatmm.conversation.model.ConversationViewData
 import com.likeminds.chatmm.conversation.model.ReportLinkExtras
-import com.likeminds.chatmm.conversation.view.adapter.databinder.ChatroomAnnouncementItemViewDataBinder
-import com.likeminds.chatmm.conversation.view.adapter.databinder.ConversationActionItemViewDataBinder
-import com.likeminds.chatmm.conversation.view.adapter.databinder.ConversationAudioItemViewBinder
-import com.likeminds.chatmm.conversation.view.adapter.databinder.ConversationAutoFollowedTaggedActionViewDataBinder
-import com.likeminds.chatmm.conversation.view.adapter.databinder.ConversationFollowItemViewDataBinder
-import com.likeminds.chatmm.conversation.view.adapter.databinder.ConversationItemViewDataBinder
-import com.likeminds.chatmm.conversation.view.adapter.databinder.ConversationLinkItemViewDataBinder
-import com.likeminds.chatmm.conversation.view.adapter.databinder.ConversationListShimmerViewDataBinder
-import com.likeminds.chatmm.conversation.view.adapter.databinder.ConversationMultipleDocumentViewDataBinder
-import com.likeminds.chatmm.conversation.view.adapter.databinder.ConversationMultipleMediaItemViewDataBinder
-import com.likeminds.chatmm.conversation.view.adapter.databinder.ConversationPollItemViewDataBinder
-import com.likeminds.chatmm.conversation.view.adapter.databinder.ConversationSingleGifItemViewDataBinder
-import com.likeminds.chatmm.conversation.view.adapter.databinder.ConversationSingleImageItemViewDataBinder
-import com.likeminds.chatmm.conversation.view.adapter.databinder.ConversationSinglePdfItemViewDataBinder
-import com.likeminds.chatmm.conversation.view.adapter.databinder.ConversationSingleVideoItemViewDataBinder
-import com.likeminds.chatmm.conversation.view.adapter.databinder.ConversationVoiceNoteItemViewDataBinder
-import com.likeminds.chatmm.conversation.view.adapter.databinder.ConversationWidgetItemViewDataBinder
+import com.likeminds.chatmm.conversation.view.adapter.databinder.*
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.polls.model.PollViewData
@@ -38,7 +22,7 @@ import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_AUTO_FOLLOWED_TAGGED_CHAT_ROOM
 import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_FOLLOW
 import com.likeminds.likemindschat.user.model.MemberBlockState
-import java.util.UUID
+import java.util.*
 
 class ChatroomDetailAdapter(
     val sdkPreferences: SDKPreferences,
@@ -275,5 +259,6 @@ interface ChatroomDetailAdapterListener {
     fun blockMember(index: Int, state: MemberBlockState) {}
     fun onMemberTagClicked(memberTag: Uri) {}
 
-    fun onBuySellItemClicked(postConversationMetadata: FinxRecommendationMetadata){}
+    fun onClickFinxSmBuySell(recomData: FinxRecommendationMetadata)
+    fun onClickFinxSmCompany(recomData: FinxRecommendationMetadata)
 }
