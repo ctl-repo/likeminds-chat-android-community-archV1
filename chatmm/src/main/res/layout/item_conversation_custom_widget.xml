@@ -126,7 +126,7 @@
 
                 <!-- Add Custom View-->
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/cl_widget"
+                    android:id="@+id/clFinXRecommendation"
                     android:layout_width="230dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
@@ -136,7 +136,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/view_reply">
 
                     <com.likeminds.chatmm.theme.customview.LikeMindsTextView
-                        android:id="@+id/tv_custom_widget_msg"
+                        android:id="@+id/tvFinXRecommendationTitle"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:maxWidth="230dp"
@@ -144,22 +144,22 @@
                         android:textColor="@color/lm_chat_black_two"
                         android:textSize="14sp"
                         app:fontType="regular"
-                        app:layout_constraintBottom_toTopOf="@id/tv_recommendation_price_cl"
+                        app:layout_constraintBottom_toTopOf="@id/tvFinXRecommendationPriceCl"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/tv_recommendation_price_cl"
+                        android:id="@+id/tvFinXRecommendationPriceCl"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        app:layout_constraintBottom_toTopOf="@id/btn_custom_widget_buy"
+                        app:layout_constraintBottom_toTopOf="@id/btnFinXRecommendationBuy"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/tv_custom_widget_msg">
+                        app:layout_constraintTop_toBottomOf="@id/tvFinXRecommendationTitle">
 
                         <com.likeminds.chatmm.theme.customview.LikeMindsTextView
-                            android:id="@+id/tv_cw_stop_loss"
+                            android:id="@+id/tvStopLossTitle"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:gravity="start"
@@ -169,13 +169,13 @@
                             android:textColor="@color/lm_chat_black_two"
                             android:textSize="12sp"
                             app:fontType="regular"
-                            app:layout_constraintBottom_toTopOf="@id/tv_cw_stop_loss_value"
-                            app:layout_constraintEnd_toStartOf="@id/tv_cw_entry_price"
+                            app:layout_constraintBottom_toTopOf="@id/tvStopLossTitleValue"
+                            app:layout_constraintEnd_toStartOf="@id/tvEntryPrice"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <com.likeminds.chatmm.theme.customview.LikeMindsTextView
-                            android:id="@+id/tv_cw_stop_loss_value"
+                            android:id="@+id/tvStopLossTitleValue"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:maxWidth="230dp"
@@ -184,13 +184,13 @@
                             android:textSize="12sp"
                             app:fontType="bold"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="@id/tv_cw_stop_loss"
-                            app:layout_constraintStart_toStartOf="@id/tv_cw_stop_loss"
-                            app:layout_constraintTop_toBottomOf="@id/tv_cw_stop_loss"
+                            app:layout_constraintEnd_toEndOf="@id/tvStopLossTitle"
+                            app:layout_constraintStart_toStartOf="@id/tvStopLossTitle"
+                            app:layout_constraintTop_toBottomOf="@id/tvStopLossTitle"
                             tools:text="00000" />
 
                         <com.likeminds.chatmm.theme.customview.LikeMindsTextView
-                            android:id="@+id/tv_cw_entry_price"
+                            android:id="@+id/tvEntryPrice"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:gravity="start"
@@ -200,13 +200,13 @@
                             android:textColor="@color/lm_chat_black_two"
                             android:textSize="12sp"
                             app:fontType="regular"
-                            app:layout_constraintBottom_toTopOf="@id/tv_cw_entry_price_value"
-                            app:layout_constraintEnd_toStartOf="@id/tv_cw_target_price"
-                            app:layout_constraintStart_toEndOf="@id/tv_cw_stop_loss"
+                            app:layout_constraintBottom_toTopOf="@id/tvEntryPriceValue"
+                            app:layout_constraintEnd_toStartOf="@id/tvTargetPrice"
+                            app:layout_constraintStart_toEndOf="@id/tvStopLossTitle"
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <com.likeminds.chatmm.theme.customview.LikeMindsTextView
-                            android:id="@+id/tv_cw_entry_price_value"
+                            android:id="@+id/tvEntryPriceValue"
                             android:layout_width="0dp"
                             android:layout_height="0dp"
                             android:gravity="start"
@@ -216,13 +216,13 @@
                             android:textSize="12sp"
                             app:fontType="bold"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="@id/tv_cw_entry_price"
-                            app:layout_constraintStart_toStartOf="@id/tv_cw_entry_price"
-                            app:layout_constraintTop_toBottomOf="@id/tv_cw_entry_price"
+                            app:layout_constraintEnd_toEndOf="@id/tvEntryPrice"
+                            app:layout_constraintStart_toStartOf="@id/tvEntryPrice"
+                            app:layout_constraintTop_toBottomOf="@id/tvEntryPrice"
                             tools:text="00000" />
 
                         <com.likeminds.chatmm.theme.customview.LikeMindsTextView
-                            android:id="@+id/tv_cw_target_price"
+                            android:id="@+id/tvTargetPrice"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:gravity="start"
@@ -232,13 +232,13 @@
                             android:textColor="@color/lm_chat_black_two"
                             android:textSize="12sp"
                             app:fontType="regular"
-                            app:layout_constraintBottom_toTopOf="@id/tv_cw_target_price_value"
+                            app:layout_constraintBottom_toTopOf="@id/tvTargetPriceValue"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@id/tv_cw_entry_price"
+                            app:layout_constraintStart_toEndOf="@id/tvEntryPrice"
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <com.likeminds.chatmm.theme.customview.LikeMindsTextView
-                            android:id="@+id/tv_cw_target_price_value"
+                            android:id="@+id/tvTargetPriceValue"
                             android:layout_width="0dp"
                             android:layout_height="0dp"
                             android:gravity="top"
@@ -249,14 +249,14 @@
                             android:textSize="12sp"
                             app:fontType="bold"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="@id/tv_cw_target_price"
-                            app:layout_constraintStart_toStartOf="@id/tv_cw_target_price"
-                            app:layout_constraintTop_toBottomOf="@id/tv_cw_target_price" />
+                            app:layout_constraintEnd_toEndOf="@id/tvTargetPrice"
+                            app:layout_constraintStart_toStartOf="@id/tvTargetPrice"
+                            app:layout_constraintTop_toBottomOf="@id/tvTargetPrice" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <com.likeminds.chatmm.theme.customview.LikeMindsButton
-                        android:id="@+id/btn_custom_widget_buy"
+                        android:id="@+id/btnFinXRecommendationBuy"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
@@ -270,12 +270,12 @@
                         app:cornerRadius="5dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/tv_recommendation_price_cl"
+                        app:layout_constraintTop_toBottomOf="@id/tvFinXRecommendationPriceCl"
                         app:text_type="normal"
                         tools:text="Buy" />
 
                     <com.likeminds.chatmm.theme.customview.LikeMindsButton
-                        android:id="@+id/btn_custom_widget_scrip_info"
+                        android:id="@+id/btnFinXRecommendationScripInfo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
@@ -287,9 +287,9 @@
                         android:textColor="@color/lm_chat_black"
                         android:textSize="12sp"
                         app:cornerRadius="5dp"
-                        app:layout_constraintBottom_toBottomOf="@id/btn_custom_widget_buy"
-                        app:layout_constraintEnd_toStartOf="@id/btn_custom_widget_buy"
-                        app:layout_constraintTop_toTopOf="@id/btn_custom_widget_buy"
+                        app:layout_constraintBottom_toBottomOf="@id/btnFinXRecommendationBuy"
+                        app:layout_constraintEnd_toStartOf="@id/btnFinXRecommendationBuy"
+                        app:layout_constraintTop_toTopOf="@id/btnFinXRecommendationBuy"
                         app:text_type="normal" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -307,7 +307,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/cl_widget"
+                    app:layout_constraintTop_toBottomOf="@+id/clFinXRecommendation"
                     tools:text="That’s awesome. I would be interested in attending this event. I was always looking forward to such events." />
 
                 <com.likeminds.chatmm.theme.customview.LikeMindsTextView

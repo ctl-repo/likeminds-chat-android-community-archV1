@@ -58,11 +58,11 @@ class ConversationWidgetItemViewDataBinder(
                 Gson().fromJson(metadata.toString(), FinxRecommendationMetadata::class.java)
 
             with(recomData) {
-                tvCustomWidgetMsg.text = searchRsp?.secDesc ?: ""
-                tvCwStopLossValue.text = slPrice
-                tvCwEntryPriceValue.text = entryPrice
-                tvCwTargetPriceValue.text = targetPrice
-                btnCustomWidgetBuy.let {
+                tvFinXRecommendationTitle.text = searchRsp?.secDesc ?: ""
+                tvStopLossTitleValue.text = slPrice
+                tvEntryPriceValue.text = entryPrice
+                tvTargetPriceValue.text = targetPrice
+                btnFinXRecommendationBuy.let {
                     it.text = if (isBuy == true) "Buy" else "Sell"
                     it.setBackgroundColor(
                         ContextCompat.getColor(
@@ -79,7 +79,7 @@ class ConversationWidgetItemViewDataBinder(
                     )
                 }
 
-                btnCustomWidgetScripInfo.setBackgroundColor(
+                btnFinXRecommendationScripInfo.setBackgroundColor(
                     ContextCompat.getColor(
                         context,
                         R.color.lm_chat_background_v1
@@ -88,12 +88,12 @@ class ConversationWidgetItemViewDataBinder(
 
             }
 
-            btnCustomWidgetBuy.setOnClickListener {
+            btnFinXRecommendationBuy.setOnClickListener {
                 adapterListener.onClickFinxSmBuySell(recomData)
                 onClick.invoke()
             }
 
-            btnCustomWidgetScripInfo.setOnClickListener {
+            btnFinXRecommendationScripInfo.setOnClickListener {
                 adapterListener.onClickFinxSmCompany(recomData)
                 onClick.invoke()
             }
@@ -122,6 +122,8 @@ class ConversationWidgetItemViewDataBinder(
                     conversationViewData = data
                 )
                 ivAddReaction.hide()
+                //For hiding FinXRecommendation custom widget when deleted by user
+                clFinXRecommendation.hide()
             } else {
                 ChatroomConversationItemViewDataBinderUtil.initConversationBubbleTextView(
                     tvConversation,
