@@ -7,6 +7,7 @@ import com.likeminds.chatmm.buysellwidget.data.FinXRepository
 import com.likeminds.chatmm.buysellwidget.data.FinXService
 import com.likeminds.chatmm.buysellwidget.domain.model.SearchScripRequest
 import com.likeminds.chatmm.buysellwidget.domain.model.SearchScripResponse
+import com.likeminds.chatmm.buysellwidget.domain.util.handleApiResponse
 import com.likeminds.chatmm.xapp.XAppInstance
 
 class FinXRepositoryImpl(private val finXService: FinXService) : FinXRepository {
@@ -18,19 +19,20 @@ class FinXRepositoryImpl(private val finXService: FinXService) : FinXRepository 
 
 
     override suspend fun getSearchScrip(strScripName: String) {
-        val result = finXService.searchScrip(
-            XAppInstance.sessionID.toString(),
-            searchScripReq = SearchScripRequest(
-                noOfRecords = 5,
-                startPos = 0,
-                strScripName = strScripName,
-                strSegment = ""
+        val apiCallState = try {
+            val result = finXService.searchScrip(
+                XAppInstance.sessionID.toString(),
+                searchScripReq = SearchScripRequest(
+                    noOfRecords = 5,
+                    startPos = 0,
+                    strScripName = strScripName,
+                    strSegment = ""
+                )
             )
-        )
-        if (result.body() != null) {
-            searchScripLiveData.postValue(ApiCallState.Success(result.body()))
-        } else {
-            searchScripLiveData.postValue(ApiCallState.Error("Error occurred while fetching search scrip"))
+            handleApiResponse(result)
+        } catch (e: Exception) {
+            ApiCallState.Error(e.message ?: "Unknown Error")
         }
+        searchScripLiveData.postValue(apiCallState)
     }
 }

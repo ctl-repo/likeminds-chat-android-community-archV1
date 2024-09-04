@@ -65,7 +65,7 @@ class ConversationWidgetItemViewDataBinder(
 //                "Meta Data String: \"${if (postConversationMetadata.isBuy == true) "Buy" else "Sell"} ${postConversationMetadata.symbol} at ${postConversationMetadata.entryPrice} SL ${postConversationMetadata.slPrice} target Price ${postConversationMetadata.targetPrice}\""
 //            )
             with(postConversationMetadata) {
-                tvCustomWidgetMsg.text = searchRsp.secDesc
+                tvCustomWidgetMsg.text = searchRsp?.secDesc
                 tvCwStopLossValue.text = slPrice
                 tvCwEntryPriceValue.text = entryPrice
                 tvCwTargetPriceValue.text = targetPrice
