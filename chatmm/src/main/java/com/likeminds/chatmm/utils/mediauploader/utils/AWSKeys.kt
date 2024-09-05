@@ -2,7 +2,7 @@ package com.likeminds.chatmm.utils.mediauploader.utils
 
 import com.likeminds.likemindschat.BuildConfig
 
-//import com.likeminds.chatmm.BuildConfig
+//import com.likeminds.likemindschat.BuildConfig
 
 class AWSKeys {
 
