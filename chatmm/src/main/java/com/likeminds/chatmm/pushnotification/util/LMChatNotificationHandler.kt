@@ -52,6 +52,7 @@ class LMChatNotificationHandler {
         const val GENERAL_CHANNEL_ID = "notification_general"
         const val CHATROOM_CHANNEL_ID = "chatroom_channel_id"
         const val NOTIFICATION_TITLE = "title"
+        const val SENDER = "sender"
         const val NOTIFICATION_SUB_TITLE = "sub_title"
         const val NOTIFICATION_ROUTE = "route"
         const val NOTIFICATION_UNREAD_NEW_CHATROOM = "unread_new_chatroom"
@@ -285,6 +286,7 @@ class LMChatNotificationHandler {
         // new conversation insertion, unseen count update
         // function -> lastConversationRO, unseen count ->
         val title = data[NOTIFICATION_TITLE] ?: return
+        val sender = data[SENDER] ?: return
         val subTitle = data[NOTIFICATION_SUB_TITLE] ?: return
         val route = data[NOTIFICATION_ROUTE] ?: return
         val routeHost = Route.getHost(route)
@@ -294,7 +296,7 @@ class LMChatNotificationHandler {
         val unreadFollowNotification = data[NOTIFICATION_UNREAD_FOLLOW_NOTIFICATION]
 
         //validate data
-        if (category.isNullOrEmpty() && subcategory.isNullOrEmpty()) {
+        if (!sender.equals("likeminds", ignoreCase = true)) {
             return
         }
 
