@@ -153,7 +153,7 @@
                         android:id="@+id/tvFinXRecommendationPriceCl"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        app:layout_constraintBottom_toTopOf="@id/btnFinXRecommendationBuy"
+                        app:layout_constraintBottom_toTopOf="@id/btnFinXRecommendationBuySell"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tvFinXRecommendationTitle">
@@ -256,7 +256,7 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <com.likeminds.chatmm.theme.customview.LikeMindsButton
-                        android:id="@+id/btnFinXRecommendationBuy"
+                        android:id="@+id/btnFinXRecommendationBuySell"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
@@ -287,9 +287,9 @@
                         android:textColor="@color/lm_chat_black"
                         android:textSize="12sp"
                         app:cornerRadius="5dp"
-                        app:layout_constraintBottom_toBottomOf="@id/btnFinXRecommendationBuy"
-                        app:layout_constraintEnd_toStartOf="@id/btnFinXRecommendationBuy"
-                        app:layout_constraintTop_toTopOf="@id/btnFinXRecommendationBuy"
+                        app:layout_constraintBottom_toBottomOf="@id/btnFinXRecommendationBuySell"
+                        app:layout_constraintEnd_toStartOf="@id/btnFinXRecommendationBuySell"
+                        app:layout_constraintTop_toTopOf="@id/btnFinXRecommendationBuySell"
                         app:text_type="normal" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>

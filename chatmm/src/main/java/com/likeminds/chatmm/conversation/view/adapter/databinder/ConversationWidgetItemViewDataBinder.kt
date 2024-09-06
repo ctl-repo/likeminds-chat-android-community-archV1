@@ -62,7 +62,7 @@ class ConversationWidgetItemViewDataBinder(
                 tvStopLossTitleValue.text = slPrice
                 tvEntryPriceValue.text = entryPrice
                 tvTargetPriceValue.text = targetPrice
-                btnFinXRecommendationBuy.let {
+                btnFinXRecommendationBuySell.let {
                     it.text = if (isBuy == true) "Buy" else "Sell"
                     it.setBackgroundColor(
                         ContextCompat.getColor(
@@ -88,7 +88,7 @@ class ConversationWidgetItemViewDataBinder(
 
             }
 
-            btnFinXRecommendationBuy.setOnClickListener {
+            btnFinXRecommendationBuySell.setOnClickListener {
                 adapterListener.onClickFinxSmBuySell(recomData)
                 onClick.invoke()
             }
