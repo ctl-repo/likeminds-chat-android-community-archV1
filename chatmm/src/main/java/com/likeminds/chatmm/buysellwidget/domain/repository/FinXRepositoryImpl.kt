@@ -12,10 +12,10 @@ import com.likeminds.chatmm.xapp.XAppInstance
 
 class FinXRepositoryImpl(private val finXService: FinXService) : FinXRepository {
 
-    private val searchScripLiveData = MutableLiveData<ApiCallState<SearchScripResponse>>()
+    private val _searchScripLiveData = MutableLiveData<ApiCallState<SearchScripResponse>>()
 
     val searchScripResponse: LiveData<ApiCallState<SearchScripResponse>>
-        get() = searchScripLiveData
+        get() = _searchScripLiveData
 
 
     override suspend fun getSearchScrip(strScripName: String) {
@@ -33,6 +33,6 @@ class FinXRepositoryImpl(private val finXService: FinXService) : FinXRepository 
         } catch (e: Exception) {
             ApiCallState.Error(e.message ?: "Unknown Error")
         }
-        searchScripLiveData.postValue(apiCallState)
+        _searchScripLiveData.postValue(apiCallState)
     }
 }

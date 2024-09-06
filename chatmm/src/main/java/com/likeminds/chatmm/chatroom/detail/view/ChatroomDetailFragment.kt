@@ -41,6 +41,7 @@ import com.likeminds.chatmm.*
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.buysellwidget.domain.model.FinxRecommendationMetadata
 import com.likeminds.chatmm.buysellwidget.presentation.view.FinXRecommendationWidgetDialog
+import com.likeminds.chatmm.buysellwidget.presentation.view.FinxRecommendationActivity
 import com.likeminds.chatmm.chatroom.detail.model.*
 import com.likeminds.chatmm.chatroom.detail.util.*
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil.getTypeName
@@ -146,6 +147,7 @@ class ChatroomDetailFragment :
     ApproveDMRequestDialogListener,
     RejectDMRequestDialogListener,
     ChatEvent.ChatObserver {
+
 
     private var actionModeCallback: ActionModeCallback<ChatroomDetailActionModeData>? = null
     private var lmSwipeController: LMSwipeController? = null
@@ -418,6 +420,30 @@ class ChatroomDetailFragment :
         return viewModel.getLastConversationFromAdapter(
             chatroomDetailAdapter.items()
         )
+    }
+
+    //Handle postConversation data from FinxRecommendationActivity
+    private val startActivityForResultLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data: Intent? = result.data
+            val recommendation: FinxRecommendationMetadata? =
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    data?.getParcelableExtra(
+                        "recommendationData",
+                        FinxRecommendationMetadata::class.java
+                    )
+                } else {
+                    data?.getParcelableExtra("recommendationData")
+                }
+            recommendation?.let {
+                val metaData = JSONObject(Gson().toJson(it))
+                postConversation(metadata = metaData)
+            }
+        } else {
+            Log.e(TAG, "Action canceled or failed")
+        }
     }
 
     companion object {
@@ -846,11 +872,8 @@ class ChatroomDetailFragment :
 
     //on click function when custom widget A is clicked
     private fun onCustomWidgetAAttachmentClicked() {
-        val bottomSheetFragment = FinXRecommendationWidgetDialog() {
-            val metaData = JSONObject(Gson().toJson(it))
-            postConversation(metadata = metaData)
-        }
-        bottomSheetFragment.show(childFragmentManager, bottomSheetFragment.tag)
+        val intent = Intent(requireActivity(), FinxRecommendationActivity::class.java)
+        startActivityForResultLauncher.launch(intent)
     }
 
     private fun disableAnswerPosting() {

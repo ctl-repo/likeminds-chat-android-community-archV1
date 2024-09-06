@@ -1,7 +1,10 @@
 package com.likeminds.chatmm.buysellwidget.domain.model
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class FinxSmSearchApiRsp(
     //@SerializedName("EqORFO") var eqORFO: Int? = null,
     @SerializedName("ExchangeSegment") var exchangeSegment: String? = null,
@@ -22,4 +25,4 @@ data class FinxSmSearchApiRsp(
     @SerializedName("Token") var token: Int? = null,
     //@SerializedName("MWTag") var mwTag: String? = "",
     //@SerializedName("isAdded") var isAdded: Boolean = false,
-)
+):Parcelable

@@ -1,7 +1,10 @@
 package com.likeminds.chatmm.buysellwidget.domain.model
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class FinxRecommendationMetadata(
 
     //Recommendation Data
@@ -12,4 +15,4 @@ data class FinxRecommendationMetadata(
 
     //Scrip Data
     @SerializedName("searchRsp") val searchRsp: FinxSmSearchApiRsp? = null,
-)
+) : Parcelable
