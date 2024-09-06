@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -29,25 +30,6 @@ import com.likeminds.chatmm.buysellwidget.presentation.viewmodel.FinXViewModel
 import com.likeminds.chatmm.buysellwidget.presentation.viewmodel.FinXViewModelFactory
 import com.likeminds.chatmm.databinding.FragmentFinxRecommendationBinding
 
-/*
-class FinxRecommendationFragment :
-    BaseFragment<FragmentFinxRecommendationBinding, FinxRecommendationViewModel>() {
-
-//    override val useSharedViewModel = true
-
-    override fun getViewModelClass(): Class<FinxRecommendationViewModel> {
-        return FinxRecommendationViewModel::class.java
-    }
-
-    override fun getViewBinding(): FragmentFinxRecommendationBinding {
-        return FragmentFinxRecommendationBinding.inflate(layoutInflater)
-    }
-
-
-    override fun setUpViews() {
-    }
-
-}*/
 
 class FinxRecommendationFragment : Fragment() {
 
@@ -109,7 +91,7 @@ class FinxRecommendationFragment : Fragment() {
     @SuppressLint("LogNotTimber")
     private fun setUpOnClickListners() {
 
-        binding.svFinXSearchScrip.setOnQueryTextListener(object :
+        /*binding.svFinXSearchScrip.setOnQueryTextListener(object :
             androidx.appcompat.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 // Handle query submission if needed
@@ -127,6 +109,27 @@ class FinxRecommendationFragment : Fragment() {
                 }
                 return true
             }
+        })*/
+
+        binding.etSearch.setOnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                val query = binding.etSearch.text.toString()
+                performSearch(query)
+                true
+            } else {
+                false
+            }
+        }
+
+        binding.etSearch.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val query = s.toString()
+                performSearch(query)
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
         })
 
         binding.etEntryPriceValue.addTextChangedListener(object : TextWatcher {
@@ -210,7 +213,7 @@ class FinxRecommendationFragment : Fragment() {
         //init RecyclerView
         adapter = SearchAdapter(emptyList()) { selectedItem ->
             selectedScrip = selectedItem
-            binding.svFinXSearchScrip.setQuery(selectedItem.secDesc, false)
+            binding.etSearch.setText(selectedItem.secDesc)
             binding.rvSearchScripResult.gone()
         }
         binding.rvSearchScripResult.adapter = adapter

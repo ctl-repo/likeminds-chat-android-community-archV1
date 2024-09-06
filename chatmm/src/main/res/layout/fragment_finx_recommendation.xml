@@ -9,7 +9,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginBottom="8dp"
         android:paddingBottom="23dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -62,7 +62,7 @@
         <!--                app:layout_constraintStart_toStartOf="@id/glStartVertical"-->
         <!--                app:layout_constraintTop_toTopOf="parent"/>-->
 
-        <androidx.appcompat.widget.SearchView
+        <!--<androidx.appcompat.widget.SearchView
             android:id="@+id/svFinXSearchScrip"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -70,7 +70,28 @@
             android:queryHint="Search..."
             app:layout_constraintEnd_toEndOf="@id/glEndVertical"
             app:layout_constraintStart_toStartOf="@id/glStartVertical"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" />-->
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilSearch"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:hint="Search..."
+            app:endIconMode="clear_text"
+            app:layout_constraintEnd_toEndOf="@id/glEndVertical"
+            app:layout_constraintStart_toStartOf="@id/glStartVertical"
+            app:layout_constraintTop_toTopOf="parent"
+            app:startIconDrawable="@drawable/lm_chat_ic_material_icons_white_search">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etSearch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionSearch"
+                android:inputType="text"
+                android:singleLine="true" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvOrderType"
@@ -81,7 +102,7 @@
             android:textColor="#000000"
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="@id/glStartVertical"
-            app:layout_constraintTop_toBottomOf="@id/svFinXSearchScrip" />
+            app:layout_constraintTop_toBottomOf="@id/tilSearch" />
 
 
         <!--        <com.google.android.material.radiobutton.MaterialRadioButton-->
@@ -201,10 +222,10 @@
             android:layout_height="0dp"
             android:background="@color/lm_chat_white"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/glEndVertical"
             app:layout_constraintStart_toStartOf="@id/glStartVertical"
-            app:layout_constraintTop_toBottomOf="@id/svFinXSearchScrip"
+            app:layout_constraintTop_toBottomOf="@id/tilSearch"
+            app:layout_constraintBottom_toBottomOf="parent"
             tools:itemCount="3"
             tools:listitem="@layout/item_search_scrip_lm" />
 
@@ -220,9 +241,9 @@
             android:indeterminateTint="@color/lm_chat_blue"
             android:indeterminateTintMode="src_in"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/svFinXSearchScrip"
-            app:layout_constraintEnd_toEndOf="@id/svFinXSearchScrip"
-            app:layout_constraintTop_toTopOf="@id/svFinXSearchScrip" />
+            app:layout_constraintBottom_toBottomOf="@id/etSearch"
+            app:layout_constraintEnd_toEndOf="@id/etSearch"
+            app:layout_constraintTop_toTopOf="@id/etSearch" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
