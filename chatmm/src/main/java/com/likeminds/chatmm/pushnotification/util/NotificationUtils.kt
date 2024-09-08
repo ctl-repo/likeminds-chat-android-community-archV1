@@ -17,10 +17,9 @@ object NotificationUtils {
         chatroomId: String
     ) {
         val notificationId = chatroomId.toIntOrNull() ?: return
-        Log.d("PUI", "removeConversationNotification: route://chatroom_followed_feed?community_id=${communityId}&community_name=${communityName} $notificationId")
         NotificationManagerCompat.from(context).apply {
             cancel(
-                "route://chatroom_followed_feed?community_id=${communityId}&community_name=${communityName}",
+                generateRouteForChatroom(communityId, communityName),
                 notificationId
             )
         }
@@ -36,10 +35,10 @@ object NotificationUtils {
             val manager = context.getSystemService(Context.NOTIFICATION_SERVICE)
                     as NotificationManager
 
-
             val activeNotifications = manager.activeNotifications.filter {
-                it.tag == NOTIFICATION_TAG
+                (!it.tag.isNullOrEmpty() && it.tag.contains(NOTIFICATION_TAG))
             }
+
             if (activeNotifications.size == 1) {
                 val notification = activeNotifications.find {
                     it.id == NOTIFICATION_UNREAD_CONVERSATION_GROUP_ID
@@ -50,5 +49,10 @@ object NotificationUtils {
                 }
             }
         }
+    }
+
+    // generates the route for chatroom with provided communityName and communityId
+    private fun generateRouteForChatroom(communityId: String?, communityName: String?): String {
+        return "route://chatroom_followed_feed?community_id=${communityId}&community_name=${communityName}"
     }
 }
