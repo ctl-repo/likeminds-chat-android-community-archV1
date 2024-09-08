@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import androidx.annotation.Keep
 import androidx.core.app.*
 import androidx.core.app.Person
@@ -737,6 +738,7 @@ class LMChatNotificationHandler {
                         unreadConversationMessagingStyle =
                             unreadConversationMessagingStyle.addMessage(message)
                     }
+
                     //Build notification
                     val notificationBuilder =
                         NotificationCompat.Builder(context, GENERAL_CHANNEL_ID)
@@ -778,6 +780,7 @@ class LMChatNotificationHandler {
                             .setShowWhen(true)
                             .setAutoCancel(true)
                             .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_SUMMARY)
+
                     //Click on individual notification in the group
                     val childPendingIntent: PendingIntent? =
                         getRoutePendingIntent(
@@ -789,13 +792,17 @@ class LMChatNotificationHandler {
                             category,
                             subcategory
                         )
+
                     if (childPendingIntent != null) {
                         notificationBuilder.setContentIntent(childPendingIntent)
                     }
+
                     //Notify individual notification
                     with(notificationManagerCompat) {
+                        Log.d("PUI", "sendConversationsGroupNotification: tag: $groupRoute id: ${chatroomId.toInt()}")
                         notify(groupRoute, chatroomId.toInt(), notificationBuilder.build())
                     }
+
                     //Once all notifications are notified, post summary
                     if (sortedUnreadConversations.size - 1 == index) {
                         showUnreadConversationGroupNotification(
@@ -871,6 +878,8 @@ class LMChatNotificationHandler {
         if (groupPendingIntent != null) {
             groupNotification.setContentIntent(groupPendingIntent)
         }
+
+        Log.d("PUI", "showUnreadConversationGroupNotification: tag: $groupRoute id: ${NOTIFICATION_UNREAD_CONVERSATION_GROUP_ID}")
 
         //Notify group notification
         with(notificationManagerCompat) {

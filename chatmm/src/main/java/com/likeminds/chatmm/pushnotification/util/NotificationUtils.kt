@@ -10,10 +10,19 @@ object NotificationUtils {
 
     private const val NOTIFICATION_TAG = "chatroom_followed_feed"
 
-    fun removeConversationNotification(context: Context, chatroomId: String) {
+    fun removeConversationNotification(
+        context: Context,
+        communityId: String?,
+        communityName: String?,
+        chatroomId: String
+    ) {
         val notificationId = chatroomId.toIntOrNull() ?: return
+        Log.d("PUI", "removeConversationNotification: route://chatroom_followed_feed?community_id=${communityId}&community_name=${communityName} $notificationId")
         NotificationManagerCompat.from(context).apply {
-            cancel(NOTIFICATION_TAG, notificationId)
+            cancel(
+                "route://chatroom_followed_feed?community_id=${communityId}&community_name=${communityName}",
+                notificationId
+            )
         }
         try {
             removeConversationGroupNotification(context)
@@ -26,6 +35,8 @@ object NotificationUtils {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             val manager = context.getSystemService(Context.NOTIFICATION_SERVICE)
                     as NotificationManager
+
+
             val activeNotifications = manager.activeNotifications.filter {
                 it.tag == NOTIFICATION_TAG
             }
@@ -33,6 +44,7 @@ object NotificationUtils {
                 val notification = activeNotifications.find {
                     it.id == NOTIFICATION_UNREAD_CONVERSATION_GROUP_ID
                 } ?: return
+
                 NotificationManagerCompat.from(context).apply {
                     cancel(notification.tag, NOTIFICATION_UNREAD_CONVERSATION_GROUP_ID)
                 }

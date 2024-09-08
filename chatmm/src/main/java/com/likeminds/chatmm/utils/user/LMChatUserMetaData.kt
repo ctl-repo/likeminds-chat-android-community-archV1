@@ -59,9 +59,7 @@ class LMChatUserMetaData {
 
         saveUserPreferences(context, userName, uuid, memberId)
         getConfig(context)
-        val id = Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
-            ?: ""
-        pushToken(id)
+        pushToken()
         getCommunityConfiguration(context)
         saveCommunitySettings(communitySettings)
     }
@@ -121,8 +119,8 @@ class LMChatUserMetaData {
     }
 
     //register device for the notification
-    private fun pushToken(id: String) {
-//        if (enablePushNotifications && !deviceId.isNullOrEmpty()) {
+    private fun pushToken() {
+        if (enablePushNotifications && !deviceId.isNullOrEmpty()) {
             try {
                 FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
                     if (!task.isSuccessful) {
@@ -135,14 +133,14 @@ class LMChatUserMetaData {
                     }
 
                     val token = task.result.toString()
-                    registerDevice(token, id)
+                    registerDevice(token, deviceId ?: "")
                 }
             } catch (e: Exception) {
                 Log.w(
                     SDKApplication.LOG_TAG,
                     "Please add firebase to your project to enable notifications"
                 )
-//            }
+            }
         }
     }
 
@@ -151,7 +149,7 @@ class LMChatUserMetaData {
         CoroutineScope(Dispatchers.IO).launch {
             //create request
             val request = RegisterDeviceRequest.Builder()
-                .deviceId(id )
+                .deviceId(id)
                 .token(token)
                 .build()
 

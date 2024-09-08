@@ -501,8 +501,16 @@ class ChatroomDetailFragment :
      * Dismiss the active notifications of this current chatroom if it is showing
      */
     private fun dismissChatRoomNotification() {
+        var communityName = viewModel.getChatroomViewData()?.communityName
+
+        if (communityName.isNullOrEmpty()) {
+            communityName = chatroomDetailExtras.communityName
+        }
+
         NotificationUtils.removeConversationNotification(
             requireContext(),
+            communityId,
+            communityName,
             chatroomId
         )
     }
