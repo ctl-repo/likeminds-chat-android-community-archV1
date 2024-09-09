@@ -11,7 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="8dp"
-        android:paddingBottom="23dp"
+        android:background="@color/lm_chat_white"
+        android:paddingVertical="23dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:context=".buysellwidget.presentation.view.FinxRecommendationFragment">
@@ -30,37 +31,44 @@
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.96" />
 
-        <!--            <com.google.android.material.textfield.TextInputLayout-->
-        <!--                android:id="@+id/search_input_layout"-->
-        <!--                android:layout_width="0dp"-->
-        <!--                android:layout_height="wrap_content"-->
-        <!--                android:hint="Search"-->
-        <!--                app:endIconMode="dropdown_menu"-->
-        <!--                app:layout_constraintEnd_toEndOf="@id/glEndVertical"-->
-        <!--                app:layout_constraintStart_toStartOf="@id/glStartVertical"-->
-        <!--                app:layout_constraintTop_toTopOf="parent">-->
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/glMidVertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
 
-        <!--                &lt;!&ndash;                <com.google.android.material.textfield.TextInputEditText&ndash;&gt;-->
-        <!--                &lt;!&ndash;                    android:id="@+id/search_edit_text"&ndash;&gt;-->
-        <!--                &lt;!&ndash;                    android:layout_width="match_parent"&ndash;&gt;-->
-        <!--                &lt;!&ndash;                    android:layout_height="wrap_content"&ndash;&gt;-->
-        <!--                &lt;!&ndash;                    android:inputType="text" />&ndash;&gt;-->
+        <!--<com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/search_input_layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Search"
+            app:endIconMode="dropdown_menu"
+            app:layout_constraintEnd_toEndOf="@id/glEndVertical"
+            app:layout_constraintStart_toStartOf="@id/glStartVertical"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <!--            </com.google.android.material.textfield.TextInputLayout>-->
+            &lt;!&ndash;                <com.google.android.material.textfield.TextInputEditText&ndash;&gt;
+            &lt;!&ndash;                    android:id="@+id/search_edit_text"&ndash;&gt;
+            &lt;!&ndash;                    android:layout_width="match_parent"&ndash;&gt;
+            &lt;!&ndash;                    android:layout_height="wrap_content"&ndash;&gt;
+            &lt;!&ndash;                    android:inputType="text" />&ndash;&gt;
 
-        <!--            <AutoCompleteTextView-->
-        <!--                android:id="@+id/search_auto_complete"-->
-        <!--                android:layout_width="match_parent"-->
-        <!--                android:layout_height="wrap_content"-->
-        <!--                android:padding="10dp"-->
-        <!--                android:focusable="true"-->
-        <!--                android:completionThreshold="1"-->
-        <!--                android:focusableInTouchMode="true"-->
-        <!--                android:inputType="text"-->
-        <!--                android:hint="Search"-->
-        <!--                app:layout_constraintEnd_toEndOf="@id/glEndVertical"-->
-        <!--                app:layout_constraintStart_toStartOf="@id/glStartVertical"-->
-        <!--                app:layout_constraintTop_toTopOf="parent"/>-->
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <AutoCompleteTextView
+            android:id="@+id/search_auto_complete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:completionThreshold="1"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:hint="Search"
+            android:inputType="text"
+            android:padding="10dp"
+            app:layout_constraintEnd_toEndOf="@id/glEndVertical"
+            app:layout_constraintStart_toStartOf="@id/glStartVertical"
+            app:layout_constraintTop_toTopOf="parent" />-->
 
         <!--<androidx.appcompat.widget.SearchView
             android:id="@+id/svFinXSearchScrip"
@@ -72,11 +80,11 @@
             app:layout_constraintStart_toStartOf="@id/glStartVertical"
             app:layout_constraintTop_toTopOf="parent" />-->
 
-        <com.google.android.material.textfield.TextInputLayout
+        <!--<com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilSearch"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="55dp"
             android:hint="Search..."
             app:endIconMode="clear_text"
             app:layout_constraintEnd_toEndOf="@id/glEndVertical"
@@ -91,18 +99,82 @@
                 android:imeOptions="actionSearch"
                 android:inputType="text"
                 android:singleLine="true" />
-        </com.google.android.material.textfield.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>-->
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clSearch"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/finx_recommendation_background"
+            app:layout_constraintEnd_toEndOf="@id/glEndVertical"
+            app:layout_constraintStart_toStartOf="@id/glStartVertical"
+            app:layout_constraintTop_toTopOf="@id/glStartVertical">
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/etSearchScrip"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@color/gph_transparent"
+                android:drawableStart="@drawable/ic_search_1"
+                android:drawablePadding="5dp"
+                android:gravity="center_vertical"
+                android:hint="@string/finx_search_hint"
+                android:imeOptions="actionGo"
+                android:importantForAutofill="no"
+                android:inputType="textAutoComplete"
+                android:paddingHorizontal="5dp"
+                android:paddingVertical="10dp"
+                android:singleLine="true"
+                android:textColor="@color/emoji_black"
+                android:textColorHint="@color/emoji_black"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/ibClear"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ibClear"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:padding="7dp"
+                android:src="@drawable/lm_chat_ic_cross_small"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@id/etSearchScrip"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/etSearchScrip"
+                app:layout_constraintTop_toTopOf="@id/etSearchScrip"
+                tools:visibility="visible" />
+
+            <ProgressBar
+                android:id="@+id/pbSearchProgressIndicator"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center"
+                android:elevation="20dp"
+                android:indeterminate="true"
+                android:indeterminateTint="@color/lm_chat_blue"
+                android:indeterminateTintMode="src_in"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@id/ibClear"
+                app:layout_constraintEnd_toEndOf="@id/ibClear"
+                app:layout_constraintStart_toStartOf="@id/ibClear"
+                app:layout_constraintTop_toTopOf="@id/ibClear"
+                tools:visibility="visible" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvOrderType"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Order Type:"
-            android:textColor="#000000"
+            android:layout_marginTop="20dp"
+            android:text="@string/finx_order_type"
+            android:textColor="@color/emoji_black"
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="@id/glStartVertical"
-            app:layout_constraintTop_toBottomOf="@id/tilSearch" />
+            app:layout_constraintTop_toBottomOf="@id/clSearch" />
 
 
         <!--        <com.google.android.material.radiobutton.MaterialRadioButton-->
@@ -139,17 +211,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:text="Buy" />
+                android:text="@string/finx_buy"
+                android:textColor="@color/emoji_black" />
 
             <RadioButton
                 android:id="@+id/rbSell"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:text="Sell" />
+                android:text="@string/finx_sell"
+                android:textColor="@color/emoji_black" />
         </RadioGroup>
 
-        <com.google.android.material.textfield.TextInputLayout
+        <!--<com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tlEntryPrice"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -202,48 +276,159 @@
                 android:layout_height="wrap_content"
                 android:inputType="numberDecimal" />
 
-        </com.google.android.material.textfield.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>-->
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tvEntryPrice"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/finx_entry_price"
+            android:textColor="@color/emoji_black"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="@id/glEndVertical"
+            app:layout_constraintStart_toStartOf="@id/glStartVertical"
+            app:layout_constraintTop_toBottomOf="@id/rgOrderType" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/etEntryPriceValue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/finx_recommendation_background"
+            android:drawablePadding="5dp"
+            android:gravity="center_vertical"
+            android:hint="@string/finx_zero_rupees"
+            android:imeOptions="actionGo"
+            android:importantForAutofill="no"
+            android:inputType="numberDecimal"
+            android:paddingHorizontal="5dp"
+            android:paddingVertical="10dp"
+            android:singleLine="true"
+            android:textColor="@color/emoji_black"
+            android:textColorHint="@color/emoji_black"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="@id/glEndVertical"
+            app:layout_constraintStart_toStartOf="@id/glStartVertical"
+            app:layout_constraintTop_toBottomOf="@id/tvEntryPrice" />
+
+        <!-- SL Price -->
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tvSlPrice"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/finx_sl_price"
+            android:textColor="@color/emoji_black"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="@id/glMidVertical"
+            app:layout_constraintStart_toStartOf="@id/glStartVertical"
+            app:layout_constraintTop_toBottomOf="@id/etEntryPriceValue" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/etSlPriceValue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="5dp"
+            android:background="@color/finx_recommendation_background"
+            android:drawablePadding="5dp"
+            android:gravity="center_vertical"
+            android:hint="@string/finx_zero_rupees"
+            android:imeOptions="actionGo"
+            android:importantForAutofill="no"
+            android:inputType="numberDecimal"
+            android:paddingHorizontal="5dp"
+            android:paddingVertical="10dp"
+            android:singleLine="true"
+            android:textColor="@color/emoji_black"
+            android:textColorHint="@color/emoji_black"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="@id/glMidVertical"
+            app:layout_constraintStart_toStartOf="@id/glStartVertical"
+            app:layout_constraintTop_toBottomOf="@id/tvSlPrice" />
+
+        <!-- Target Price -->
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tvTargetPrice"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/finx_target_price"
+            android:textColor="@color/emoji_black"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="@id/glEndVertical"
+            app:layout_constraintStart_toStartOf="@id/glMidVertical"
+            app:layout_constraintTop_toBottomOf="@id/etEntryPriceValue" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/etTargetPriceValue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@color/finx_recommendation_background"
+            android:drawablePadding="5dp"
+            android:gravity="center_vertical"
+            android:hint="@string/finx_zero_rupees"
+            android:imeOptions="actionGo"
+            android:importantForAutofill="no"
+            android:inputType="numberDecimal"
+            android:paddingHorizontal="5dp"
+            android:paddingVertical="10dp"
+            android:singleLine="true"
+            android:textColor="@color/emoji_black"
+            android:textColorHint="@color/emoji_black"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="@id/glEndVertical"
+            app:layout_constraintStart_toStartOf="@id/glMidVertical"
+            app:layout_constraintTop_toBottomOf="@id/tvTargetPrice" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnPost"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="250dp"
             android:text="Post"
-            android:textColor="#000000"
+            android:textColor="@color/gph_white"
+            android:background="@color/finx_primary1"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/glEndVertical"
-            app:layout_constraintStart_toStartOf="@id/glStartVertical"
-            app:layout_constraintTop_toBottomOf="@id/tlSlPrice" />
+            app:layout_constraintStart_toStartOf="@id/glStartVertical" />
+
+        <!--<com.likeminds.chatmm.theme.customview.LikeMindsButton
+            android:id="@+id/btnPost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="24dp"
+            android:enabled="false"
+            android:paddingStart="28dp"
+            android:paddingTop="7dp"
+            android:paddingEnd="28dp"
+            android:paddingBottom="7dp"
+            android:text="@string/lm_chat_create_chat_post"
+            android:textColor="@color/gph_white"
+            android:textSize="14sp"
+            app:backgroundTint="@color/lm_chat_button_selector"
+            app:cornerRadius="24dp"
+            app:font_type="medium"
+            app:text_type="normal"
+            android:background="@color/finx_recommendation_background"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/glEndVertical"
+            app:layout_constraintStart_toStartOf="@id/glStartVertical" />-->
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvSearchScripResult"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_marginTop="10dp"
             android:background="@color/lm_chat_white"
             android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/glEndVertical"
             app:layout_constraintStart_toStartOf="@id/glStartVertical"
-            app:layout_constraintTop_toBottomOf="@id/tilSearch"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/clSearch"
             tools:itemCount="3"
             tools:listitem="@layout/item_search_scrip_lm" />
-
-        <ProgressBar
-            android:id="@+id/pbSearchProgressIndicator"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_gravity="center"
-            android:layout_marginEnd="5dp"
-            android:elevation="20dp"
-            android:indeterminate="true"
-            android:indeterminateTint="@color/lm_chat_blue"
-            android:indeterminateTintMode="src_in"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/etSearch"
-            app:layout_constraintEnd_toEndOf="@id/etSearch"
-            app:layout_constraintTop_toTopOf="@id/etSearch" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

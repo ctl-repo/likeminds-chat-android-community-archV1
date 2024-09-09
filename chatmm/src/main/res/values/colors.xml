@@ -140,4 +140,7 @@
     <color name="finx_negative1">#D04439</color>
     <color name="finx_negative1_dull">#ffebef</color>
 
+    <color name="finx_1_toolbar_widget">#3E4050</color>
+    <color name="finx_recommendation_background">#F4F8FF</color>
+
 </resources>

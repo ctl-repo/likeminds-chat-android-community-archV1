@@ -10,12 +10,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.likeminds.chatmm.buysellwidget.data.ApiCallState
 import com.likeminds.chatmm.buysellwidget.data.FinXService
@@ -26,6 +24,7 @@ import com.likeminds.chatmm.buysellwidget.domain.repository.FinXRepositoryImpl
 import com.likeminds.chatmm.buysellwidget.domain.util.gone
 import com.likeminds.chatmm.buysellwidget.domain.util.visible
 import com.likeminds.chatmm.buysellwidget.presentation.adapter.SearchAdapter
+import com.likeminds.chatmm.buysellwidget.presentation.helper.DecimalDigitsInputFilter
 import com.likeminds.chatmm.buysellwidget.presentation.viewmodel.FinXViewModel
 import com.likeminds.chatmm.buysellwidget.presentation.viewmodel.FinXViewModelFactory
 import com.likeminds.chatmm.databinding.FragmentFinxRecommendationBinding
@@ -41,12 +40,19 @@ class FinxRecommendationFragment : Fragment() {
     private lateinit var adapter: SearchAdapter
 
     // Variables to hold the input values
+    /*
     private var entryPrice: String? = null
     private var slPrice: String? = null
     private var targetPrice: String? = null
+    */
     private var orderType: Boolean = true
     private var finxRecommendationMetadata: FinxRecommendationMetadata? = null
     private var selectedScrip: FinxSmSearchApiRsp? = null
+    private var selectedSearchScrip: String? = null
+
+    //validation for input fields
+    private val maxDigitsBeforeDecimal = 10
+    private val maxDigitsAfterDecimal = 2
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -60,7 +66,7 @@ class FinxRecommendationFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initSetup()
-        setUpOnClickListners()
+        setUpOnClickListeners()
         setUpObservers()
     }
 
@@ -89,49 +95,32 @@ class FinxRecommendationFragment : Fragment() {
     }
 
     @SuppressLint("LogNotTimber")
-    private fun setUpOnClickListners() {
+    private fun setUpOnClickListeners() {
 
-        /*binding.svFinXSearchScrip.setOnQueryTextListener(object :
-            androidx.appcompat.widget.SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                // Handle query submission if needed
-                query?.let {
-                    performSearch(it)
-                }
-                return true
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                // Handle query text change to update the search results
-                newText?.let {
-                    // Assume you have a function to fetch filtered data based on query
-                    performSearch(it)
-                }
-                return true
-            }
-        })*/
-
-        binding.etSearch.setOnEditorActionListener { v, actionId, event ->
-            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                val query = binding.etSearch.text.toString()
-                performSearch(query)
-                true
-            } else {
-                false
-            }
-        }
-
-        binding.etSearch.addTextChangedListener(object : TextWatcher {
+        binding.etSearchScrip.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val query = s.toString()
-                performSearch(query)
+                if (s?.isNotEmpty() == true && s.toString().length > 2) {
+                    binding.ibClear.visible()
+                    performSearch(s.toString())
+                } else {
+                    binding.ibClear.gone()
+                    binding.rvSearchScripResult.gone()
+
+                }
             }
 
             override fun afterTextChanged(s: Editable?) {}
         })
 
+        binding.ibClear.setOnClickListener {
+            binding.etSearchScrip.text?.clear()
+            binding.ibClear.gone()
+            binding.rvSearchScripResult.gone()
+        }
+
+        /*
         binding.etEntryPriceValue.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
@@ -161,6 +150,7 @@ class FinxRecommendationFragment : Fragment() {
 
             override fun afterTextChanged(s: Editable?) {}
         })
+        */
 
         binding.rgOrderType.setOnCheckedChangeListener { group, checkedId ->
             when (checkedId) {
@@ -169,7 +159,7 @@ class FinxRecommendationFragment : Fragment() {
             }
         }
 
-        binding.btnPost.setOnClickListener {
+        /*binding.btnPost.setOnClickListener {
             // Collect all the data
             val entryPriceValue = entryPrice.orEmpty()
             val slPriceValue = slPrice.orEmpty()
@@ -191,7 +181,71 @@ class FinxRecommendationFragment : Fragment() {
             } else {
                 Toast.makeText(context, "Please fill in all fields", Toast.LENGTH_SHORT).show()
             }
+        }*/
+
+        binding.etEntryPriceValue.filters =
+            arrayOf(DecimalDigitsInputFilter(maxDigitsBeforeDecimal, maxDigitsAfterDecimal))
+        binding.etSlPriceValue.filters =
+            arrayOf(DecimalDigitsInputFilter(maxDigitsBeforeDecimal, maxDigitsAfterDecimal))
+        binding.etTargetPriceValue.filters =
+            arrayOf(DecimalDigitsInputFilter(maxDigitsBeforeDecimal, maxDigitsAfterDecimal))
+
+        binding.btnPost.setOnClickListener {
+            val entryPriceValue =
+                binding.etEntryPriceValue.text.toString().ifEmpty { " 0.0" }.toDouble()
+            val slPriceValue = binding.etSlPriceValue.text.toString().ifEmpty { " 0.0" }.toDouble()
+            val targetPriceValue =
+                binding.etTargetPriceValue.text.toString().ifEmpty { " 0.0" }.toDouble()
+
+            val message: String
+            val isValid = if (orderType) {
+                message = "For Buy: Please enter all fields correctly"
+                slPriceValue < entryPriceValue && entryPriceValue < targetPriceValue
+            } else {
+                message =
+                    "For Sell: Please enter all fields correctly"
+                slPriceValue > entryPriceValue && entryPriceValue > targetPriceValue
+            }
+
+            if (isValid && !selectedSearchScrip.isNullOrEmpty()) {
+                finxRecommendationMetadata = FinxRecommendationMetadata(
+                    entryPrice = entryPriceValue.toString(),
+                    slPrice = slPriceValue.toString(),
+                    targetPrice = targetPriceValue.toString(),
+                    isBuy = orderType,
+                    searchRsp = selectedScrip
+                )
+
+                val resultIntent = Intent().apply {
+                    putExtra("recommendationData", finxRecommendationMetadata)
+                }
+                requireActivity().setResult(Activity.RESULT_OK, resultIntent)
+                requireActivity().finish()
+            } else {
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            }
+//
+//            if (entryPriceValue.isNotBlank() && slPriceValue.isNotBlank() && targetPriceValue.isNotBlank()) {
+//
+//                // Convert input strings to double for comparison
+//                val entryPrice = entryPriceValue.toDoubleOrNull()
+//                val slPrice = slPriceValue.toDoubleOrNull()
+//                val targetPrice = targetPriceValue.toDoubleOrNull()
+//
+//                if (entryPrice == null || slPrice == null || targetPrice == null) {
+//                    Toast.makeText(
+//                        context,
+//                        "Please enter valid numerical values",
+//                        Toast.LENGTH_SHORT
+//                    ).show()
+//                    return@setOnClickListener
+//                }
+//
+//            } else {
+//                Toast.makeText(context, "Please fill in all fields", Toast.LENGTH_SHORT).show()
+//            }
         }
+
     }
 
     private fun performSearch(query: String) {
@@ -213,7 +267,8 @@ class FinxRecommendationFragment : Fragment() {
         //init RecyclerView
         adapter = SearchAdapter(emptyList()) { selectedItem ->
             selectedScrip = selectedItem
-            binding.etSearch.setText(selectedItem.secDesc)
+            selectedSearchScrip = selectedItem.secDesc
+            binding.etSearchScrip.setText(selectedItem.secDesc)
             binding.rvSearchScripResult.gone()
         }
         binding.rvSearchScripResult.adapter = adapter
