@@ -49,6 +49,8 @@ class FinxRecommendationFragment : Fragment() {
     private var targetPrice: String? = null
     */
     private var entryPrice: String? = null
+    private var slPrice: String? = null
+    private var targetPrice: String? = null
     private var orderType: Boolean = true
     private var finxRecommendationMetadata: FinxRecommendationMetadata? = null
     private var selectedScrip: FinxSmSearchApiRsp? = null
@@ -105,7 +107,16 @@ class FinxRecommendationFragment : Fragment() {
                         Log.e("TAG", "setUpObservers: Success $it")
                         FinXScripInfo.setLTP(it.Response?.alMt?.get(0)?.ltp, selectedScrip?.segment)
                         entryPrice = FinXScripInfo.ltp.toString()
+                        if (orderType) {
+                            slPrice = (FinXScripInfo.ltp - 10).toString()
+                            targetPrice = (FinXScripInfo.ltp + 10).toString()
+                        } else {
+                            slPrice = (FinXScripInfo.ltp + 10).toString()
+                            targetPrice = (FinXScripInfo.ltp - 10).toString()
+                        }
                         binding.etEntryPriceValue.setText(entryPrice)
+                        binding.etSlPriceValue.setText(slPrice)
+                        binding.etTargetPriceValue.setText(targetPrice)
                     }
                 }
 
