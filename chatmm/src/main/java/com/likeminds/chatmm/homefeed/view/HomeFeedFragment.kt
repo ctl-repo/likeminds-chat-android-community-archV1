@@ -203,7 +203,10 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
             viewModel.getChannelInvites()
         }
 
+        /*
+        //For Hiding Explore Tab
         viewModel.getExploreTabCount()
+        */
         viewModel.sendCommunityTabClicked(communityId, communityName)
         viewModel.sendHomeScreenOpenedEvent(LMAnalytics.Source.COMMUNITY_TAB)
     }
