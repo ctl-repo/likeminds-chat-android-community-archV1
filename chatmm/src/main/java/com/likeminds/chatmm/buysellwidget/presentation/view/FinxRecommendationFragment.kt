@@ -11,16 +11,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.likeminds.chatmm.R
 import com.likeminds.chatmm.buysellwidget.data.ApiCallState
 import com.likeminds.chatmm.buysellwidget.data.FinXService
 import com.likeminds.chatmm.buysellwidget.data.RetrofitHelper
 import com.likeminds.chatmm.buysellwidget.domain.model.FinxRecommendationMetadata
 import com.likeminds.chatmm.buysellwidget.domain.model.FinxSmSearchApiRsp
 import com.likeminds.chatmm.buysellwidget.domain.repository.FinXRepositoryImpl
+import com.likeminds.chatmm.buysellwidget.domain.util.FinXDialog
 import com.likeminds.chatmm.buysellwidget.domain.util.gone
 import com.likeminds.chatmm.buysellwidget.domain.util.visible
 import com.likeminds.chatmm.buysellwidget.presentation.adapter.SearchAdapter
@@ -120,68 +123,12 @@ class FinxRecommendationFragment : Fragment() {
             binding.rvSearchScripResult.gone()
         }
 
-        /*
-        binding.etEntryPriceValue.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                entryPrice = s?.toString()
-            }
-
-            override fun afterTextChanged(s: Editable?) {}
-        })
-
-        binding.etSlPriceValue.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                slPrice = s?.toString()
-            }
-
-            override fun afterTextChanged(s: Editable?) {}
-        })
-
-        binding.etTargetPriceValue.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                targetPrice = s?.toString()
-            }
-
-            override fun afterTextChanged(s: Editable?) {}
-        })
-        */
-
         binding.rgOrderType.setOnCheckedChangeListener { group, checkedId ->
             when (checkedId) {
                 binding.rbBuy.id -> orderType = true
                 binding.rbSell.id -> orderType = false
             }
         }
-
-        /*binding.btnPost.setOnClickListener {
-            // Collect all the data
-            val entryPriceValue = entryPrice.orEmpty()
-            val slPriceValue = slPrice.orEmpty()
-            val targetPriceValue = targetPrice.orEmpty()
-
-            if (entryPriceValue.isNotBlank() && slPriceValue.isNotBlank() && targetPriceValue.isNotBlank()) {
-                finxRecommendationMetadata = FinxRecommendationMetadata(
-                    entryPrice = entryPriceValue,
-                    slPrice = slPriceValue,
-                    targetPrice = targetPriceValue,
-                    isBuy = orderType,
-                    searchRsp = selectedScrip
-                )
-                val resultIntent = Intent().apply {
-                    putExtra("recommendationData", finxRecommendationMetadata)
-                }
-                requireActivity().setResult(Activity.RESULT_OK, resultIntent)
-                requireActivity().finish()
-            } else {
-                Toast.makeText(context, "Please fill in all fields", Toast.LENGTH_SHORT).show()
-            }
-        }*/
 
         binding.etEntryPriceValue.filters =
             arrayOf(DecimalDigitsInputFilter(maxDigitsBeforeDecimal, maxDigitsAfterDecimal))
@@ -224,26 +171,6 @@ class FinxRecommendationFragment : Fragment() {
             } else {
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
             }
-//
-//            if (entryPriceValue.isNotBlank() && slPriceValue.isNotBlank() && targetPriceValue.isNotBlank()) {
-//
-//                // Convert input strings to double for comparison
-//                val entryPrice = entryPriceValue.toDoubleOrNull()
-//                val slPrice = slPriceValue.toDoubleOrNull()
-//                val targetPrice = targetPriceValue.toDoubleOrNull()
-//
-//                if (entryPrice == null || slPrice == null || targetPrice == null) {
-//                    Toast.makeText(
-//                        context,
-//                        "Please enter valid numerical values",
-//                        Toast.LENGTH_SHORT
-//                    ).show()
-//                    return@setOnClickListener
-//                }
-//
-//            } else {
-//                Toast.makeText(context, "Please fill in all fields", Toast.LENGTH_SHORT).show()
-//            }
         }
 
     }
@@ -273,6 +200,29 @@ class FinxRecommendationFragment : Fragment() {
         }
         binding.rvSearchScripResult.adapter = adapter
         binding.rvSearchScripResult.layoutManager = LinearLayoutManager(context)
+
+        onBackPressedHandler {
+            FinXDialog.alertDialogF2(
+                frag = this,
+                msg = getString(R.string.do_you_want_to_exit),
+                positiveText = R.string.yes,
+                positiveClickListener = { dialog, _ ->
+                    requireActivity().finish()
+                },
+                negativeText = R.string.no,
+                negativeClickListener = { dialog, _ ->
+                    dialog.dismiss()
+                })
+        }
+    }
+
+    private fun onBackPressedHandler(onClickFunction: () -> Unit) = try {
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() = onClickFunction()
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
+    } catch (e: Exception) {
+        e.printStackTrace()
     }
 
     override fun onDestroyView() {

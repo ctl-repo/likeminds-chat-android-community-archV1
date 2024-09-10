@@ -38,69 +38,6 @@
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.5" />
 
-        <!--<com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/search_input_layout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="Search"
-            app:endIconMode="dropdown_menu"
-            app:layout_constraintEnd_toEndOf="@id/glEndVertical"
-            app:layout_constraintStart_toStartOf="@id/glStartVertical"
-            app:layout_constraintTop_toTopOf="parent">
-
-            &lt;!&ndash;                <com.google.android.material.textfield.TextInputEditText&ndash;&gt;
-            &lt;!&ndash;                    android:id="@+id/search_edit_text"&ndash;&gt;
-            &lt;!&ndash;                    android:layout_width="match_parent"&ndash;&gt;
-            &lt;!&ndash;                    android:layout_height="wrap_content"&ndash;&gt;
-            &lt;!&ndash;                    android:inputType="text" />&ndash;&gt;
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <AutoCompleteTextView
-            android:id="@+id/search_auto_complete"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:completionThreshold="1"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:hint="Search"
-            android:inputType="text"
-            android:padding="10dp"
-            app:layout_constraintEnd_toEndOf="@id/glEndVertical"
-            app:layout_constraintStart_toStartOf="@id/glStartVertical"
-            app:layout_constraintTop_toTopOf="parent" />-->
-
-        <!--<androidx.appcompat.widget.SearchView
-            android:id="@+id/svFinXSearchScrip"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:queryHint="Search..."
-            app:layout_constraintEnd_toEndOf="@id/glEndVertical"
-            app:layout_constraintStart_toStartOf="@id/glStartVertical"
-            app:layout_constraintTop_toTopOf="parent" />-->
-
-        <!--<com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tilSearch"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="55dp"
-            android:hint="Search..."
-            app:endIconMode="clear_text"
-            app:layout_constraintEnd_toEndOf="@id/glEndVertical"
-            app:layout_constraintStart_toStartOf="@id/glStartVertical"
-            app:layout_constraintTop_toTopOf="parent"
-            app:startIconDrawable="@drawable/lm_chat_ic_material_icons_white_search">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etSearch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:imeOptions="actionSearch"
-                android:inputType="text"
-                android:singleLine="true" />
-        </com.google.android.material.textfield.TextInputLayout>-->
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/clSearch"
             android:layout_width="0dp"
@@ -176,26 +113,6 @@
             app:layout_constraintStart_toStartOf="@id/glStartVertical"
             app:layout_constraintTop_toBottomOf="@id/clSearch" />
 
-
-        <!--        <com.google.android.material.radiobutton.MaterialRadioButton-->
-        <!--            android:id="@+id/rbBuy_btn"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_marginStart="16dp"-->
-        <!--            android:layout_marginTop="16dp"-->
-        <!--            android:text="Buy"-->
-        <!--            app:layout_constraintStart_toEndOf="@id/tvOrderType"-->
-        <!--            app:layout_constraintTop_toBottomOf="@id/search_input_layout" />-->
-
-        <!--        <com.google.android.material.radiobutton.MaterialRadioButton-->
-        <!--            android:id="@+id/rbSell"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_marginStart="16dp"-->
-        <!--            android:layout_marginTop="16dp"-->
-        <!--            android:text="Sell"-->
-        <!--            app:layout_constraintStart_toEndOf="@id/rbBuy"-->
-        <!--            app:layout_constraintTop_toBottomOf="@id/search_input_layout" />-->
         <RadioGroup
             android:id="@+id/rgOrderType"
             android:layout_width="0dp"
@@ -222,61 +139,6 @@
                 android:text="@string/finx_sell"
                 android:textColor="@color/emoji_black" />
         </RadioGroup>
-
-        <!--<com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tlEntryPrice"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:hint="Entry Price"
-            app:layout_constraintEnd_toEndOf="@id/glEndVertical"
-            app:layout_constraintStart_toStartOf="@id/glStartVertical"
-            app:layout_constraintTop_toBottomOf="@id/rgOrderType">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etEntryPriceValue"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="numberDecimal" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tlSlPrice"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:hint="SL Price"
-            app:layout_constraintEnd_toStartOf="@id/tlTargetPrice"
-            app:layout_constraintStart_toStartOf="@id/glStartVertical"
-            app:layout_constraintTop_toBottomOf="@id/tlEntryPrice">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etSlPriceValue"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="numberDecimal" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tlTargetPrice"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:hint="Target Price"
-            app:layout_constraintEnd_toEndOf="@id/glEndVertical"
-            app:layout_constraintStart_toEndOf="@id/tlSlPrice"
-            app:layout_constraintTop_toBottomOf="@id/tlEntryPrice">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etTargetPriceValue"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="numberDecimal" />
-
-        </com.google.android.material.textfield.TextInputLayout>-->
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvEntryPrice"
@@ -393,28 +255,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/glEndVertical"
             app:layout_constraintStart_toStartOf="@id/glStartVertical" />
-
-        <!--<com.likeminds.chatmm.theme.customview.LikeMindsButton
-            android:id="@+id/btnPost"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="24dp"
-            android:enabled="false"
-            android:paddingStart="28dp"
-            android:paddingTop="7dp"
-            android:paddingEnd="28dp"
-            android:paddingBottom="7dp"
-            android:text="@string/lm_chat_create_chat_post"
-            android:textColor="@color/gph_white"
-            android:textSize="14sp"
-            app:backgroundTint="@color/lm_chat_button_selector"
-            app:cornerRadius="24dp"
-            app:font_type="medium"
-            app:text_type="normal"
-            android:background="@color/finx_recommendation_background"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@id/glEndVertical"
-            app:layout_constraintStart_toStartOf="@id/glStartVertical" />-->
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvSearchScripResult"
