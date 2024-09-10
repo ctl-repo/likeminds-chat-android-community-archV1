@@ -160,7 +160,8 @@ class FinxRecommendationFragment : Fragment() {
                     slPrice = slPriceValue.toString(),
                     targetPrice = targetPriceValue.toString(),
                     isBuy = orderType,
-                    searchRsp = selectedScrip
+                    searchRsp = selectedScrip,
+                    customWidgetType = "FinXRecommendation"
                 )
 
                 val resultIntent = Intent().apply {

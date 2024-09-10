@@ -15,4 +15,5 @@ data class FinxRecommendationMetadata(
 
     //Scrip Data
     @SerializedName("searchRsp") val searchRsp: FinxSmSearchApiRsp? = null,
+    @SerializedName("customWidgetType") val customWidgetType: String? = ""
 ) : Parcelable
