@@ -28,11 +28,11 @@ class LMNotificationViewModel @Inject constructor(
     ) {
         viewModelScope.launchIO {
             // creates request to fetch unread conversations for notification stack
-            val request = ViewDataConverter.createGetUnreadConversationNotificationRequest(
+            val request = ViewDataConverter.createGetUnreadChatroomsRequest(
                 unreadFollowNotification
             )
 
-            val response = lmChatClient.getUnreadConversationNotification(request)
+            val response = lmChatClient.getUnreadChatrooms(request)
             if (response.success) {
                 val data = response.data?.unreadConversation ?: return@launchIO
                 val conversations = ViewDataConverter.convertChatroomNotificationDataList(data)

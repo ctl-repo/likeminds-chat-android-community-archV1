@@ -28,8 +28,7 @@ import com.likeminds.likemindschat.dm.model.CheckDMLimitResponse
 import com.likeminds.likemindschat.dm.model.CheckDMTabResponse
 import com.likeminds.likemindschat.helper.model.GroupTag
 import com.likeminds.likemindschat.moderation.model.ReportTag
-import com.likeminds.likemindschat.notification.model.ChatroomNotificationData
-import com.likeminds.likemindschat.notification.model.GetUnreadConversationNotificationRequest
+import com.likeminds.likemindschat.notification.model.*
 import com.likeminds.likemindschat.poll.model.Poll
 import com.likeminds.likemindschat.search.model.SearchChatroom
 import com.likeminds.likemindschat.search.model.SearchConversation
@@ -775,13 +774,13 @@ object ViewDataConverter {
             .build()
     }
 
-    // creates [GetUnreadConversationNotificationRequest] from [ChatroomNotificationViewData]
-     fun createGetUnreadConversationNotificationRequest(
+    // creates [GetUnreadChatroomsRequest] from [ChatroomNotificationViewData]
+    fun createGetUnreadChatroomsRequest(
         chatroomNotificationViewData: ChatroomNotificationViewData
-    ) : GetUnreadConversationNotificationRequest {
+    ): GetUnreadChatroomsRequest {
 
         chatroomNotificationViewData.apply {
-            return GetUnreadConversationNotificationRequest.Builder()
+            return GetUnreadChatroomsRequest.Builder()
                 .chatroom(
                     Chatroom.Builder()
                         .id(chatroomId)
@@ -821,7 +820,7 @@ object ViewDataConverter {
     }
 
     // creates list of [Attachment] from list of attachments received in notification
-    private fun createAttachmentsFromNotification(attachments: List<AttachmentViewData>?) : List<Attachment>? {
+    private fun createAttachmentsFromNotification(attachments: List<AttachmentViewData>?): List<Attachment>? {
         return attachments?.map { notificationAttachment ->
             createAttachmentFromNotification(notificationAttachment)
         }
