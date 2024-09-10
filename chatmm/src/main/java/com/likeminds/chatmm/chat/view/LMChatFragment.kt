@@ -57,6 +57,7 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
         const val CHAT_EXTRAS = "chat_extras"
         const val TAG = "ChatFragment"
         private const val ARG_SESSION_ID = "ARG_SESSION_ID"
+        private const val ARG_USER_ID = "ARG_USER_ID"
 
         @RequiresApi(Build.VERSION_CODES.TIRAMISU)
         private const val POST_NOTIFICATIONS = Manifest.permission.POST_NOTIFICATIONS
@@ -66,10 +67,11 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
             return fragment
         }
 
-        fun newInstance(sessionId: String): LMChatFragment {
+        fun newInstance(sessionId: String, userId: String): LMChatFragment {
             val fragment = LMChatFragment()
             val args = Bundle()
             args.putString(ARG_SESSION_ID, sessionId)
+            args.putString(ARG_USER_ID, userId)
             fragment.arguments = args
             return fragment
         }
@@ -79,7 +81,9 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
         super.receiveExtras()
         // Retrieve sessionId from arguments
         val sessionId = arguments?.getString(ARG_SESSION_ID)
+        val userId = arguments?.getString(ARG_USER_ID)
         XAppInstance.sessionID = sessionId
+        XAppInstance.userID = userId
     }
 
     private lateinit var pagerAdapter: ChatPagerAdapter

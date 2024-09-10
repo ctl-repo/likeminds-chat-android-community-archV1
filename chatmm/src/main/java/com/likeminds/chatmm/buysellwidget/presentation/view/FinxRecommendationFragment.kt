@@ -24,6 +24,7 @@ import com.likeminds.chatmm.buysellwidget.domain.model.FinxRecommendationMetadat
 import com.likeminds.chatmm.buysellwidget.domain.model.FinxSmSearchApiRsp
 import com.likeminds.chatmm.buysellwidget.domain.repository.FinXRepositoryImpl
 import com.likeminds.chatmm.buysellwidget.domain.util.FinXDialog
+import com.likeminds.chatmm.buysellwidget.domain.util.FinXScripInfo
 import com.likeminds.chatmm.buysellwidget.domain.util.gone
 import com.likeminds.chatmm.buysellwidget.domain.util.visible
 import com.likeminds.chatmm.buysellwidget.presentation.adapter.SearchAdapter
@@ -44,10 +45,10 @@ class FinxRecommendationFragment : Fragment() {
 
     // Variables to hold the input values
     /*
-    private var entryPrice: String? = null
     private var slPrice: String? = null
     private var targetPrice: String? = null
     */
+    private var entryPrice: String? = null
     private var orderType: Boolean = true
     private var finxRecommendationMetadata: FinxRecommendationMetadata? = null
     private var selectedScrip: FinxSmSearchApiRsp? = null
@@ -91,6 +92,24 @@ class FinxRecommendationFragment : Fragment() {
 
                 is ApiCallState.Error -> {
                     binding.pbSearchProgressIndicator.gone()
+                    Log.e("TAG", "setUpObservers: Error ${it.errorMessage}")
+                }
+            }
+        })
+
+        finXViewModel.multiTouchLineRes.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is ApiCallState.Loading -> {}
+                is ApiCallState.Success -> {
+                    it.data?.let {
+                        Log.e("TAG", "setUpObservers: Success $it")
+                        FinXScripInfo.setLTP(it.Response?.alMt?.get(0)?.ltp, selectedScrip?.segment)
+                        entryPrice = FinXScripInfo.ltp.toString()
+                        binding.etEntryPriceValue.setText(entryPrice)
+                    }
+                }
+
+                is ApiCallState.Error -> {
                     Log.e("TAG", "setUpObservers: Error ${it.errorMessage}")
                 }
             }
@@ -174,6 +193,10 @@ class FinxRecommendationFragment : Fragment() {
             }
         }
 
+        binding.ivRetryEntryPrice.setOnClickListener {
+            finXViewModel.getMultiTouchLine(selectedScrip?.token, selectedScrip?.segment)
+        }
+
     }
 
     private fun performSearch(query: String) {
@@ -198,6 +221,7 @@ class FinxRecommendationFragment : Fragment() {
             selectedSearchScrip = selectedItem.secDesc
             binding.etSearchScrip.setText(selectedItem.secDesc)
             binding.rvSearchScripResult.gone()
+            finXViewModel.getMultiTouchLine(selectedItem.token, selectedItem.segment)
         }
         binding.rvSearchScripResult.adapter = adapter
         binding.rvSearchScripResult.layoutManager = LinearLayoutManager(context)
@@ -221,7 +245,7 @@ class FinxRecommendationFragment : Fragment() {
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() = onClickFunction()
         }
-        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
     } catch (e: Exception) {
         e.printStackTrace()
     }
