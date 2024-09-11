@@ -12,4 +12,5 @@ object XAppInstance {
     var token: Int? = 0
     var symbol: String? = null
     var secDesc: String? = null
+    var userID: String? = null
 }
