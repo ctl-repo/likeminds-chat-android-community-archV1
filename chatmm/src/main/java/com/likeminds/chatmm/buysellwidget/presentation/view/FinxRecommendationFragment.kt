@@ -205,14 +205,17 @@ class FinxRecommendationFragment : Fragment() {
         onBackPressedHandler {
             FinXDialog.alertDialogF2(
                 frag = this,
-                msg = getString(R.string.do_you_want_to_exit),
-                positiveText = R.string.yes,
+                msg = getString(R.string.do_you_want_to_save_changes),
+                positiveText = R.string.lm_chat_create_chat_post,
                 positiveClickListener = { dialog, _ ->
-                    requireActivity().finish()
+                    //requireActivity().finish()
+                    binding.btnPost.callOnClick()
+                    dialog.dismiss()
                 },
-                negativeText = R.string.no,
+                negativeText = R.string.discard,
                 negativeClickListener = { dialog, _ ->
                     dialog.dismiss()
+                    requireActivity().finish()
                 })
         }
     }

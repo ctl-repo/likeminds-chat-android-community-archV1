@@ -249,7 +249,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="250dp"
-            android:text="Post"
+            android:text="@string/lm_chat_create_chat_post"
             android:textColor="@color/gph_white"
             android:background="@color/finx_primary1"
             app:layout_constraintBottom_toBottomOf="parent"

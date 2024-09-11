@@ -321,11 +321,8 @@
     <string name="ok">Okay</string>
     <string name="back">Back</string>
     <string name="no">No</string>
-    <string name="yes">Yes</string>
     <string name="attention">Attention</string>
-    <string name="do_you_want_to_exit">Do you want to exit ?</string>
     <string name="do_you_want_to_save_changes">Do you want to save changes?</string>
-    <string name="save">Save</string>
     <string name="discard">Discard</string>
 
 </resources>
