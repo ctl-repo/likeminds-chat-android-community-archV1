@@ -307,11 +307,11 @@
 
 
     <!--FinX-->
-    <string name="finx_order_type">Order Type:</string>
+    <string name="finx_scrip_name">Scrip Name</string>
+    <string name="finx_order_type">Order Type</string>
     <string name="finx_entry_price">Entry Price</string>
     <string name="finx_sl_price">SL Price</string>
     <string name="finx_target_price">Target Price</string>
-    <string name="finx_zero_rupees">₹ 0</string>
     <string name="finx_search_hint">Search eg: infy bse, nifty fut</string>
     <string name="finx_buy">Buy</string>
     <string name="finx_sell">Sell</string>

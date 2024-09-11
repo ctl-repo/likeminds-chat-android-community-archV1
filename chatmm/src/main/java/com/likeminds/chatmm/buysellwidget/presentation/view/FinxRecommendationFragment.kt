@@ -80,12 +80,12 @@ class FinxRecommendationFragment : Fragment() {
         finXViewModel.searchScrip.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is ApiCallState.Loading -> {
-                    binding.pbSearchProgressIndicator.visible()
+                    binding.pgSearch.visible()
                 }
 
                 is ApiCallState.Success -> {
                     it.data?.let { response ->
-                        binding.pbSearchProgressIndicator.gone()
+                        binding.pgSearch.gone()
                         searchResults.clear()
                         searchResults.addAll(response.response?.filterNotNull() ?: emptyList())
                         adapter.updateData(searchResults)
@@ -93,7 +93,7 @@ class FinxRecommendationFragment : Fragment() {
                 }
 
                 is ApiCallState.Error -> {
-                    binding.pbSearchProgressIndicator.gone()
+                    binding.pgSearch.gone()
                     Log.e("TAG", "setUpObservers: Error ${it.errorMessage}")
                 }
             }
@@ -101,9 +101,12 @@ class FinxRecommendationFragment : Fragment() {
 
         finXViewModel.multiTouchLineRes.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is ApiCallState.Loading -> {}
+                is ApiCallState.Loading -> {
+                    binding.pgLtp.visible()
+                }
                 is ApiCallState.Success -> {
                     it.data?.let {
+                        binding.pgLtp.gone()
                         Log.e("TAG", "setUpObservers: Success $it")
                         FinXScripInfo.setLTP(it.Response?.alMt?.get(0)?.ltp, selectedScrip?.segment)
                         entryPrice = FinXScripInfo.ltp.toString()
@@ -121,6 +124,7 @@ class FinxRecommendationFragment : Fragment() {
                 }
 
                 is ApiCallState.Error -> {
+                    binding.pgLtp.gone()
                     Log.e("TAG", "setUpObservers: Error ${it.errorMessage}")
                 }
             }
@@ -130,7 +134,7 @@ class FinxRecommendationFragment : Fragment() {
     @SuppressLint("LogNotTimber")
     private fun setUpOnClickListeners() {
 
-        binding.etSearchScrip.addTextChangedListener(object : TextWatcher {
+        binding.etSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -148,7 +152,7 @@ class FinxRecommendationFragment : Fragment() {
         })
 
         binding.ibClear.setOnClickListener {
-            binding.etSearchScrip.text?.clear()
+            binding.etSearch.text?.clear()
             binding.ibClear.gone()
             binding.rvSearchScripResult.gone()
         }
@@ -230,29 +234,36 @@ class FinxRecommendationFragment : Fragment() {
         adapter = SearchAdapter(emptyList()) { selectedItem ->
             selectedScrip = selectedItem
             selectedSearchScrip = selectedItem.secDesc
-            binding.etSearchScrip.setText(selectedItem.secDesc)
+            binding.etSearch.setText(selectedItem.secDesc)
             binding.rvSearchScripResult.gone()
             finXViewModel.getMultiTouchLine(selectedItem.token, selectedItem.segment)
         }
         binding.rvSearchScripResult.adapter = adapter
         binding.rvSearchScripResult.layoutManager = LinearLayoutManager(context)
+        binding.ibBack.setOnClickListener {
+            funOnBackPressed()
+        }
 
         onBackPressedHandler {
-            FinXDialog.alertDialogF2(
-                frag = this,
-                msg = getString(R.string.do_you_want_to_save_changes),
-                positiveText = R.string.lm_chat_create_chat_post,
-                positiveClickListener = { dialog, _ ->
-                    //requireActivity().finish()
-                    binding.btnPost.callOnClick()
-                    dialog.dismiss()
-                },
-                negativeText = R.string.discard,
-                negativeClickListener = { dialog, _ ->
-                    dialog.dismiss()
-                    requireActivity().finish()
-                })
+            funOnBackPressed()
         }
+    }
+
+    private fun funOnBackPressed() {
+        FinXDialog.alertDialogF2(
+            frag = this,
+            msg = getString(R.string.do_you_want_to_save_changes),
+            positiveText = R.string.lm_chat_create_chat_post,
+            positiveClickListener = { dialog, _ ->
+                //requireActivity().finish()
+                binding.btnPost.callOnClick()
+                dialog.dismiss()
+            },
+            negativeText = R.string.discard,
+            negativeClickListener = { dialog, _ ->
+                dialog.dismiss()
+                requireActivity().finish()
+            })
     }
 
     private fun onBackPressedHandler(onClickFunction: () -> Unit) = try {

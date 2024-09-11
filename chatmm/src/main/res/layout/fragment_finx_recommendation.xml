@@ -10,9 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="8dp"
         android:background="@color/lm_chat_white"
-        android:paddingVertical="23dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:context=".buysellwidget.presentation.view.FinxRecommendationFragment">
@@ -40,93 +38,123 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/clSearch"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
             android:background="@color/finx_recommendation_background"
-            app:layout_constraintEnd_toEndOf="@id/glEndVertical"
-            app:layout_constraintStart_toStartOf="@id/glStartVertical"
-            app:layout_constraintTop_toTopOf="@id/glStartVertical">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/etSearchScrip"
+                android:id="@+id/etSearch"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:background="@color/gph_transparent"
-                android:drawableStart="@drawable/ic_search_1"
-                android:drawablePadding="5dp"
+                android:layout_height="0dp"
+                android:layout_marginEnd="46dp"
+                android:background="#0000"
                 android:gravity="center_vertical"
-                android:hint="@string/finx_search_hint"
+                android:hint="Search eg: infy bse, nifty fut"
                 android:imeOptions="actionGo"
                 android:importantForAutofill="no"
                 android:inputType="textAutoComplete"
-                android:paddingHorizontal="5dp"
-                android:paddingVertical="10dp"
                 android:singleLine="true"
-                android:textColor="@color/emoji_black"
-                android:textColorHint="@color/emoji_black"
-                android:textSize="20sp"
+                android:textColor="@color/finx_recommendation_background"
+                android:textColorHint="@color/emoji_grey_900"
+                android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/ibClear"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/ibBack"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/ibBack"
+                android:layout_width="46dp"
+                android:layout_height="46dp"
+                android:layout_marginStart="6dp"
+                android:padding="12dp"
+                android:src="@drawable/lm_chat_ic_arrow_back_black_24dp"
+                android:tint="@color/lm_chat_dark_grey"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/ibClear"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:padding="7dp"
-                android:src="@drawable/lm_chat_ic_cross_small"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="8dp"
+                android:padding="8dp"
+                android:src="@drawable/lm_chat_ic_cross_tags_2"
                 android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@id/etSearchScrip"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/etSearchScrip"
-                app:layout_constraintTop_toTopOf="@id/etSearchScrip"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/lm_chat_dark_grey"
                 tools:visibility="visible" />
 
             <ProgressBar
-                android:id="@+id/pbSearchProgressIndicator"
+                android:id="@+id/pgSearch"
                 style="?android:attr/progressBarStyle"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_gravity="center"
-                android:elevation="20dp"
-                android:indeterminate="true"
-                android:indeterminateTint="@color/lm_chat_blue"
-                android:indeterminateTintMode="src_in"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginEnd="8dp"
+                android:progressTint="@color/finx_primary1"
                 android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@id/ibClear"
-                app:layout_constraintEnd_toEndOf="@id/ibClear"
-                app:layout_constraintStart_toStartOf="@id/ibClear"
-                app:layout_constraintTop_toTopOf="@id/ibClear"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:visibility="visible" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tvScripNameLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="@string/finx_scrip_name"
+            android:textColor="@color/emoji_black"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="@id/glStartVertical"
+            app:layout_constraintTop_toBottomOf="@id/clSearch" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tvScripNameValue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:textColor="@color/emoji_black"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toStartOf="@+id/glEndVertical"
+            app:layout_constraintStart_toStartOf="@id/glStartVertical"
+            app:layout_constraintTop_toBottomOf="@id/tvScripNameLabel"
+            tools:text="XXXXXX XXX XXXXXX XXXX" />
+
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvOrderType"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="18dp"
             android:text="@string/finx_order_type"
             android:textColor="@color/emoji_black"
-            android:textSize="20sp"
+            android:textSize="12sp"
             app:layout_constraintStart_toStartOf="@id/glStartVertical"
-            app:layout_constraintTop_toBottomOf="@id/clSearch" />
+            app:layout_constraintTop_toBottomOf="@id/tvScripNameValue" />
 
         <RadioGroup
             android:id="@+id/rgOrderType"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
+            android:layout_marginStart="-6dp"
+            android:layout_marginTop="4dp"
             android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="@id/tvOrderType"
-            app:layout_constraintStart_toEndOf="@id/tvOrderType"
-            app:layout_constraintTop_toTopOf="@id/tvOrderType">
+            app:layout_constraintStart_toStartOf="@+id/tvOrderType"
+            app:layout_constraintTop_toBottomOf="@+id/tvOrderType">
 
             <RadioButton
                 android:id="@+id/rbBuy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:buttonTint="@color/finx_primary1"
                 android:checked="true"
                 android:text="@string/finx_buy"
                 android:textColor="@color/emoji_black" />
@@ -136,6 +164,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
+                android:buttonTint="@color/finx_primary1"
                 android:text="@string/finx_sell"
                 android:textColor="@color/emoji_black" />
         </RadioGroup>
@@ -144,10 +173,10 @@
             android:id="@+id/tvEntryPrice"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="18dp"
             android:text="@string/finx_entry_price"
             android:textColor="@color/emoji_black"
-            android:textSize="20sp"
+            android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="@id/glEndVertical"
             app:layout_constraintStart_toStartOf="@id/glStartVertical"
             app:layout_constraintTop_toBottomOf="@id/rgOrderType" />
@@ -156,14 +185,15 @@
             android:id="@+id/etEntryPriceValue"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@color/finx_recommendation_background"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/lm_chat_background_chat_other"
+            android:backgroundTint="@color/finx_recommendation_background"
             android:drawablePadding="5dp"
             android:gravity="center_vertical"
-            android:hint="@string/finx_zero_rupees"
             android:imeOptions="actionGo"
             android:importantForAutofill="no"
             android:inputType="numberDecimal"
-            android:paddingHorizontal="5dp"
+            android:paddingHorizontal="6dp"
             android:paddingVertical="10dp"
             android:singleLine="true"
             android:textColor="@color/emoji_black"
@@ -171,54 +201,71 @@
             android:textSize="15sp"
             app:layout_constraintEnd_toEndOf="@id/glEndVertical"
             app:layout_constraintStart_toStartOf="@id/glStartVertical"
-            app:layout_constraintTop_toBottomOf="@id/tvEntryPrice" />
+            app:layout_constraintTop_toBottomOf="@id/tvEntryPrice"
+            tools:text="1234.56" />
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/ivRetryEntryPrice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="48dp"
+            android:layout_height="36dp"
+            android:padding="6dp"
             android:src="@drawable/ic_finx_recommendation_retry"
+            app:layout_constraintBottom_toBottomOf="@id/etEntryPriceValue"
             app:layout_constraintEnd_toEndOf="@id/etEntryPriceValue"
             app:layout_constraintTop_toTopOf="@id/etEntryPriceValue"
-            app:layout_constraintBottom_toBottomOf="@id/etEntryPriceValue"/>
+            app:tint="@color/lm_chat_dark_grey" />
+
+        <ProgressBar
+            android:id="@+id/pgLtp"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="8dp"
+            android:progressTint="@color/finx_primary1"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/etEntryPriceValue"
+            app:layout_constraintEnd_toEndOf="@id/etEntryPriceValue"
+            app:layout_constraintTop_toTopOf="@id/etEntryPriceValue"
+            tools:visibility="visible" />
 
         <!-- SL Price -->
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvSlPrice"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="18dp"
             android:text="@string/finx_sl_price"
             android:textColor="@color/emoji_black"
-            android:textSize="20sp"
+            android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="@id/glMidVertical"
             app:layout_constraintStart_toStartOf="@id/glStartVertical"
             app:layout_constraintTop_toBottomOf="@id/etEntryPriceValue" />
 
+        <!-- Target Price -->
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/etSlPriceValue"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="5dp"
-            android:background="@color/finx_recommendation_background"
-            android:drawablePadding="5dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/lm_chat_background_chat_other"
+            android:backgroundTint="@color/finx_recommendation_background"
             android:gravity="center_vertical"
-            android:hint="@string/finx_zero_rupees"
-            android:imeOptions="actionGo"
+            android:imeOptions="actionNext"
             android:importantForAutofill="no"
             android:inputType="numberDecimal"
-            android:paddingHorizontal="5dp"
+            android:paddingHorizontal="6dp"
             android:paddingVertical="10dp"
             android:singleLine="true"
             android:textColor="@color/emoji_black"
             android:textColorHint="@color/emoji_black"
             android:textSize="15sp"
             app:layout_constraintEnd_toEndOf="@id/glMidVertical"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@id/glStartVertical"
-            app:layout_constraintTop_toBottomOf="@id/tvSlPrice" />
+            app:layout_constraintTop_toBottomOf="@id/tvSlPrice"
+            tools:text="1234.56" />
 
-        <!-- Target Price -->
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvTargetPrice"
             android:layout_width="0dp"
@@ -226,24 +273,24 @@
             android:layout_marginTop="16dp"
             android:text="@string/finx_target_price"
             android:textColor="@color/emoji_black"
-            android:textSize="20sp"
+            android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="@id/glEndVertical"
-            app:layout_constraintStart_toStartOf="@id/glMidVertical"
+            app:layout_constraintStart_toStartOf="@+id/etTargetPriceValue"
             app:layout_constraintTop_toBottomOf="@id/etEntryPriceValue" />
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/etTargetPriceValue"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:background="@color/finx_recommendation_background"
-            android:drawablePadding="5dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/lm_chat_background_chat_other"
+            android:backgroundTint="@color/finx_recommendation_background"
             android:gravity="center_vertical"
-            android:hint="@string/finx_zero_rupees"
             android:imeOptions="actionGo"
             android:importantForAutofill="no"
             android:inputType="numberDecimal"
-            android:paddingHorizontal="5dp"
+            android:paddingHorizontal="6dp"
             android:paddingVertical="10dp"
             android:singleLine="true"
             android:textColor="@color/emoji_black"
@@ -251,16 +298,17 @@
             android:textSize="15sp"
             app:layout_constraintEnd_toEndOf="@id/glEndVertical"
             app:layout_constraintStart_toStartOf="@id/glMidVertical"
-            app:layout_constraintTop_toBottomOf="@id/tvTargetPrice" />
+            app:layout_constraintTop_toBottomOf="@id/tvTargetPrice"
+            tools:text="1234.56" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnPost"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="250dp"
+            android:background="@color/finx_primary1"
             android:text="@string/lm_chat_create_chat_post"
             android:textColor="@color/gph_white"
-            android:background="@color/finx_primary1"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/glEndVertical"
             app:layout_constraintStart_toStartOf="@id/glStartVertical" />
