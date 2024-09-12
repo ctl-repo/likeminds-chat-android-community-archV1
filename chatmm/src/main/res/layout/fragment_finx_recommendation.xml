@@ -109,7 +109,8 @@
             android:paddingStart="12dp"
             android:paddingEnd="42dp"
             android:singleLine="true"
-            android:textColorHint="@color/emoji_grey_900"
+            android:textColor="@color/lm_chat_black"
+            android:textColorHint="@color/lm_chat_black_50"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="@id/glEndVertical"
             app:layout_constraintStart_toStartOf="@id/glStartVertical"
@@ -121,8 +122,8 @@
             android:layout_height="32dp"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="8dp"
-            android:padding="8dp"
             android:background="?attr/selectableItemBackground"
+            android:padding="8dp"
             android:src="@drawable/lm_chat_ic_cross_tags_2"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/etSearch"
@@ -149,7 +150,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:textColor="@color/emoji_black"
+            android:textColor="@color/lm_chat_black"
             android:textSize="14sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@id/glStartVertical"
@@ -161,7 +162,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:textColor="@color/emoji_black"
+            android:textColor="@color/lm_chat_black"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@id/glStartVertical"
@@ -173,7 +174,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8sp"
-            android:textColor="@color/emoji_black"
+            android:textColor="@color/lm_chat_black"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="@+id/tvLtp"
             app:layout_constraintStart_toEndOf="@+id/tvLtp"
@@ -187,7 +188,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="18dp"
             android:text="@string/finx_order_type"
-            android:textColor="@color/emoji_black"
+            android:textColor="@color/lm_chat_black"
             android:textSize="12sp"
             app:layout_constraintStart_toStartOf="@id/glStartVertical"
             app:layout_constraintTop_toBottomOf="@id/tvLtp" />
@@ -211,7 +212,7 @@
                 android:paddingStart="0dp"
                 android:paddingEnd="24dp"
                 android:text="@string/finx_buy"
-                android:textColor="@color/emoji_black" />
+                android:textColor="@color/lm_chat_black" />
 
             <RadioButton
                 android:id="@+id/rbSell"
@@ -222,7 +223,7 @@
                 android:paddingStart="0dp"
                 android:paddingEnd="24dp"
                 android:text="@string/finx_sell"
-                android:textColor="@color/emoji_black" />
+                android:textColor="@color/lm_chat_black" />
         </RadioGroup>
 
 
@@ -232,7 +233,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="18dp"
             android:text="@string/finx_entry_price"
-            android:textColor="@color/emoji_black"
+            android:textColor="@color/lm_chat_black"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="@id/glEndVertical"
             app:layout_constraintStart_toStartOf="@id/glStartVertical"
@@ -251,10 +252,10 @@
             android:importantForAutofill="no"
             android:inputType="numberDecimal"
             android:paddingHorizontal="6dp"
-            android:paddingVertical="10dp"
+            android:paddingVertical="12dp"
             android:singleLine="true"
-            android:textColor="@color/emoji_black"
-            android:textColorHint="@color/emoji_black"
+            android:textColor="@color/lm_chat_black"
+            android:textColorHint="@color/lm_chat_black_50"
             android:textSize="15sp"
             app:layout_constraintEnd_toEndOf="@id/glEndVertical"
             app:layout_constraintStart_toStartOf="@id/glStartVertical"
@@ -265,8 +266,8 @@
             android:id="@+id/ivRetryEntryPrice"
             android:layout_width="48dp"
             android:layout_height="36dp"
-            android:padding="6dp"
             android:background="?attr/selectableItemBackground"
+            android:padding="6dp"
             android:src="@drawable/ic_finx_recommendation_retry"
             app:layout_constraintBottom_toBottomOf="@id/etEntryPriceValue"
             app:layout_constraintEnd_toEndOf="@id/etEntryPriceValue"
@@ -293,7 +294,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="18dp"
             android:text="@string/finx_sl_price"
-            android:textColor="@color/emoji_black"
+            android:textColor="@color/lm_chat_black"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="@id/glMidVertical"
             app:layout_constraintStart_toStartOf="@id/glStartVertical"
@@ -309,14 +310,15 @@
             android:background="@drawable/lm_chat_background_chat_other"
             android:backgroundTint="@color/finx_recommendation_background"
             android:gravity="center_vertical"
+            android:hint="0"
             android:imeOptions="actionNext"
             android:importantForAutofill="no"
             android:inputType="numberDecimal"
             android:paddingHorizontal="6dp"
-            android:paddingVertical="10dp"
+            android:paddingVertical="12dp"
             android:singleLine="true"
-            android:textColor="@color/emoji_black"
-            android:textColorHint="@color/emoji_black"
+            android:textColor="@color/lm_chat_black"
+            android:textColorHint="@color/lm_chat_black_50"
             android:textSize="15sp"
             app:layout_constraintEnd_toEndOf="@id/glMidVertical"
             app:layout_constraintHorizontal_bias="0.0"
@@ -330,7 +332,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/finx_target_price"
-            android:textColor="@color/emoji_black"
+            android:textColor="@color/lm_chat_black"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="@id/glEndVertical"
             app:layout_constraintStart_toStartOf="@+id/etTargetPriceValue"
@@ -345,14 +347,15 @@
             android:background="@drawable/lm_chat_background_chat_other"
             android:backgroundTint="@color/finx_recommendation_background"
             android:gravity="center_vertical"
+            android:hint="0"
             android:imeOptions="actionGo"
             android:importantForAutofill="no"
             android:inputType="numberDecimal"
             android:paddingHorizontal="6dp"
-            android:paddingVertical="10dp"
+            android:paddingVertical="12dp"
             android:singleLine="true"
-            android:textColor="@color/emoji_black"
-            android:textColorHint="@color/emoji_black"
+            android:textColor="@color/lm_chat_black"
+            android:textColorHint="@color/lm_chat_black_50"
             android:textSize="15sp"
             app:layout_constraintEnd_toEndOf="@id/glEndVertical"
             app:layout_constraintStart_toStartOf="@id/glMidVertical"
@@ -392,10 +395,9 @@
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/clgData"
-            android:visibility="gone"
-            tools:visibility="visible"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             app:constraint_referenced_ids="btnPost,
                                             etTargetPriceValue,
                                             tvTargetPrice,
@@ -408,7 +410,8 @@
                                             tvOrderType,
                                             tvCcp,
                                             tvLtp,
-                                            tvScripName" />
+                                            tvScripName"
+            tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
