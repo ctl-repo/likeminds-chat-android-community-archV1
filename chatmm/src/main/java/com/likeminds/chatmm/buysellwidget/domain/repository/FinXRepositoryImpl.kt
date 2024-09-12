@@ -31,7 +31,7 @@ class FinXRepositoryImpl(private val finXService: FinXService) : FinXRepository 
             val result = finXService.searchScrip(
                 XAppInstance.sessionID.toString(),
                 searchScripReq = SearchScripRequest(
-                    noOfRecords = 5,
+                    noOfRecords = 20,
                     startPos = 0,
                     strScripName = strScripName,
                     strSegment = ""

@@ -2,19 +2,22 @@ package com.likeminds.chatmm.buysellwidget.presentation.view
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.core.content.ContextCompat
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.buysellwidget.data.ApiCallState
@@ -108,15 +111,24 @@ class FinxRecommendationFragment : Fragment() {
                     it.data?.let {
                         binding.pgLtp.gone()
                         Log.e("TAG", "setUpObservers: Success $it")
-                        FinXScripInfo.setLTP(it.Response?.alMt?.get(0)?.ltp, selectedScrip?.segment)
+                        //FinXScripInfo.setLTP(selectedScrip?.segment, it.Response?.alMt?.get(0)?.ltp)
+                        FinXScripInfo.setLtpAndCpp(it.Response?.alMt?.get(0))
+
                         entryPrice = FinXScripInfo.ltp.toString()
+
                         if (orderType) {
-                            slPrice = (FinXScripInfo.ltp - 10).toString()
-                            targetPrice = (FinXScripInfo.ltp + 10).toString()
+                            //TODO : Expect to add 5% SL and 10% Target
+                            slPrice = "0.00" //(FinXScripInfo.ltp - 10).toString()
+                            targetPrice = "0.00" //(FinXScripInfo.ltp + 10).toString()
                         } else {
-                            slPrice = (FinXScripInfo.ltp + 10).toString()
-                            targetPrice = (FinXScripInfo.ltp - 10).toString()
+                            slPrice = "0.00" //(FinXScripInfo.ltp + 10).toString()
+                            targetPrice = "0.00" //(FinXScripInfo.ltp - 10).toString()
                         }
+
+                        binding.tvLtp.text = "${FinXScripInfo.ltp}"
+                        binding.tvCcp.text = FinXScripInfo.getCcp()
+                        binding.tvCcp.setTextColor(ContextCompat.getColor(requireContext(), FinXScripInfo.getCcpColor()))
+
                         binding.etEntryPriceValue.setText(entryPrice)
                         binding.etSlPriceValue.setText(slPrice)
                         binding.etTargetPriceValue.setText(targetPrice)
@@ -134,27 +146,20 @@ class FinxRecommendationFragment : Fragment() {
     @SuppressLint("LogNotTimber")
     private fun setUpOnClickListeners() {
 
-        binding.etSearch.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        binding.etSearch.addTextChangedListener {
+            val strLength = it?.length ?: 0
+            showSearchList(selectedScrip == null || strLength != 0)
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (s?.isNotEmpty() == true && s.toString().length > 2) {
-                    binding.ibClear.visible()
-                    performSearch(s.toString())
-                } else {
-                    binding.ibClear.gone()
-                    binding.rvSearchScripResult.gone()
-
-                }
+            if (strLength >= 2) {
+                binding.ibClear.visible()
+                performSearch(it.toString())
             }
-
-            override fun afterTextChanged(s: Editable?) {}
-        })
+        }
 
         binding.ibClear.setOnClickListener {
             binding.etSearch.text?.clear()
             binding.ibClear.gone()
-            binding.rvSearchScripResult.gone()
+            showSearchList(false)
         }
 
         binding.rgOrderType.setOnCheckedChangeListener { group, checkedId ->
@@ -217,7 +222,7 @@ class FinxRecommendationFragment : Fragment() {
     private fun performSearch(query: String) {
         if (query.isNotEmpty() && query.length > 2) {
             finXViewModel.getSearchScrip(query)
-            binding.rvSearchScripResult.visible()
+            showSearchList(true)
         } else {
             Log.e("TAG", "performSearch: Search Query is empty")
         }
@@ -234,12 +239,26 @@ class FinxRecommendationFragment : Fragment() {
         adapter = SearchAdapter(emptyList()) { selectedItem ->
             selectedScrip = selectedItem
             selectedSearchScrip = selectedItem.secDesc
-            binding.etSearch.setText(selectedItem.secDesc)
-            binding.rvSearchScripResult.gone()
+            //binding.etSearch.setText(selectedItem.secName?.replace("|", " "))
+            binding.etSearch.setText("")
+            binding.tvScripName.text = selectedItem.secDesc
+
+            showSearchList(false)
+
             finXViewModel.getMultiTouchLine(selectedItem.token, selectedItem.segment)
         }
-        binding.rvSearchScripResult.adapter = adapter
+
         binding.rvSearchScripResult.layoutManager = LinearLayoutManager(context)
+
+        binding.rvSearchScripResult.addItemDecoration(
+            DividerItemDecoration(
+                binding.rvSearchScripResult.context,
+                DividerItemDecoration.VERTICAL
+            )
+        )
+
+        binding.rvSearchScripResult.adapter = adapter
+
         binding.ibBack.setOnClickListener {
             funOnBackPressed()
         }
@@ -247,6 +266,11 @@ class FinxRecommendationFragment : Fragment() {
         onBackPressedHandler {
             funOnBackPressed()
         }
+
+        binding.etSearch.requestFocus()
+        val imgr = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imgr.showSoftInput(binding.etSearch, 0)
+        imgr.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
     }
 
     private fun funOnBackPressed() {
@@ -273,6 +297,16 @@ class FinxRecommendationFragment : Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
     } catch (e: Exception) {
         e.printStackTrace()
+    }
+
+    private fun showSearchList(flag: Boolean) {
+        if (flag) {
+            binding.rvSearchScripResult.visible()
+            binding.clgData.gone()
+        } else {
+            binding.rvSearchScripResult.gone()
+            binding.clgData.visible()
+        }
     }
 
     override fun onDestroyView() {

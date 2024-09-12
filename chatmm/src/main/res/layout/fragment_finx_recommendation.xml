@@ -36,98 +36,149 @@
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.5" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/clSearch"
+
+        <com.likeminds.chatmm.theme.customview.LikeMindsToolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="46dp"
-            android:background="@color/finx_recommendation_background"
+            android:layout_height="wrap_content"
+            android:contentInsetStart="0dp"
+            android:contentInsetLeft="0dp"
+            android:contentInsetEnd="0dp"
+            android:contentInsetRight="0dp"
+            android:elevation="4dp"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark"
+            app:contentInsetEnd="0dp"
+            app:contentInsetLeft="0dp"
+            app:contentInsetRight="0dp"
+            app:contentInsetStart="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/etSearch"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginEnd="46dp"
-                android:background="#0000"
-                android:gravity="center_vertical"
-                android:hint="Search eg: infy bse, nifty fut"
-                android:imeOptions="actionGo"
-                android:importantForAutofill="no"
-                android:inputType="textAutoComplete"
-                android:singleLine="true"
-                android:textColor="@color/finx_recommendation_background"
-                android:textColorHint="@color/emoji_grey_900"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/ibBack"
-                app:layout_constraintTop_toTopOf="parent" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingHorizontal="15dp"
+                android:paddingVertical="15dp">
 
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/ibBack"
-                android:layout_width="46dp"
-                android:layout_height="46dp"
-                android:layout_marginStart="6dp"
-                android:padding="12dp"
-                android:src="@drawable/lm_chat_ic_arrow_back_black_24dp"
-                android:tint="@color/lm_chat_dark_grey"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/ibBack"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@color/lm_chat_transparent"
+                    android:src="@drawable/lm_chat_ic_arrow_back_black_24dp"
+                    android:tint="@color/lm_chat_white"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/ibClear"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="8dp"
-                android:padding="8dp"
-                android:src="@drawable/lm_chat_ic_cross_tags_2"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/lm_chat_dark_grey"
-                tools:visibility="visible" />
+                <com.likeminds.chatmm.theme.customview.LikeMindsTextView
+                    android:id="@+id/toolbar_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:ellipsize="end"
+                    android:maxEms="15"
+                    android:maxLines="1"
+                    android:text="@string/finx_share_recommendation"
+                    android:textSize="22sp"
+                    app:fontType="medium"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/ibBack"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="@string/lm_chat_community" />
 
-            <ProgressBar
-                android:id="@+id/pgSearch"
-                style="?android:attr/progressBarStyle"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_marginEnd="8dp"
-                android:progressTint="@color/finx_primary1"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:visibility="visible" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.likeminds.chatmm.theme.customview.LikeMindsToolbar>
+
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/etSearch"
+            android:layout_width="0dp"
+            android:layout_height="42dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/lm_chat_background_chat_other"
+            android:backgroundTint="@color/finx_recommendation_background"
+            android:gravity="center_vertical"
+            android:hint="Search stock name to recommend"
+            android:imeOptions="actionGo"
+            android:importantForAutofill="no"
+            android:inputType="textAutoComplete"
+            android:paddingStart="12dp"
+            android:paddingEnd="42dp"
+            android:singleLine="true"
+            android:textColorHint="@color/emoji_grey_900"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="@id/glEndVertical"
+            app:layout_constraintStart_toStartOf="@id/glStartVertical"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ibClear"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="8dp"
+            android:padding="8dp"
+            android:src="@drawable/lm_chat_ic_cross_tags_2"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/etSearch"
+            app:layout_constraintEnd_toEndOf="@id/etSearch"
+            app:layout_constraintTop_toTopOf="@id/etSearch"
+            app:tint="@color/lm_chat_dark_grey"
+            tools:visibility="visible" />
+
+        <ProgressBar
+            android:id="@+id/pgSearch"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="8dp"
+            android:progressTint="@color/finx_primary1"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/etSearch"
+            app:layout_constraintEnd_toEndOf="@id/etSearch"
+            app:layout_constraintTop_toTopOf="@id/etSearch"
+            tools:visibility="visible" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/tvScripNameLabel"
+            android:id="@+id/tvScripName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:text="@string/finx_scrip_name"
             android:textColor="@color/emoji_black"
-            android:textSize="12sp"
+            android:textSize="14sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@id/glStartVertical"
-            app:layout_constraintTop_toBottomOf="@id/clSearch" />
+            app:layout_constraintTop_toBottomOf="@id/etSearch"
+            tools:text="XXXXXXXX XXXXXXXX XXXX" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/tvScripNameValue"
+            android:id="@+id/tvLtp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:textColor="@color/emoji_black"
             android:textSize="16sp"
-            app:layout_constraintEnd_toStartOf="@+id/glEndVertical"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@id/glStartVertical"
-            app:layout_constraintTop_toBottomOf="@id/tvScripNameLabel"
-            tools:text="XXXXXX XXX XXXXXX XXXX" />
+            app:layout_constraintTop_toBottomOf="@id/tvScripName"
+            tools:text="###.##" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tvCcp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8sp"
+            android:textColor="@color/emoji_black"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@+id/tvLtp"
+            app:layout_constraintStart_toEndOf="@+id/tvLtp"
+            app:layout_constraintTop_toTopOf="@+id/tvLtp"
+            tools:text="###.## (##.##%)" />
+
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvOrderType"
@@ -138,7 +189,8 @@
             android:textColor="@color/emoji_black"
             android:textSize="12sp"
             app:layout_constraintStart_toStartOf="@id/glStartVertical"
-            app:layout_constraintTop_toBottomOf="@id/tvScripNameValue" />
+            app:layout_constraintTop_toBottomOf="@id/tvLtp" />
+
 
         <RadioGroup
             android:id="@+id/rgOrderType"
@@ -156,6 +208,8 @@
                 android:layout_height="wrap_content"
                 android:buttonTint="@color/finx_primary1"
                 android:checked="true"
+                android:paddingStart="0dp"
+                android:paddingEnd="24dp"
                 android:text="@string/finx_buy"
                 android:textColor="@color/emoji_black" />
 
@@ -165,9 +219,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:buttonTint="@color/finx_primary1"
+                android:paddingStart="0dp"
+                android:paddingEnd="24dp"
                 android:text="@string/finx_sell"
                 android:textColor="@color/emoji_black" />
         </RadioGroup>
+
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvEntryPrice"
@@ -303,15 +360,19 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnPost"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="250dp"
-            android:background="@color/finx_primary1"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/finx_primary1"
+            android:elevation="0dp"
             android:text="@string/lm_chat_create_chat_post"
             android:textColor="@color/gph_white"
+            android:visibility="gone"
+            app:elevation="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/glEndVertical"
-            app:layout_constraintStart_toStartOf="@id/glStartVertical" />
+            app:layout_constraintStart_toStartOf="@id/glStartVertical"
+            tools:visibility="visible" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvSearchScripResult"
@@ -319,13 +380,34 @@
             android:layout_height="0dp"
             android:layout_marginTop="10dp"
             android:background="@color/lm_chat_white"
-            android:visibility="gone"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/glEndVertical"
             app:layout_constraintStart_toStartOf="@id/glStartVertical"
-            app:layout_constraintTop_toBottomOf="@id/clSearch"
-            tools:itemCount="3"
-            tools:listitem="@layout/item_search_scrip_lm" />
+            app:layout_constraintTop_toBottomOf="@id/etSearch"
+            tools:itemCount="10"
+            tools:listitem="@layout/item_search_scrip_lm"
+            tools:visibility="gone" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/clgData"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="btnPost,
+                                            etTargetPriceValue,
+                                            tvTargetPrice,
+                                            etSlPriceValue,
+                                            tvSlPrice,
+                                            ivRetryEntryPrice,
+                                            etEntryPriceValue,
+                                            tvEntryPrice,
+                                            rgOrderType,
+                                            tvOrderType,
+                                            tvCcp,
+                                            tvLtp,
+                                            tvScripName" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -307,7 +307,7 @@
 
 
     <!--FinX-->
-    <string name="finx_scrip_name">Scrip Name</string>
+    <string name="finx_share_recommendation">Share Recommendation</string>
     <string name="finx_order_type">Order Type</string>
     <string name="finx_entry_price">Entry Price</string>
     <string name="finx_sl_price">SL Price</string>
