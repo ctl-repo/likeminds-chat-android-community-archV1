@@ -160,23 +160,23 @@ class SearchViewModel @Inject constructor() : ViewModel() {
 
             if (response.success) {
                 val conversations = response.data?.conversations.orEmpty()
-                _searchLiveData.postValue(
-                    SearchViewData.Builder()
-                        .disablePagination(disablePagination)
-                        .dataList(
-                            ViewDataConverter.convertSearchConversations(
-                                conversations,
-                                true,
-                                request.search
-                            )
-                        )
-                        .keyword(request.search)
-                        .checkForSeparator(true)
-                        .build()
-                )
-
                 if (conversations.isEmpty()) {
                     _chatroomConversationsSearchFinished.postValue(true)
+                } else {
+                    _searchLiveData.postValue(
+                        SearchViewData.Builder()
+                            .disablePagination(disablePagination)
+                            .dataList(
+                                ViewDataConverter.convertSearchConversations(
+                                    conversations,
+                                    true,
+                                    request.search
+                                )
+                            )
+                            .keyword(request.search)
+                            .checkForSeparator(true)
+                            .build()
+                    )
                 }
             } else {
                 _chatroomConversationsSearchFinished.postValue(true)
