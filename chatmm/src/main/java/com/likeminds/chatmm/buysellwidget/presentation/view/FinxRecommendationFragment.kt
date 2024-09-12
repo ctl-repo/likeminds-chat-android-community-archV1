@@ -118,15 +118,16 @@ class FinxRecommendationFragment : Fragment() {
 
                         if (orderType) {
                             //TODO : Expect to add 5% SL and 10% Target
-                            slPrice = "0.00" //(FinXScripInfo.ltp - 10).toString()
-                            targetPrice = "0.00" //(FinXScripInfo.ltp + 10).toString()
+                            slPrice = "" //(FinXScripInfo.ltp - 10).toString()
+                            targetPrice = "" //(FinXScripInfo.ltp + 10).toString()
                         } else {
-                            slPrice = "0.00" //(FinXScripInfo.ltp + 10).toString()
-                            targetPrice = "0.00" //(FinXScripInfo.ltp - 10).toString()
+                            slPrice = "" //(FinXScripInfo.ltp + 10).toString()
+                            targetPrice = "" //(FinXScripInfo.ltp - 10).toString()
                         }
 
                         binding.tvLtp.text = "${FinXScripInfo.ltp}"
                         binding.tvCcp.text = FinXScripInfo.getCcp()
+                        //binding.tvCcp.setTextColor(ContextCompat.getColor(requireContext(), FinXScripInfo.getCcpColor()))
                         binding.tvCcp.setTextColor(ContextCompat.getColor(requireContext(), FinXScripInfo.getCcpColor()))
 
                         binding.etEntryPriceValue.setText(entryPrice)
@@ -159,7 +160,9 @@ class FinxRecommendationFragment : Fragment() {
         binding.ibClear.setOnClickListener {
             binding.etSearch.text?.clear()
             binding.ibClear.gone()
-            showSearchList(false)
+            searchResults.clear()
+            adapter.updateData(searchResults)
+            showSearchList(selectedScrip == null)
         }
 
         binding.rgOrderType.setOnCheckedChangeListener { group, checkedId ->

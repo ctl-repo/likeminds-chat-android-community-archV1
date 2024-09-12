@@ -61,8 +61,8 @@ object FinXScripInfo {
 
     fun getCcpColor(): Int {
         val isLtpChange = when {
-            ((ltpChange ?: 0f) > 0f) -> true
-            ((ltpChange ?: 0f) < 0f) -> false
+            (prevClose - ltp > 0f) -> true
+            (prevClose - ltp < 0f) -> false
             else -> null
         }
 
