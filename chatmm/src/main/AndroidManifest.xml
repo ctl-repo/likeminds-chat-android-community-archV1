@@ -32,7 +32,8 @@
     <application>
         <activity
             android:name=".buysellwidget.presentation.view.FinxRecommendationActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".chatroom.explore.view.ChatroomExploreActivity"
             android:exported="false"
