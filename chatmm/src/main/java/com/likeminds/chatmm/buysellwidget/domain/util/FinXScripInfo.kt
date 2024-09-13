@@ -68,8 +68,8 @@ object FinXScripInfo {
 
         return when (isLtpChange) {
             null -> R.color.lm_chat_black
-            true -> R.color.lm_chat_teal
-            false -> R.color.lm_chat_red
+            true -> R.color.lm_chat_red
+            false -> R.color.lm_chat_teal
         }
     }
 }
