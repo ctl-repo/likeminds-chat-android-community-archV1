@@ -5963,8 +5963,6 @@ class ChatroomDetailFragment :
         }
 
     private fun searchConversations() {
-        Log.d(LOG_TAG, "chatroom detail search started")
-
         val extras = LMChatSearchExtras.Builder()
             .chatroomId(chatroomId)
             .build()
