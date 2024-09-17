@@ -10,7 +10,7 @@
         <item name="android:itemBackground">@color/lm_chat_white</item>
         <item name="android:itemTextAppearance">@style/iconMenuTextAppearance</item>
         <item name="windowActionModeOverlay">true</item>
-        <item name="android:actionModeBackground">@color/lm_chat_dark_turquoise</item>
+        <item name="android:actionModeBackground">@color/finx_primary1</item>
         <item name="snackbarStyle">@style/Widget.App.Snackbar</item>
         <item name="android:windowActivityTransitions">true</item>
     </style>
