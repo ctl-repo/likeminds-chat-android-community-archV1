@@ -439,7 +439,7 @@ class ChatroomDetailFragment :
                 }
             recommendation?.let {
                 val metaData = JSONObject(Gson().toJson(it))
-                postConversation(metadata = metaData)
+                postConversation(conversation = it.searchRsp?.secDesc, metadata = metaData)
             }
         } else {
             Log.e(TAG, "Action canceled or failed")
