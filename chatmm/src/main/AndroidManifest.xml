@@ -32,17 +32,18 @@
     <application>
         <activity
             android:name=".buysellwidget.presentation.view.FinxRecommendationActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".chatroom.explore.view.ChatroomExploreActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/LMAppTheme.NoActionBar" />
+            android:theme="@style/LMAppTheme.NoActionBar.NoAnimation" />
         <activity
             android:name=".media.view.LMChatMediaPickerActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/LMAppTheme.NoActionBar" />
+            android:theme="@style/LMAppTheme.NoActionBar.NoAnimation" />
         <activity
             android:name=".media.view.MediaActivity"
             android:exported="false"
@@ -52,32 +53,32 @@
             android:name=".chatroom.detail.view.ChatroomDetailActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/LMAppTheme.NoActionBar" />
+            android:theme="@style/LMAppTheme.NoActionBar.NoAnimation" />
         <activity
             android:name=".polls.view.PollResultsActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/LMAppTheme.NoActionBar" />
+            android:theme="@style/LMAppTheme.NoActionBar.NoAnimation" />
         <activity
             android:name=".chatroom.detail.view.ViewParticipantsActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/LMAppTheme.NoActionBar" />
+            android:theme="@style/LMAppTheme.NoActionBar.NoAnimation" />
         <activity
             android:name=".search.view.LMChatSearchActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/LMAppTheme.NoActionBar" />
+            android:theme="@style/LMAppTheme.NoActionBar.NoAnimation" />
         <activity
             android:name=".report.view.ReportActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/LMAppTheme.NoActionBar" />
+            android:theme="@style/LMAppTheme.NoActionBar.NoAnimation" />
         <activity
             android:name=".member.view.LMChatCommunityMembersActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/LMAppTheme.NoActionBar" />
+            android:theme="@style/LMAppTheme.NoActionBar.NoAnimation" />
 
         <service android:name=".utils.chrometabs.CustomTabService" />
         <service
