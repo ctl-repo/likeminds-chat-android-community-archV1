@@ -25,4 +25,6 @@ data class FinxSmSearchApiRsp(
     @SerializedName("Token") var token: Int? = null,
     //@SerializedName("MWTag") var mwTag: String? = "",
     //@SerializedName("isAdded") var isAdded: Boolean = false,
-):Parcelable
+):Parcelable {
+    fun getScripName() = secName?.replace("|", " ") ?: symbol
+}

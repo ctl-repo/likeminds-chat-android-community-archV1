@@ -242,7 +242,7 @@ class FinxRecommendationFragment : Fragment() {
             selectedScrip = selectedItem
             //binding.etSearch.setText(selectedItem.secName?.replace("|", " "))
             binding.etSearch.setText("")
-            binding.tvScripName.text = selectedItem.secName?.replace("|", " ")
+            binding.tvScripName.text = selectedItem.getScripName()
 
             showSearchList(false)
 

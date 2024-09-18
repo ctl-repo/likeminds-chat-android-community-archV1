@@ -16,9 +16,9 @@ class SearchAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: FinxSmSearchApiRsp) {
-            binding.tvScripName.text = item.secName?.replace("|", " ")
+            binding.tvScripName.text = item.getScripName()
             binding.tvExchangeName.text = "" //item.exchangeSegment
-            binding.tvDesc.text = item.secDesc + " " + item.exchangeSegment
+            binding.tvDesc.text = item.exchangeSegment
 
             itemView.setOnClickListener(View.OnClickListener() {
                 itemClickListener(item)

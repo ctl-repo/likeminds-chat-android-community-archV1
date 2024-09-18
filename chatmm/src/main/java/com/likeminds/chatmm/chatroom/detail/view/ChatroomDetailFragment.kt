@@ -40,7 +40,6 @@ import com.google.gson.Gson
 import com.likeminds.chatmm.*
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.buysellwidget.domain.model.FinxRecommendationMetadata
-import com.likeminds.chatmm.buysellwidget.presentation.view.FinXRecommendationWidgetDialog
 import com.likeminds.chatmm.buysellwidget.presentation.view.FinxRecommendationActivity
 import com.likeminds.chatmm.chatroom.detail.model.*
 import com.likeminds.chatmm.chatroom.detail.util.*
@@ -439,7 +438,7 @@ class ChatroomDetailFragment :
                 }
             recommendation?.let {
                 val metaData = JSONObject(Gson().toJson(it))
-                postConversation(conversation = it.searchRsp?.secDesc, metadata = metaData)
+                postConversation(conversation = it.searchRsp?.getScripName(), metadata = metaData)
             }
         } else {
             Log.e(TAG, "Action canceled or failed")
