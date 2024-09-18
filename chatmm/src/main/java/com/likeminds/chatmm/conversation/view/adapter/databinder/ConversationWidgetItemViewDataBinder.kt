@@ -221,6 +221,9 @@ class ConversationWidgetItemViewDataBinder(
                 adapterListener.reactionHintShown()
             }
 
+            /*For hiding conversation parameter that is send from postConversation for reply/highlight implementation*/
+            tvConversation.hide()
+
             ivAddReaction.setOnClickListener {
                 adapterListener.onLongPressConversation(
                     data,

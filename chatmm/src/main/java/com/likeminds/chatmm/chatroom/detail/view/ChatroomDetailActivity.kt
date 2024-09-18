@@ -155,10 +155,10 @@ class ChatroomDetailActivity : BaseAppCompatActivity() {
         }
         supportFragmentManager.popBackStack()
         super.onBackPressed()
-        overridePendingTransition(
+        /*overridePendingTransition(
             R.anim.lm_chat_slide_from_left,
             R.anim.lm_chat_slide_to_right
-        )
+        )*/
     }
 
     // triggers an event when chatroom search is closed

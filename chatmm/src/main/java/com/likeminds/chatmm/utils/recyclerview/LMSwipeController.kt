@@ -38,7 +38,8 @@ class LMSwipeController(
         ITEM_CONVERSATION_VOICE_NOTE,
         ITEM_CHAT_ROOM,
         ITEM_POLL,
-        ITEM_CHAT_ROOM_ANNOUNCEMENT
+        ITEM_CHAT_ROOM_ANNOUNCEMENT,
+        ITEM_CONVERSATION_CUSTOM_WIDGET
     )
 
     private lateinit var imageDrawable: Drawable

@@ -10,7 +10,7 @@
         <item name="android:itemBackground">@color/lm_chat_white</item>
         <item name="android:itemTextAppearance">@style/iconMenuTextAppearance</item>
         <item name="windowActionModeOverlay">true</item>
-        <item name="android:actionModeBackground">@color/lm_chat_dark_turquoise</item>
+        <item name="android:actionModeBackground">@color/finx_primary1</item>
         <item name="snackbarStyle">@style/Widget.App.Snackbar</item>
         <item name="android:windowActivityTransitions">true</item>
     </style>
@@ -135,5 +135,14 @@
     <style name="ChatFragmentTabItem" parent="TextAppearance.Design.Tab">
         <item name="textAllCaps">false</item>
         <item name="android:textAllCaps">false</item>
+    </style>
+
+    <!--To disable both enter and exit animations between activities-->
+    <style name="NoAnimationTheme" parent="Theme.AppCompat.Light">
+        <item name="android:windowAnimationStyle">@null</item>
+    </style>
+
+    <style name="LMAppTheme.NoActionBar.NoAnimation" parent="LMAppTheme.NoActionBar">
+        <item name="android:windowAnimationStyle">@null</item>
     </style>
 </resources>
