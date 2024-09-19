@@ -67,7 +67,7 @@
                     android:layout_height="match_parent"
                     android:background="@color/lm_chat_transparent"
                     android:src="@drawable/lm_chat_ic_arrow_back_black_24dp"
-                    android:tint="@color/lm_chat_white"
+                    android:tint="@color/lm_chat_black"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -84,6 +84,7 @@
                     android:text="@string/finx_share_recommendation"
                     android:textSize="22sp"
                     app:fontType="medium"
+                    android:textColor="@color/lm_chat_black"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/ibBack"
                     app:layout_constraintTop_toTopOf="parent"

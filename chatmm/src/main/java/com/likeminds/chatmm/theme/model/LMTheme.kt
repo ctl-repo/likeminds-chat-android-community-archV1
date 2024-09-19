@@ -39,9 +39,9 @@ object LMTheme {
     // returns toolbar color
     fun getToolbarColor(): Int {
         return if (headerColor == "#FFFFFF") {
-            Color.BLACK
+            Color.DKGRAY
         } else {
-            Color.WHITE
+            Color.BLACK
         }
     }
 
@@ -50,7 +50,7 @@ object LMTheme {
         return if (headerColor == "#FFFFFF") {
             Color.GRAY
         } else {
-            Color.WHITE
+            Color.DKGRAY
         }
     }
 
