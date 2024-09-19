@@ -438,7 +438,9 @@ class ChatroomDetailFragment :
                 }
             recommendation?.let {
                 val metaData = JSONObject(Gson().toJson(it))
-                postConversation(conversation = it.searchRsp?.getScripName(), metadata = metaData)
+                val message =
+                    "${if (it.isBuy == true) "Buy" else "Sell"} ${it.searchRsp?.getScripName()}"
+                postConversation(conversation = message, metadata = metaData)
             }
         } else {
             Log.e(TAG, "Action canceled or failed")
