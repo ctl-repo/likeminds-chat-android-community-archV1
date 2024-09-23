@@ -58,7 +58,7 @@ class ConversationWidgetItemViewDataBinder(
                 Gson().fromJson(metadata.toString(), FinxRecommendationMetadata::class.java)
 
             with(recomData) {
-                tvFinXRecommendationTitle.text = searchRsp?.secDesc ?: ""
+                tvFinXRecommendationTitle.text = searchRsp?.getScripName()
                 tvStopLossTitleValue.text = slPrice
                 tvEntryPriceValue.text = entryPrice
                 tvTargetPriceValue.text = targetPrice

@@ -1,6 +1,7 @@
 package com.likeminds.chatmm.buysellwidget.presentation.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.likeminds.chatmm.buysellwidget.domain.model.FinxSmSearchApiRsp
@@ -15,13 +16,13 @@ class SearchAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: FinxSmSearchApiRsp) {
-            binding.tvScripName.text = item.secName?.replace("|", " ")
+            binding.tvScripName.text = item.getScripName()
             binding.tvExchangeName.text = "" //item.exchangeSegment
-            binding.tvDesc.text = item.secDesc + " " + item.exchangeSegment
+            binding.tvDesc.text = item.exchangeSegment
 
-            itemView.setOnClickListener {
+            itemView.setOnClickListener(View.OnClickListener() {
                 itemClickListener(item)
-            }
+            })
         }
     }
 

@@ -77,6 +77,7 @@ class LMChatCommunityMembersFragment :
         initRecyclerView()
         initData()
         initializeSearchView()
+        showSearchToolbar()
     }
 
     override fun observeData() {

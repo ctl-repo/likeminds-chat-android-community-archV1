@@ -1,11 +1,15 @@
 package com.likeminds.chatmm.chatroom.detail.view
 
 import android.app.Activity
-import android.content.*
+import android.content.ClipData
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import com.likeminds.chatmm.*
+import com.likeminds.chatmm.LMAnalytics
+import com.likeminds.chatmm.R
+import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailExtras
 import com.likeminds.chatmm.databinding.ActivityChatroomDetailBinding
 import com.likeminds.chatmm.utils.ErrorUtil.emptyExtrasException
@@ -155,10 +159,12 @@ class ChatroomDetailActivity : BaseAppCompatActivity() {
         }
         supportFragmentManager.popBackStack()
         super.onBackPressed()
-        /*overridePendingTransition(
+        /*
+        overridePendingTransition(
             R.anim.lm_chat_slide_from_left,
             R.anim.lm_chat_slide_to_right
-        )*/
+        )
+        */
     }
 
     // triggers an event when chatroom search is closed

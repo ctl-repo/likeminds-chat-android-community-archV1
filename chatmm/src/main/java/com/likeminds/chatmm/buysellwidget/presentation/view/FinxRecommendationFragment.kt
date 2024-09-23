@@ -57,7 +57,6 @@ class FinxRecommendationFragment : Fragment() {
     private var orderType: Boolean = true
     private var finxRecommendationMetadata: FinxRecommendationMetadata? = null
     private var selectedScrip: FinxSmSearchApiRsp? = null
-    private var selectedSearchScrip: String? = null
 
     //validation for input fields
     private val maxDigitsBeforeDecimal = 10
@@ -118,15 +117,16 @@ class FinxRecommendationFragment : Fragment() {
 
                         if (orderType) {
                             //TODO : Expect to add 5% SL and 10% Target
-                            slPrice = "0.00" //(FinXScripInfo.ltp - 10).toString()
-                            targetPrice = "0.00" //(FinXScripInfo.ltp + 10).toString()
+                            slPrice = "" //(FinXScripInfo.ltp - 10).toString()
+                            targetPrice = "" //(FinXScripInfo.ltp + 10).toString()
                         } else {
-                            slPrice = "0.00" //(FinXScripInfo.ltp + 10).toString()
-                            targetPrice = "0.00" //(FinXScripInfo.ltp - 10).toString()
+                            slPrice = "" //(FinXScripInfo.ltp + 10).toString()
+                            targetPrice = "" //(FinXScripInfo.ltp - 10).toString()
                         }
 
                         binding.tvLtp.text = "${FinXScripInfo.ltp}"
                         binding.tvCcp.text = FinXScripInfo.getCcp()
+                        //binding.tvCcp.setTextColor(ContextCompat.getColor(requireContext(), FinXScripInfo.getCcpColor()))
                         binding.tvCcp.setTextColor(ContextCompat.getColor(requireContext(), FinXScripInfo.getCcpColor()))
 
                         binding.etEntryPriceValue.setText(entryPrice)
@@ -159,7 +159,9 @@ class FinxRecommendationFragment : Fragment() {
         binding.ibClear.setOnClickListener {
             binding.etSearch.text?.clear()
             binding.ibClear.gone()
-            showSearchList(false)
+            searchResults.clear()
+            adapter.updateData(searchResults)
+            showSearchList(selectedScrip == null)
         }
 
         binding.rgOrderType.setOnCheckedChangeListener { group, checkedId ->
@@ -193,7 +195,7 @@ class FinxRecommendationFragment : Fragment() {
                 slPriceValue > entryPriceValue && entryPriceValue > targetPriceValue
             }
 
-            if (isValid && !selectedSearchScrip.isNullOrEmpty()) {
+            if (isValid && selectedScrip != null) {
                 finxRecommendationMetadata = FinxRecommendationMetadata(
                     entryPrice = entryPriceValue.toString(),
                     slPrice = slPriceValue.toString(),
@@ -238,10 +240,9 @@ class FinxRecommendationFragment : Fragment() {
         //init RecyclerView
         adapter = SearchAdapter(emptyList()) { selectedItem ->
             selectedScrip = selectedItem
-            selectedSearchScrip = selectedItem.secDesc
             //binding.etSearch.setText(selectedItem.secName?.replace("|", " "))
             binding.etSearch.setText("")
-            binding.tvScripName.text = selectedItem.secDesc
+            binding.tvScripName.text = selectedItem.getScripName()
 
             showSearchList(false)
 
