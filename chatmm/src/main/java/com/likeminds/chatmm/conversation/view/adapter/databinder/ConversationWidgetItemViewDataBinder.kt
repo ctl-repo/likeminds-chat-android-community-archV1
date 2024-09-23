@@ -125,6 +125,7 @@ class ConversationWidgetItemViewDataBinder(
                 //For hiding FinXRecommendation custom widget when deleted by user
                 clFinXRecommendation.hide()
             } else {
+                clFinXRecommendation.show()
                 ChatroomConversationItemViewDataBinderUtil.initConversationBubbleTextView(
                     tvConversation,
                     data.answer,
