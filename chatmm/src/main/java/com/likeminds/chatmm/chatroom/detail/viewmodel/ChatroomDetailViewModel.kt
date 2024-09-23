@@ -39,8 +39,7 @@ import com.likeminds.likemindschat.conversation.util.*
 import com.likeminds.likemindschat.dm.model.*
 import com.likeminds.likemindschat.helper.model.*
 import com.likeminds.likemindschat.poll.model.*
-import com.likeminds.likemindschat.user.model.MemberBlockState
-import com.likeminds.likemindschat.user.model.MemberStateResponse
+import com.likeminds.likemindschat.user.model.*
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -297,6 +296,11 @@ class ChatroomDetailViewModel @Inject constructor(
         } else {
             getChatroom()?.chatroomWithUser
         }
+    }
+
+    fun isOtherUserAIBot(): Boolean {
+        val otherUser = getOtherDmMember()
+        return (otherUser?.roles?.contains(UserRole.CHATBOT) == true)
     }
 
     fun getLoggedInMemberId(): String {
@@ -1493,6 +1497,10 @@ class ChatroomDetailViewModel @Inject constructor(
 
             if (metadata != null) {
                 postConversationRequestBuilder.metadata(metadata)
+            }
+
+            if (isOtherUserAIBot()) {
+                postConversationRequestBuilder.triggerBot(true)
             }
 
             val postConversationRequest = postConversationRequestBuilder.build()

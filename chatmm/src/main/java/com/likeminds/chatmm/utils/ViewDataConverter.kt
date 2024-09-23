@@ -280,6 +280,7 @@ object ViewDataConverter {
             .uuid(member.uuid)
             .isOwner(member.isOwner)
             .memberSince(member.memberSince)
+            .roles(member.roles)
             .build()
     }
 
@@ -337,6 +338,7 @@ object ViewDataConverter {
             .updatedAt(memberStateResponse.updatedAt)
             .isOwner(memberStateResponse.isOwner)
             .sdkClientInfo(convertSDKClientInfo(memberStateResponse.sdkClientInfo))
+            .roles(memberStateResponse.roles)
             .build()
     }
 
@@ -483,6 +485,7 @@ object ViewDataConverter {
             .customTitle(user.customTitle)
             .isGuest(user.isGuest)
             .sdkClientInfo(convertSDKClientInfo(user.sdkClientInfo))
+            .roles(user.roles)
             .build()
     }
 
@@ -847,6 +850,7 @@ object ViewDataConverter {
         val member = MemberViewData.Builder()
             .id(searchChatroom.member.id)
             .name(searchChatroom.member.name)
+            .roles(searchChatroom.member.roles)
             .build()
 
         return ChatroomViewData.Builder()
@@ -928,6 +932,7 @@ object ViewDataConverter {
         val member = MemberViewData.Builder()
             .id(searchConversation.member.id)
             .name(searchConversation.member.name)
+            .roles(searchConversation.member.roles)
             .build()
 
         return ConversationViewData.Builder()
@@ -957,6 +962,7 @@ object ViewDataConverter {
             .userUniqueId(participant.userUniqueId)
             .customTitle(participant.customTitle)
             .sdkClientInfo(convertSDKClientInfo(participant.sdkClientInfo))
+            .roles(participant.roles)
             .build()
     }
 
