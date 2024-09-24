@@ -242,6 +242,11 @@ class ChatroomDetailFragment :
 
     private var showTapToUndoLocally = true
 
+    private val mResearchCustomWidgetVisibility: Int by lazy {
+        val isVisible = viewModel.isWidgetEnabled() && XAppInstance.isResearchPostAllowed
+        if (isVisible) View.VISIBLE else View.INVISIBLE
+    }
+
     private val progressReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.extras != null) {
@@ -794,9 +799,7 @@ class ChatroomDetailFragment :
             }
 
             //to check whether widget is enabled or not
-            val isWidgetEnabled = viewModel.isWidgetEnabled() && XAppInstance.isResearchPostAllowed
-
-            inputBox.ivCustomWidget.isVisible = isWidgetEnabled
+            inputBox.ivCustomWidget.visibility = mResearchCustomWidgetVisibility
             inputBox.ivCustomWidget.setOnClickListener {
                 initVisibilityOfAttachmentsBar(View.GONE)
                 onCustomWidgetAAttachmentClicked()
@@ -1628,7 +1631,7 @@ class ChatroomDetailFragment :
                     }
                     if (!isVoiceNoteLocked && !isVoiceNoteRecording && !isDMRequestSent) {
                         inputBox.ivAttachment.visibility = View.VISIBLE
-                        inputBox.ivCustomWidget.visibility = View.VISIBLE
+                        inputBox.ivCustomWidget.visibility = mResearchCustomWidgetVisibility
                     }
                     inputBox.viewLink.clLink.visibility = View.GONE
                     inputBox.viewReply.clReply.visibility = View.GONE
@@ -1649,7 +1652,7 @@ class ChatroomDetailFragment :
                     }
                     if (!isVoiceNoteLocked && !isVoiceNoteRecording) {
                         inputBox.ivAttachment.visibility = View.VISIBLE
-                        inputBox.ivCustomWidget.visibility = View.VISIBLE
+                        inputBox.ivCustomWidget.visibility = mResearchCustomWidgetVisibility
                     }
                     inputBox.viewLink.clLink.visibility = View.GONE
                     inputBox.viewReply.clReply.visibility = View.VISIBLE
