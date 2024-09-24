@@ -13,4 +13,5 @@ object XAppInstance {
     var symbol: String? = null
     var secDesc: String? = null
     var userID: String? = null
+    var isResearchPostAllowed: Boolean = false
 }
