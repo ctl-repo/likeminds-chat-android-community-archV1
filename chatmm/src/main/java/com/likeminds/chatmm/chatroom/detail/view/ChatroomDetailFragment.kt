@@ -109,6 +109,7 @@ import com.likeminds.chatmm.utils.membertagging.util.MemberTaggingUtil
 import com.likeminds.chatmm.utils.membertagging.util.MemberTaggingViewListener
 import com.likeminds.chatmm.utils.membertagging.view.MemberTaggingView
 import com.likeminds.chatmm.utils.model.BaseViewType
+import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_PROGRESS
 import com.likeminds.chatmm.utils.observer.ChatEvent
 import com.likeminds.chatmm.utils.permissions.*
 import com.likeminds.chatmm.utils.recyclerview.LMSwipeController
@@ -2857,6 +2858,7 @@ class ChatroomDetailFragment :
         viewModel.conversationEventFlow.onEach { response ->
             when (response) {
                 is ChatroomDetailViewModel.ConversationEvent.UpdatedConversation -> {
+                    Log.d("PUI", "ConversationEvent.UpdatedConversation")
                     //Observe for any updates to conversations already appended to the recyclerview, usually for
                     //deleted, edited, updating temporary conversations
                     getIndexedConversations(response.conversations).forEach { item ->
@@ -2866,6 +2868,7 @@ class ChatroomDetailFragment :
                 }
 
                 is ChatroomDetailViewModel.ConversationEvent.NewConversation -> {
+                    Log.d("PUI", "ConversationEvent.NewConversation")
                     //Observe for any new conversations triggered by the database callback
                     val isAddedBelow: Boolean
                     val conversations =
@@ -2879,6 +2882,7 @@ class ChatroomDetailFragment :
                         !isConversationAlreadyPresent(conversations[indexOfHeaderConversation].id)
                     ) {
                         //Contains a header conversation
+                        Log.d("PUI", "header conversation")
                         chatroomDetailAdapter.add(
                             0,
                             conversations[indexOfHeaderConversation]
@@ -2895,49 +2899,23 @@ class ChatroomDetailFragment :
                         //get last conversation from the callback
                         val lastNewConversation = conversations.last()
 
-                        //get first conversation from the adapter
-                        val firstPresentConversation =
-                            viewModel.getFirstNormalOrPollConversation(chatroomDetailAdapter.items())
+                        val progressItemIndex = chatroomDetailAdapter.items().indexOfFirst {
+                            it.viewType == ITEM_CONVERSATION_PROGRESS
+                        }
 
-                        if (firstPresentConversation?.createdEpoch != null) {
-                            //lastNewConversation's createdEpoch < firstPresentConversation's createdEpoch add above firstPresentConversation
-                            if (lastNewConversation.createdEpoch < firstPresentConversation.createdEpoch) {
-                                val indexToAdd =
-                                    chatroomDetailAdapter.items()
-                                        .indexOf(firstPresentConversation)
-                                isAddedBelow = true
-                                if (indexToAdd.isValidIndex()) {
-                                    chatroomDetailAdapter.addAll(
-                                        indexToAdd,
-                                        conversations as List<BaseViewType>
-                                    )
-                                } else {
-                                    chatroomDetailAdapter.addAll(conversations as List<BaseViewType>)
-                                }
-                            } else {
-                                //add below last item in adapter
-                                isAddedBelow = false
-                                val indexToAdd = getIndexOfAnyGraphicItem()
-                                if (indexToAdd.isValidIndex()) {
-                                    chatroomDetailAdapter.addAll(
-                                        indexToAdd,
-                                        conversations as List<BaseViewType>
-                                    )
-                                } else {
-                                    chatroomDetailAdapter.addAll(conversations as List<BaseViewType>)
-                                }
-                            }
+                        if (progressItemIndex.isValidIndex()) {
+                            chatroomDetailAdapter.removeIndex(progressItemIndex)
+                        }
+
+                        //Add the conversations to recyclerview
+                        val indexToAdd = getIndexOfAnyGraphicItem()
+                        if (indexToAdd.isValidIndex()) {
+                            chatroomDetailAdapter.addAll(
+                                indexToAdd,
+                                conversations as List<BaseViewType>
+                            )
                         } else {
-                            isAddedBelow = false
-                            val indexToAdd = getIndexOfAnyGraphicItem()
-                            if (indexToAdd.isValidIndex()) {
-                                chatroomDetailAdapter.addAll(
-                                    indexToAdd,
-                                    conversations as List<BaseViewType>
-                                )
-                            } else {
-                                chatroomDetailAdapter.addAll(conversations as List<BaseViewType>)
-                            }
+                            chatroomDetailAdapter.addAll(conversations as List<BaseViewType>)
                         }
 
                         filterConversationWithWidget(conversations)
@@ -2946,8 +2924,7 @@ class ChatroomDetailFragment :
                         if (
                             (conversations.count { conversation ->
                                 conversation.memberViewData.sdkClientInfo.uuid == userPreferences.getUUID()
-                            } == conversations.size) && isAddedBelow
-                        ) {
+                            } == conversations.size)) {
                             scrollToPosition(SCROLL_DOWN)
                         } else {
                             //Add unseen conversations if present
@@ -2996,6 +2973,14 @@ class ChatroomDetailFragment :
                         if (lastInsertedDate != response.conversation.date) {
                             lastInsertedDate = response.conversation.date
                             chatroomDetailAdapter.add(viewModel.getDateView(response.conversation.date))
+                        }
+
+                        val progressItemIndex = chatroomDetailAdapter.items().indexOfFirst {
+                            it.viewType == ITEM_CONVERSATION_PROGRESS
+                        }
+
+                        if (progressItemIndex.isValidIndex()) {
+                            chatroomDetailAdapter.removeIndex(progressItemIndex)
                         }
 
                         if (indexToAdd.isValidIndex()) {
