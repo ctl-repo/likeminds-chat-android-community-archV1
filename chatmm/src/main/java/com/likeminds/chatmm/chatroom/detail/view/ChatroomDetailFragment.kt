@@ -3007,6 +3007,20 @@ class ChatroomDetailFragment :
 
                         filterConversationWithWidget(listOf(response.conversation))
 
+                        //add progress bar to waiting response from AI bot
+                        val isAIBotConversation = response.isBotConversation
+                        if (isAIBotConversation) {
+                            val progressViewData =
+                                LMChatConversationProgressViewData.Builder().build()
+
+                            val indexToAddProgress = getIndexOfAnyGraphicItem()
+                            if (indexToAddProgress.isValidIndex(chatroomDetailAdapter.items())) {
+                                chatroomDetailAdapter.add(indexToAddProgress, progressViewData)
+                            } else {
+                                chatroomDetailAdapter.add(progressViewData)
+                            }
+                        }
+
                         //add tap to undo if dm is rejected and the logged in member has rejected the DM request
                         if (response.conversation.state == STATE_DM_REJECTED
                             && viewModel.getLoggedInMemberId() ==
@@ -3018,6 +3032,7 @@ class ChatroomDetailFragment :
                                 true
                             )
                         }
+
                         scrollToPosition(SCROLL_DOWN)
                     }
                 }
@@ -3129,6 +3144,10 @@ class ChatroomDetailFragment :
     // updates the header name on chatroom
     private fun updateHeader(header: String, isSecretChatRoom: Boolean) {
         binding.apply {
+            val isAIBot = viewModel.isOtherUserAIBot()
+            tvAiBot.isVisible = isAIBot
+            tvAiBot.setBackgroundColor(LMTheme.getButtonsColor())
+
             if (viewModel.isDmChatroom()) {
                 tvToolbarSubTitle.hide()
                 val member = viewModel.getOtherDmMember() ?: return

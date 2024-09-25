@@ -149,8 +149,10 @@ class ChatroomDetailViewModel @Inject constructor(
         data class UpdatedConversation(val conversations: List<ConversationViewData>) :
             ConversationEvent()
 
-        data class PostedConversation(val conversation: ConversationViewData) :
-            ConversationEvent()
+        data class PostedConversation(
+            val conversation: ConversationViewData,
+            val isBotConversation: Boolean
+        ) : ConversationEvent()
     }
 
     private val conversationEventChannel = Channel<ConversationEvent>(Channel.BUFFERED)
@@ -771,6 +773,7 @@ class ChatroomDetailViewModel @Inject constructor(
             lmChatClient.observeLiveConversations(context, chatroomId)
         }
     }
+
 
     /**
      * Send updates to UI using live data
@@ -1512,7 +1515,7 @@ class ChatroomDetailViewModel @Inject constructor(
                 updatedFileUris,
                 conversationCreatedEpoch
             )
-            sendPostedConversationsToUI(temporaryConversation)
+            sendPostedConversationsToUI(temporaryConversation, postConversationRequest.triggerBot)
 
             val response = lmChatClient.postConversation(postConversationRequest)
             if (response.success) {
@@ -1631,12 +1634,20 @@ class ChatroomDetailViewModel @Inject constructor(
      * Send updates to UI using live data
      * @param conversation conversation object
      */
-    private fun sendPostedConversationsToUI(conversation: ConversationViewData?) {
+    private fun sendPostedConversationsToUI(
+        conversation: ConversationViewData?,
+        triggerBot: Boolean
+    ) {
         if (conversation == null) {
             return
         }
         viewModelScope.launchDefault {
-            conversationEventChannel.send(ConversationEvent.PostedConversation(conversation))
+            conversationEventChannel.send(
+                ConversationEvent.PostedConversation(
+                    conversation,
+                    triggerBot
+                )
+            )
         }
     }
 
