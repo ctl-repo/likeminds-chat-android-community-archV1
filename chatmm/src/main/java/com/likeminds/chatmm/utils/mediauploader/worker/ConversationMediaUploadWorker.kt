@@ -38,7 +38,9 @@ class ConversationMediaUploadWorker(
                     )
                 )
                 .setConstraints(
-                    Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
+                    Constraints.Builder()
+                        .setRequiredNetworkType(NetworkType.CONNECTED)
+                        .build()
                 )
                 .setBackoffCriteria(
                     BackoffPolicy.LINEAR,
@@ -217,10 +219,12 @@ class ConversationMediaUploadWorker(
                     )
                 }
             }
+
             TransferState.FAILED -> {
                 failedIndex.add(response.index)
                 checkWorkerComplete(totalFilesToUpload, continuation)
             }
+
             else -> {
 
             }

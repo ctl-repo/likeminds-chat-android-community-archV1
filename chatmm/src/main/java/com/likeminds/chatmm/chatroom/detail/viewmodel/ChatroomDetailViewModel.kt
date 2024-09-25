@@ -1547,7 +1547,10 @@ class ChatroomDetailViewModel @Inject constructor(
                     errorEventChannel.send(ErrorMessageEvent.PostConversation(response.errorMessage))
                 }
             } else { // with attachments
+                //create upload worker
+                var uploadData: Pair<WorkContinuation?, String>? = null
 
+                //enqueue worker
             }
         }
     }

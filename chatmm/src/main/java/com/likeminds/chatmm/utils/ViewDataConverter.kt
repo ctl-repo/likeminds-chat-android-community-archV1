@@ -661,6 +661,12 @@ object ViewDataConverter {
         singleUriData: SingleUriData,
         index: Int
     ): Attachment {
+        val attachmentMeta = AttachmentMeta.Builder()
+            .numberOfPage(singleUriData.pdfPageCount)
+            .duration(singleUriData.duration)
+            .size(singleUriData.size)
+            .build()
+
         return Attachment.Builder()
             .name(singleUriData.mediaName)
             .url(singleUriData.uri.toString())
@@ -668,16 +674,11 @@ object ViewDataConverter {
             .index(index)
             .width(singleUriData.width)
             .height(singleUriData.height)
+            .awsFolderPath()
             .localFilePath(singleUriData.uri.toString())
             .thumbnailUrl(singleUriData.thumbnailUri.toString())
             .thumbnailLocalFilePath(singleUriData.thumbnailUri.toString())
-            .meta(
-                AttachmentMeta.Builder()
-                    .numberOfPage(singleUriData.pdfPageCount)
-                    .duration(singleUriData.duration)
-                    .size(singleUriData.size)
-                    .build()
-            )
+            .meta(attachmentMeta)
             .build()
     }
 
