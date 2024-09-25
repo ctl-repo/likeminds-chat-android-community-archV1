@@ -1993,6 +1993,7 @@ class ChatroomDetailFragment :
                 )
                 clearEditTextAnswer()
                 updateDmMessaged()
+                memberTagging.clearTaggedMembers()
                 if (isLinkViewVisible() || isReplyViewVisible()) {
                     setChatInputBoxViewType(CHAT_BOX_NORMAL)
                 }

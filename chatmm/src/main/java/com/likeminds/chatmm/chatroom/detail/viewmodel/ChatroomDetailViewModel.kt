@@ -1472,7 +1472,6 @@ class ChatroomDetailViewModel @Inject constructor(
                 .chatroomId(chatroomId)
                 .text(text)
                 .repliedConversationId(replyConversationId)
-                .attachmentCount(updatedFileUris?.size)
                 .temporaryId(temporaryId)
                 .repliedChatroomId(replyChatRoomId)
 
@@ -1517,22 +1516,38 @@ class ChatroomDetailViewModel @Inject constructor(
             )
             sendPostedConversationsToUI(temporaryConversation, postConversationRequest.triggerBot)
 
-            val response = lmChatClient.postConversation(postConversationRequest)
-            if (response.success) {
-                sendLinkPreview = true
-                val data = response.data
-                onConversationPosted(
-                    context,
-                    data,
-                    updatedFileUris,
-                    temporaryConversation,
-                    taggedUsers,
-                    replyChatData,
-                    replyConversationId,
-                    replyChatRoomId
-                )
-            } else {
-                errorEventChannel.send(ErrorMessageEvent.PostConversation(response.errorMessage))
+            /**
+             * check if request have attachments
+             * if not
+             *       call create conversation
+             *       replace temp conversation
+             * else
+             *      upload all attachments
+             *      once done call create conversation
+             *      replace temp conversation
+             */
+            if (updatedFileUris.isNullOrEmpty()) { // no attachments
+                //call API
+                val response = lmChatClient.postConversation(postConversationRequest)
+
+                if (response.success) { //on success
+                    sendLinkPreview = true
+                    val data = response.data
+
+                    //post action on success
+                    onNonAttachmentConversationPosted(
+                        data,
+                        temporaryConversation,
+                        taggedUsers,
+                        replyChatData,
+                        replyConversationId,
+                        replyChatRoomId
+                    )
+                } else { //on failure
+                    errorEventChannel.send(ErrorMessageEvent.PostConversation(response.errorMessage))
+                }
+            } else { // with attachments
+
             }
         }
     }
@@ -1647,6 +1662,55 @@ class ChatroomDetailViewModel @Inject constructor(
                     conversation,
                     triggerBot
                 )
+            )
+        }
+    }
+
+    /**
+     * Handle post actions when a non attachment conversation is created
+     *
+     * @param response [PostConversationResponse?] -> returned from API
+     * @param tempConversation [ConversationViewData?] -> temporary conversation created
+     * @param taggedUsers [List<TagViewData>] -> list of tagged users
+     * @param replyChatData [ChatReplyViewData?] -> reply chat data
+     * @param replyConversationId [String?] -> reply conversation id
+     * @param replyChatRoomId [String?] -> reply chat room id
+     */
+    private fun onNonAttachmentConversationPosted(
+        response: PostConversationResponse?,
+        tempConversation: ConversationViewData?,
+        taggedUsers: List<TagViewData>,
+        replyChatData: ChatReplyViewData?,
+        replyConversationId: String?,
+        replyChatRoomId: String?
+    ) {
+        val conversation = response?.conversation
+        if (conversation != null) {
+            //Get widget from widgetMap and add it to updatedConversation
+            val widgetId = conversation.widgetId
+            val widget = response.widgets[widgetId]
+
+            //update conversation with widget
+            val updatedConversation = conversation.toBuilder()
+                .widget(widget)
+                .build()
+
+            // request to save the posted conversation
+            val request = SavePostedConversationRequest.Builder()
+                .conversation(updatedConversation)
+                .isFromNotification(false)
+                .build()
+
+            // update db with response
+            lmChatClient.savePostedConversation(request)
+
+            // send analytics events
+            postedConversation(
+                taggedUsers,
+                tempConversation,
+                replyChatData,
+                replyConversationId,
+                replyChatRoomId
             )
         }
     }
@@ -1924,6 +1988,7 @@ class ChatroomDetailViewModel @Inject constructor(
 
     private fun postFailedConversation(context: Context, conversation: ConversationViewData) {
         viewModelScope.launchIO {
+            //todo add attadchments
             val chatroomId = chatroomDetail.chatroom?.id ?: return@launchIO
             val postConversationRequest = PostConversationRequest.Builder()
                 .chatroomId(chatroomId)
@@ -1932,7 +1997,6 @@ class ChatroomDetailViewModel @Inject constructor(
                 .ogTags(ViewDataConverter.convertLinkOGTags(conversation.ogTags))
                 .repliedConversationId(conversation.replyConversation?.id)
                 .repliedChatroomId(conversation.replyChatroomId)
-                .attachmentCount(conversation.attachments?.size)
                 .temporaryId(conversation.temporaryId)
                 .build()
 
@@ -2673,18 +2737,25 @@ class ChatroomDetailViewModel @Inject constructor(
         if (conversation == null) {
             return
         }
+
+        val eventDataMap = mutableMapOf<String, String?>()
+        eventDataMap[LMAnalytics.Keys.CHATROOM_NAME] = getChatroom()?.header
+        eventDataMap[LMAnalytics.Keys.CHATROOM_ID] = getChatroom()?.id
+        eventDataMap[LMAnalytics.Keys.COMMUNITY_ID] = getChatroom()?.communityId
+        eventDataMap[LMAnalytics.Keys.CHATROOM_TYPE] = getChatroom()?.getTypeName()
+        eventDataMap[LMAnalytics.Keys.SOURCE] = "chatroom"
+        eventDataMap["message_type"] = ChatroomUtil.getConversationType(conversation)
+        eventDataMap["member_state"] =
+            MemberState.getMemberState(currentMemberDataFromMemberState?.state)
+
+        if (taggedUsers.isNotEmpty()) {
+            eventDataMap["count_tagged_user"] = taggedUsers.size.toString()
+            eventDataMap["name_tagged_user"] = taggedUsers.joinToString { it.name }
+        }
+
         LMAnalytics.track(
             LMAnalytics.Events.CHATROOM_RESPONDED,
-            mapOf(
-                LMAnalytics.Keys.CHATROOM_NAME to getChatroom()?.header,
-                LMAnalytics.Keys.CHATROOM_TYPE to getChatroom()?.getTypeName(),
-                LMAnalytics.Keys.COMMUNITY_ID to getChatroom()?.communityId,
-                LMAnalytics.Keys.SOURCE to "chatroom",
-                "message_type" to ChatroomUtil.getConversationType(conversation),
-                "count_tagged_user" to taggedUsers.size.toString(),
-                "name_tagged_user" to taggedUsers.joinToString { it.name },
-                "member_state" to MemberState.getMemberState(currentMemberDataFromMemberState?.state),
-            )
+            eventDataMap
         )
     }
 

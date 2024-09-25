@@ -639,7 +639,7 @@ object ViewDataConverter {
             .ogTags(request.ogTags)
             .date(TimeUtil.generateDate(conversationCreatedEpoch))
             .replyConversationId(request.repliedConversationId)
-            .attachmentCount(request.attachmentCount ?: 0)
+            .attachmentCount(fileUris?.size ?: 0)
             .localCreatedEpoch(conversationCreatedEpoch)
             .temporaryId(request.temporaryId)
             .isEdited(false)
