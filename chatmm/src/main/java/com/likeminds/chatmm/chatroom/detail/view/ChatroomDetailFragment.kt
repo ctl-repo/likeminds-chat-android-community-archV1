@@ -861,13 +861,13 @@ class ChatroomDetailFragment :
 //            //to check whether widget is enabled or not
 //            val isWidgetEnabled = viewModel.isWidgetEnabled()
 //
-            ivCustomWidgetA.isVisible = false
+            /*ivCustomWidgetA.isVisible = false
             tvCustomWidgetATitle.isVisible = false
 
             ivCustomWidgetA.setOnClickListener {
                 initVisibilityOfAttachmentsBar(View.GONE)
                 onCustomWidgetAAttachmentClicked()
-            }
+            }*/
 
             clBottomBar.setOnClickListener {
                 initVisibilityOfAttachmentsBar(View.GONE)
