@@ -32,6 +32,21 @@ object UploadHelper {
         return awsFileResponses.filter { it.uuid == uuid }
     }
 
+    fun getAttachmentFilePath(
+        chatroomId: String?,
+        loggedInUserUUID: String,
+        attachmentType: String,
+        file: File,
+        isThumbnail: Boolean = false
+    ): String {
+        return "$FOLDER_COLLABCARD/$chatroomId/$FOLDER_CONVERSATION/$loggedInUserUUID/${
+            InternalMediaType.getMediaFileInitial(attachmentType, isThumbnail)
+        }${System.currentTimeMillis()}.${
+            InternalMediaType.getMediaFileExtension(attachmentType, file, isThumbnail)
+        }"
+    }
+
+
     fun getConversationAttachmentFilePath(
         chatroomId: String?,
         conversationId: String?,

@@ -1507,12 +1507,16 @@ class ChatroomDetailViewModel @Inject constructor(
 
             val postConversationRequest = postConversationRequestBuilder.build()
 
+            val loggedInUserUUID = userPreferences.getUUID()
+
             val temporaryConversation = saveTemporaryConversation(
+                context,
                 userPreferences.getUUID(),
                 communityId,
                 postConversationRequest,
                 updatedFileUris,
-                conversationCreatedEpoch
+                conversationCreatedEpoch,
+                loggedInUserUUID
             )
             sendPostedConversationsToUI(temporaryConversation, postConversationRequest.triggerBot)
 
@@ -1548,9 +1552,18 @@ class ChatroomDetailViewModel @Inject constructor(
                 }
             } else { // with attachments
                 //create upload worker
-                var uploadData: Pair<WorkContinuation?, String>? = null
+                val uploadData = getUploadWorker(context, temporaryId, fileUris?.size ?: 0)
+
+                //update worker id local db
+                val updateWorkerUUIDRequest = UpdateConversationUploadWorkerUUIDRequest.Builder()
+                    .uuid(uploadData.second)
+                    .conversationId(temporaryId)
+                    .build()
+
+                lmChatClient.updateConversationUploadWorkerUUID(updateWorkerUUIDRequest)
 
                 //enqueue worker
+                uploadData.first.enqueue()
             }
         }
     }
@@ -1612,23 +1625,30 @@ class ChatroomDetailViewModel @Inject constructor(
     }
 
     private fun saveTemporaryConversation(
+        context: Context,
         uuid: String,
         communityId: String?,
         request: PostConversationRequest,
         fileUris: List<SingleUriData>?,
-        conversationCreatedEpoch: Long
+        conversationCreatedEpoch: Long,
+        loggedInUserUUID: String
     ): ConversationViewData? {
         val conversation = ViewDataConverter.convertConversation(
+            context,
             uuid,
             communityId,
             request,
             fileUris,
-            conversationCreatedEpoch
+            conversationCreatedEpoch,
+            loggedInUserUUID
         )
+
         val saveConversationRequest = SaveConversationRequest.Builder()
             .conversation(conversation)
             .build()
+
         lmChatClient.saveTemporaryConversation(saveConversationRequest)
+
         val replyConversation = if (conversation.replyConversationId != null) {
             val getConversationRequest = GetConversationRequest.Builder()
                 .conversationId(conversation.replyConversationId ?: "")
@@ -1637,11 +1657,15 @@ class ChatroomDetailViewModel @Inject constructor(
         } else {
             null
         }
+
         val getMemberRequest = GetMemberRequest.Builder()
             .uuid(uuid)
             .build()
+
         val member = lmChatClient.getMember(getMemberRequest).data?.member
+
         val memberViewData = ViewDataConverter.convertMember(member)
+
         return ViewDataConverter.convertConversation(conversation, memberViewData)
             ?.toBuilder()
             ?.replyConversation(ViewDataConverter.convertConversation(replyConversation))
@@ -1901,6 +1925,18 @@ class ChatroomDetailViewModel @Inject constructor(
                 .build()
         lmChatClient.updateConversationUploadWorkerUUID(updateConversationUploadWorkerUUIDRequest)
         uploadData.first.enqueue()
+    }
+
+    @SuppressLint("EnqueueWork")
+    private fun getUploadWorker(
+        context: Context,
+        temporaryId: String,
+        fileCount: Int
+    ): Pair<WorkContinuation, String> {
+        val oneTimeWorkRequest =
+            ConversationMediaUploadWorker.getInstance(temporaryId, fileCount)
+        val workContinuation = WorkManager.getInstance(context).beginWith(oneTimeWorkRequest)
+        return Pair(workContinuation, oneTimeWorkRequest.id.toString())
     }
 
     @SuppressLint("CheckResult", "EnqueueWork", "RestrictedApi")

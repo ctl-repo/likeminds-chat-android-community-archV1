@@ -4592,7 +4592,7 @@ class ChatroomDetailFragment :
         try {
             isVoiceNotePlaying = false
             voiceNoteFilePath =
-                "${requireContext().externalCacheDir?.absolutePath}/VOC_${System.currentTimeMillis()}.aac"
+                "${requireContext().externalCacheDir?.absolutePath}/VOC_${System.currentTimeMillis()}.mp3"
             voiceRecorder.startRecording(voiceNoteFilePath ?: "")
         } catch (e: IllegalStateException) {
             voiceNoteUtils.stopVoiceNote(binding, RECORDING_RELEASED)
