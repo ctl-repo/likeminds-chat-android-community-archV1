@@ -3,6 +3,7 @@ package com.likeminds.chatmm.member.view
 import android.app.Activity
 import android.content.Intent
 import android.view.*
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -78,6 +79,9 @@ class LMChatCommunityMembersFragment :
         initData()
         initializeSearchView()
         showSearchToolbar()
+        onBackPressedHandler {
+            requireActivity().finish()
+        }
     }
 
     override fun observeData() {
@@ -272,8 +276,9 @@ class LMChatCommunityMembersFragment :
 
             setSearchViewListener(object : LMChatCustomSearchBar.SearchViewListener {
                 override fun onSearchViewClosed() {
-                    hide()
-                    clearMemberSearch()
+                    /*hide()
+                    clearMemberSearch()*/
+                    requireActivity().finish()
                 }
 
                 override fun crossClicked() {
@@ -302,5 +307,14 @@ class LMChatCommunityMembersFragment :
         mAdapter.clearAndNotify()
         searchKeyword = null
 //        viewModel.getAllMembers(extras.showList, 1)
+    }
+
+    private fun onBackPressedHandler(onClickFunction: () -> Unit) = try {
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() = onClickFunction()
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+    } catch (e: Exception) {
+        e.printStackTrace()
     }
 }
