@@ -1643,6 +1643,8 @@ class ChatroomDetailViewModel @Inject constructor(
             loggedInUserUUID
         )
 
+        Log.d("PUI", "save temp conversation: ${conversation.id}")
+
         val saveConversationRequest = SaveConversationRequest.Builder()
             .conversation(conversation)
             .build()

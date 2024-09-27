@@ -2,6 +2,7 @@ package com.likeminds.chatmm.utils
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import com.likeminds.chatmm.chatroom.detail.model.*
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil
 import com.likeminds.chatmm.chatroom.explore.model.ExploreViewData
@@ -705,7 +706,7 @@ object ViewDataConverter {
             .width(singleUriData.width)
             .height(singleUriData.height)
             .awsFolderPath(serverPath)
-            .localFilePath(singleUriData.uri.toString())
+            .localFilePath(localFilePath)
             .meta(attachmentMeta)
 
         //add thumbnail meta if exist
@@ -726,7 +727,18 @@ object ViewDataConverter {
                 .thumbnailAWSFolderPath(thumbnailAWSFolderPath)
         }
 
-        return attachmentBuilder.build()
+        val attachment = attachmentBuilder.build()
+
+        Log.d(
+            "PUI", """
+            saving temporary conversation
+            attachment url: ${attachment.url}
+            attachment uri: ${attachment.url}
+            attachment file path: ${attachment.localFilePath}
+        """.trimIndent()
+        )
+
+        return attachment
     }
 
     // converts [ConversationViewData] to [Conversation] model

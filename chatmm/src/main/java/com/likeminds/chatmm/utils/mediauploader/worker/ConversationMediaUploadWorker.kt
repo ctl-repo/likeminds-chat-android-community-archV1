@@ -1,6 +1,7 @@
 package com.likeminds.chatmm.utils.mediauploader.worker
 
 import android.content.Context
+import android.util.Log
 import androidx.work.*
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState
@@ -62,7 +63,18 @@ class ConversationMediaUploadWorker(
             .conversationId(conversationId)
             .build()
         val response = lmChatClient.getConversation(getConversationRequest)
+        Log.d("PUI", "init upload worker: ${response.data?.conversation?.id}")
         conversation = ViewDataConverter.convertConversation(response.data?.conversation) ?: return
+
+        Log.d(
+            "PUI", """
+                init upload worker
+                attachment url: ${conversation.attachments?.map { it.url }}
+                attachment uri: ${conversation.attachments?.map { it.uri }}
+                attachment file path: ${conversation.attachments?.map { it.localFilePath }}
+            """.trimIndent()
+        )
+
     }
 
     override fun uploadFiles(continuation: Continuation<Int>) {
@@ -125,6 +137,14 @@ class ConversationMediaUploadWorker(
         } else {
             File(filePath)
         }
+
+        Log.d(
+            "PUI", """
+            upload file in worker
+            file: $filePath
+        """.trimIndent()
+        )
+
         val observer = transferUtility.upload(
             request.awsFolderPath,
             file,

@@ -1,6 +1,7 @@
 package com.likeminds.chatmm.utils.mediauploader.worker
 
 import android.content.Context
+import android.util.Log
 import androidx.work.*
 import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.conversation.model.AttachmentViewData
@@ -133,6 +134,16 @@ abstract class MediaUploadWorker(
             awsFileRequestList.add(request)
         }
         attachmentsToUpload.forEach { attachment ->
+
+            Log.d(
+                "PUI", """
+                createAWSRequestList
+                attachment url: ${attachment.url}
+                attachment uri: ${attachment.uri}
+                attachment file path: ${attachment.localFilePath}
+            """.trimIndent()
+            )
+
             val request = GenericFileRequest.Builder()
                 .name(attachment.name)
                 .fileType(attachment.type)
