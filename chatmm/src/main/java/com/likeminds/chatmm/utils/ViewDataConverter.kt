@@ -774,7 +774,7 @@ object ViewDataConverter {
     }
 
     // converts list of AttachmentViewData to list of network Attachment model
-    private fun convertAttachmentViewDataList(attachmentViewDataList: List<AttachmentViewData>?): List<Attachment>? {
+    fun convertAttachmentViewDataList(attachmentViewDataList: List<AttachmentViewData>?): List<Attachment>? {
         return attachmentViewDataList?.map { attachmentViewData ->
             convertAttachmentViewData(attachmentViewData)
         }

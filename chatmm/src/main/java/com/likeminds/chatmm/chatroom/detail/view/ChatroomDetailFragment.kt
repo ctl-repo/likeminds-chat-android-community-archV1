@@ -1993,7 +1993,6 @@ class ChatroomDetailFragment :
                 )
                 clearEditTextAnswer()
                 updateDmMessaged()
-                memberTagging.clearTaggedMembers()
                 if (isLinkViewVisible() || isReplyViewVisible()) {
                     setChatInputBoxViewType(CHAT_BOX_NORMAL)
                 }
@@ -5117,10 +5116,18 @@ class ChatroomDetailFragment :
         when (workInfo.state) {
             WorkInfo.State.SUCCEEDED -> {
                 val position = getIndexOfConversation(conversation.id)
+                Log.d("PUI", "position:$position")
                 if (position >= 0) {
                     val oldConversation = chatroomDetailAdapter[position]
                             as? ConversationViewData
                         ?: return
+
+                    Log.d(
+                        "PUI", """
+                        oldConversation: ${oldConversation.id}
+                    """.trimIndent()
+                    )
+
                     val updatedConversation = oldConversation.toBuilder()
                         .attachmentsUploaded(true)
                         .uploadWorkerUUID("")
@@ -5132,6 +5139,20 @@ class ChatroomDetailFragment :
                                     .build()
                             } as ArrayList<AttachmentViewData>?)
                         .build()
+
+                    Log.d(
+                        "PUI", """
+                        updatedConversation:${updatedConversation.id}
+                    """.trimIndent()
+                    )
+
+                    val chatReplyData = binding.inputBox.viewReply.chatReplyData
+                    viewModel.postConversation(
+                        updatedConversation,
+                        memberTagging.getTaggedMembers(),
+                        chatReplyData
+                    )
+
                     chatroomDetailAdapter.update(position, updatedConversation)
                 }
             }

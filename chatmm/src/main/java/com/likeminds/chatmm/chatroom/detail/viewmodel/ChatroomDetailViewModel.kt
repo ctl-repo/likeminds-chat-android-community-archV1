@@ -1450,6 +1450,52 @@ class ChatroomDetailViewModel @Inject constructor(
         chatroomDetail = chatroomDetail.toBuilder().chatroom(newChatroomViewData).build()
     }
 
+    fun postConversation(
+        conversation: ConversationViewData,
+        taggedUsers: List<TagViewData>,
+        replyChatData: ChatReplyViewData?,
+    ) {
+        viewModelScope.launchIO {
+            val chatroomId = chatroomDetail.chatroom?.id ?: return@launchIO
+            val temporaryId = conversation.id
+
+            val postConversationRequestBuilder = PostConversationRequest.Builder()
+                .chatroomId(chatroomId)
+                .text(conversation.answer)
+                .temporaryId(temporaryId)
+                .repliedConversationId(conversation.replyConversation?.id)
+                .repliedChatroomId(conversation.replyChatroomId)
+                .attachments(ViewDataConverter.convertAttachmentViewDataList(conversation.attachments))
+
+            val widget = conversation.widgetViewData
+
+            if (widget?.metadata != null) {
+                postConversationRequestBuilder.metadata(JSONObject(widget.metadata.toString()))
+            }
+
+            if (isOtherUserAIBot()) {
+                postConversationRequestBuilder.triggerBot(true)
+            }
+
+            val postConversationRequest = postConversationRequestBuilder.build()
+
+            val response = lmChatClient.postConversation(postConversationRequest)
+            if (response.success) {
+                onNonAttachmentConversationPosted(
+                    response.data,
+                    conversation,
+                    taggedUsers,
+                    replyChatData,
+                    conversation.replyConversation?.id,
+                    conversation.replyChatroomId
+                )
+            } else {
+                errorEventChannel.send(ErrorMessageEvent.PostConversation(response.errorMessage))
+            }
+        }
+    }
+
+
     @SuppressLint("CheckResult")
     fun postConversation(
         context: Context,

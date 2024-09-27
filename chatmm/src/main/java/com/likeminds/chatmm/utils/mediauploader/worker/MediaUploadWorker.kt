@@ -9,8 +9,10 @@ import com.likeminds.chatmm.conversation.model.ConversationViewData
 import com.likeminds.chatmm.utils.mediauploader.model.*
 import com.likeminds.chatmm.utils.mediauploader.utils.WorkerUtil.getIntOrNull
 import com.likeminds.likemindschat.LMChatClient
-import com.likeminds.likemindschat.conversation.model.*
-import kotlinx.coroutines.*
+import com.likeminds.likemindschat.conversation.model.PutMultimediaResponse
+import com.likeminds.likemindschat.conversation.model.UpdateConversationRequest
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlin.coroutines.*
 
 abstract class MediaUploadWorker(
@@ -22,7 +24,7 @@ abstract class MediaUploadWorker(
 
     protected val transferUtility by lazy { SDKApplication.getInstance().transferUtility }
 
-    private var uploadedCount = 0
+    protected var uploadedCount = 0
     protected val failedIndex by lazy { ArrayList<Int>() }
     protected lateinit var uploadList: ArrayList<GenericFileRequest>
     protected val thumbnailMediaMap by lazy { HashMap<Int, Pair<String?, String?>>() }
@@ -160,49 +162,49 @@ abstract class MediaUploadWorker(
         return awsFileRequestList
     }
 
-    protected fun uploadUrl(
-        downloadUri: Pair<String?, String?>?,
-        totalMediaCount: Int,
-        awsFileResponse: AWSFileResponse,
-        totalFilesToUpload: Int,
-        conversation: ConversationViewData,
-        continuation: Continuation<Int>
-    ) {
-        val putMultimediaRequest = PutMultimediaRequest.Builder()
-            .name(awsFileResponse.name)
-            .conversationId(conversation.id)
-            .filesCount(totalMediaCount)
-            .url(downloadUri?.first ?: "")
-            .thumbnailUrl(downloadUri?.second)
-            .type(awsFileResponse.fileType)
-            .index(awsFileResponse.index)
-            .width(awsFileResponse.width)
-            .height(awsFileResponse.height)
-            .meta(
-                AttachmentMeta.Builder()
-                    .duration(awsFileResponse.duration)
-                    .numberOfPage(awsFileResponse.pageCount)
-                    .size(awsFileResponse.size)
-                    .build()
-            )
-            .build()
-        // we can't use runBlocking as it blocks the current thread and gives ANR
-        CoroutineScope(Dispatchers.IO).launch {
-            val response = lmChatClient.putMultimedia(putMultimediaRequest)
-            if (response.success) {
-                uploadUrlCompletes(
-                    response.data,
-                    totalFilesToUpload,
-                    conversation,
-                    awsFileResponse,
-                    continuation
-                )
-            } else {
-                failedIndex.add(awsFileResponse.index)
-                checkWorkerComplete(totalFilesToUpload, continuation)
-            }
-        }
-    }
+//    protected fun uploadUrl(
+//        downloadUri: Pair<String?, String?>?,
+//        totalMediaCount: Int,
+//        awsFileResponse: AWSFileResponse,
+//        totalFilesToUpload: Int,
+//        conversation: ConversationViewData,
+//        continuation: Continuation<Int>
+//    ) {
+//        val putMultimediaRequest = PutMultimediaRequest.Builder()
+//            .name(awsFileResponse.name)
+//            .conversationId(conversation.id)
+//            .filesCount(totalMediaCount)
+//            .url(downloadUri?.first ?: "")
+//            .thumbnailUrl(downloadUri?.second)
+//            .type(awsFileResponse.fileType)
+//            .index(awsFileResponse.index)
+//            .width(awsFileResponse.width)
+//            .height(awsFileResponse.height)
+//            .meta(
+//                AttachmentMeta.Builder()
+//                    .duration(awsFileResponse.duration)
+//                    .numberOfPage(awsFileResponse.pageCount)
+//                    .size(awsFileResponse.size)
+//                    .build()
+//            )
+//            .build()
+//        // we can't use runBlocking as it blocks the current thread and gives ANR
+//        CoroutineScope(Dispatchers.IO).launch {
+//            val response = lmChatClient.putMultimedia(putMultimediaRequest)
+//            if (response.success) {
+//                uploadUrlCompletes(
+//                    response.data,
+//                    totalFilesToUpload,
+//                    conversation,
+//                    awsFileResponse,
+//                    continuation
+//                )
+//            } else {
+//                failedIndex.add(awsFileResponse.index)
+//                checkWorkerComplete(totalFilesToUpload, continuation)
+//            }
+//        }
+//    }
 
     private fun uploadUrlCompletes(
         response: PutMultimediaResponse?,

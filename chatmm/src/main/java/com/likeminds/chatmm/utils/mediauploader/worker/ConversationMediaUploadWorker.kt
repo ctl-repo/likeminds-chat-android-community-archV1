@@ -12,6 +12,7 @@ import com.likeminds.chatmm.utils.ViewDataConverter
 import com.likeminds.chatmm.utils.mediauploader.model.*
 import com.likeminds.chatmm.utils.mediauploader.utils.FileHelper
 import com.likeminds.likemindschat.conversation.model.GetConversationRequest
+import com.likeminds.likemindschat.conversation.model.UpdateConversationRequest
 import java.io.File
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.Continuation
@@ -203,41 +204,59 @@ class ConversationMediaUploadWorker(
         when (state) {
             TransferState.COMPLETED -> {
                 UploadHelper.removeAWSFileResponse(response)
-                val downloadUri = response.downloadUrl
-                if (response.isThumbnail == true || response.hasThumbnail == true) {
-                    if (thumbnailMediaMap.containsKey(response.index)) {
-                        val value = thumbnailMediaMap[response.index]!!
-                        if (value.first == null) {
-                            thumbnailMediaMap[response.index] = Pair(downloadUri, value.second)
-                        } else if (value.second == null) {
-                            thumbnailMediaMap[response.index] = Pair(value.first, downloadUri)
-                        }
-                        uploadUrl(
-                            thumbnailMediaMap[response.index],
-                            totalMediaCount,
-                            response,
-                            totalFilesToUpload,
-                            conversation,
-                            continuation
-                        )
-                        thumbnailMediaMap.remove(response.index)
-                    } else {
-                        if (response.isThumbnail == true) {
-                            thumbnailMediaMap[response.index] = Pair(null, downloadUri)
-                        } else {
-                            thumbnailMediaMap[response.index] = Pair(downloadUri, null)
-                        }
+                uploadedCount += 1
+                checkWorkerComplete(totalFilesToUpload, continuation)
+                Log.d(
+                    "UPL", """
+                    upload complete
+                    isThumbnail: ${response.isThumbnail}
+                    hasThumbnail: ${response.hasThumbnail}
+                    awsFolderPath: ${response.awsFolderPath}
+                    responseURL: ${response.downloadUrl}
+                """.trimIndent()
+                )
+
+                if (response.isThumbnail == true) {
+                    Log.d("UPL","case1 isThumb")
+                    val attachments = conversation.attachments ?: return
+
+                    val index = attachments.indexOfFirst { attachmentViewData ->
+                        attachmentViewData.thumbnailAWSFolderPath == response.awsFolderPath
                     }
+                    Log.d("UPL","")
+
+                    var attachment = attachments[index]
+
+                    attachment = attachment.toBuilder()
+                        .thumbnail(response.downloadUrl)
+                        .build()
+
+                    attachments[index] = attachment
+
+                    conversation = conversation.toBuilder().attachments(attachments).build()
                 } else {
-                    uploadUrl(
-                        Pair(downloadUri, null),
-                        totalMediaCount,
-                        response,
-                        totalFilesToUpload,
-                        conversation,
-                        continuation
-                    )
+                    val attachments = conversation.attachments ?: return
+
+                    val index = attachments.indexOfFirst { attachmentViewData ->
+                        attachmentViewData.awsFolderPath == response.awsFolderPath
+                    }
+
+                    var attachment = attachments[index]
+
+                    attachment = attachment.toBuilder()
+                        .url(response.downloadUrl)
+                        .build()
+
+                    attachments[index] = attachment
+
+                    conversation = conversation.toBuilder().attachments(attachments).build()
                 }
+
+                val updateConversationRequest = UpdateConversationRequest.Builder()
+                    .conversation(ViewDataConverter.convertConversation(conversation))
+                    .build()
+
+                lmChatClient.updateConversation(updateConversationRequest)
             }
 
             TransferState.FAILED -> {
@@ -246,7 +265,6 @@ class ConversationMediaUploadWorker(
             }
 
             else -> {
-
             }
         }
     }
