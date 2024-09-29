@@ -794,7 +794,7 @@ object ViewDataConverter {
         )
         return Attachment.Builder()
             .name(attachmentViewData.name)
-            .url(attachmentViewData.url.toString())
+            .url(attachmentViewData.url ?: "")
             .type(attachmentViewData.type)
             .index(attachmentViewData.index)
             .width(attachmentViewData.width)

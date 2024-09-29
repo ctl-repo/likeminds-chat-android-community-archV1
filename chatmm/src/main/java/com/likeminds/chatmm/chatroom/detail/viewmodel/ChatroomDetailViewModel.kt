@@ -1459,6 +1459,14 @@ class ChatroomDetailViewModel @Inject constructor(
             val chatroomId = chatroomDetail.chatroom?.id ?: return@launchIO
             val temporaryId = conversation.id
 
+            Log.d(
+                "PUI", """
+                postConversation: $temporaryId
+                attachments url: ${conversation.attachments?.map { it.url }}
+                attachments uri: ${conversation.attachments?.map { it.uri }}
+            """.trimIndent()
+            )
+
             val postConversationRequestBuilder = PostConversationRequest.Builder()
                 .chatroomId(chatroomId)
                 .text(conversation.answer)
@@ -1598,7 +1606,7 @@ class ChatroomDetailViewModel @Inject constructor(
                 }
             } else { // with attachments
                 //create upload worker
-                val uploadData = getUploadWorker(context, temporaryId, fileUris?.size ?: 0)
+                val uploadData = getUploadWorker(context, temporaryId)
 
                 //update worker id local db
                 val updateWorkerUUIDRequest = UpdateConversationUploadWorkerUUIDRequest.Builder()
@@ -1806,8 +1814,7 @@ class ChatroomDetailViewModel @Inject constructor(
             if (!updatedFileUris.isNullOrEmpty()) {
                 uploadData = uploadFilesViaWorker(
                     context,
-                    response.id!!,
-                    updatedFileUris.size
+                    response.id!!
                 )
                 requestList.addAll(
                     getUploadFileRequestList(
@@ -1965,7 +1972,7 @@ class ChatroomDetailViewModel @Inject constructor(
         if (conversationId.isEmpty() || attachmentCount <= 0) {
             return
         }
-        val uploadData = uploadFilesViaWorker(context, conversationId, attachmentCount)
+        val uploadData = uploadFilesViaWorker(context, conversationId)
         val updateConversationUploadWorkerUUIDRequest =
             UpdateConversationUploadWorkerUUIDRequest.Builder()
                 .conversationId(conversationId)
@@ -1979,10 +1986,9 @@ class ChatroomDetailViewModel @Inject constructor(
     private fun getUploadWorker(
         context: Context,
         temporaryId: String,
-        fileCount: Int
     ): Pair<WorkContinuation, String> {
         val oneTimeWorkRequest =
-            ConversationMediaUploadWorker.getInstance(temporaryId, fileCount)
+            ConversationMediaUploadWorker.getInstance(temporaryId)
         val workContinuation = WorkManager.getInstance(context).beginWith(oneTimeWorkRequest)
         return Pair(workContinuation, oneTimeWorkRequest.id.toString())
     }
@@ -1991,10 +1997,9 @@ class ChatroomDetailViewModel @Inject constructor(
     private fun uploadFilesViaWorker(
         context: Context,
         conversationId: String,
-        fileUriCount: Int,
     ): Pair<WorkContinuation, String> {
         val oneTimeWorkRequest =
-            ConversationMediaUploadWorker.getInstance(conversationId, fileUriCount)
+            ConversationMediaUploadWorker.getInstance(conversationId)
         val workContinuation = WorkManager.getInstance(context).beginWith(oneTimeWorkRequest)
         return Pair(workContinuation, oneTimeWorkRequest.id.toString())
     }
@@ -2115,8 +2120,7 @@ class ChatroomDetailViewModel @Inject constructor(
             if (!conversation.attachments.isNullOrEmpty()) {
                 uploadData = uploadFilesViaWorker(
                     context,
-                    response.id!!,
-                    conversation.attachmentCount
+                    response.id!!
                 )
                 requestList.addAll(getUploadFileRequestList(context, conversation))
             }

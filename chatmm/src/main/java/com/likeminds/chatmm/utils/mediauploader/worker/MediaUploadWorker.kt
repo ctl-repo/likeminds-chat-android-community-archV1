@@ -1,15 +1,16 @@
 package com.likeminds.chatmm.utils.mediauploader.worker
 
 import android.content.Context
+import android.net.Uri
 import android.util.Log
 import androidx.work.*
 import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.conversation.model.AttachmentViewData
 import com.likeminds.chatmm.conversation.model.ConversationViewData
+import com.likeminds.chatmm.utils.ViewDataConverter
 import com.likeminds.chatmm.utils.mediauploader.model.*
 import com.likeminds.chatmm.utils.mediauploader.utils.WorkerUtil.getIntOrNull
 import com.likeminds.likemindschat.LMChatClient
-import com.likeminds.likemindschat.conversation.model.PutMultimediaResponse
 import com.likeminds.likemindschat.conversation.model.UpdateConversationRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -29,6 +30,8 @@ abstract class MediaUploadWorker(
     protected lateinit var uploadList: ArrayList<GenericFileRequest>
     protected val thumbnailMediaMap by lazy { HashMap<Int, Pair<String?, String?>>() }
     private val progressMap by lazy { HashMap<Int, Pair<Long, Long>>() }
+
+    protected lateinit var conversation: ConversationViewData
 
     abstract fun checkArgs()
     abstract fun init()
@@ -67,14 +70,26 @@ abstract class MediaUploadWorker(
             }
             return@withContext when (result) {
                 WORKER_SUCCESS -> {
+                    Log.d("PUI", "worker success called")
+                    Log.d(
+                        "PUI", """
+                        worker success called
+                        conversation: ${conversation.id}
+                        attachments url:${conversation.attachments?.map { it.url }}
+                        attachments uri:${conversation.attachments?.map { it.uri }}
+                        attachments thumbnail:${conversation.attachments?.map { it.thumbnail }}
+                    """.trimIndent()
+                    )
                     Result.success()
                 }
 
                 WORKER_RETRY -> {
+                    Log.d("PUI", "worker retry called")
                     Result.retry()
                 }
 
                 else -> {
+                    Log.d("PUI", "worker else called")
                     getFailureResult(failedIndex.toIntArray())
                 }
             }
@@ -162,80 +177,62 @@ abstract class MediaUploadWorker(
         return awsFileRequestList
     }
 
-//    protected fun uploadUrl(
-//        downloadUri: Pair<String?, String?>?,
-//        totalMediaCount: Int,
-//        awsFileResponse: AWSFileResponse,
-//        totalFilesToUpload: Int,
-//        conversation: ConversationViewData,
-//        continuation: Continuation<Int>
-//    ) {
-//        val putMultimediaRequest = PutMultimediaRequest.Builder()
-//            .name(awsFileResponse.name)
-//            .conversationId(conversation.id)
-//            .filesCount(totalMediaCount)
-//            .url(downloadUri?.first ?: "")
-//            .thumbnailUrl(downloadUri?.second)
-//            .type(awsFileResponse.fileType)
-//            .index(awsFileResponse.index)
-//            .width(awsFileResponse.width)
-//            .height(awsFileResponse.height)
-//            .meta(
-//                AttachmentMeta.Builder()
-//                    .duration(awsFileResponse.duration)
-//                    .numberOfPage(awsFileResponse.pageCount)
-//                    .size(awsFileResponse.size)
-//                    .build()
-//            )
-//            .build()
-//        // we can't use runBlocking as it blocks the current thread and gives ANR
-//        CoroutineScope(Dispatchers.IO).launch {
-//            val response = lmChatClient.putMultimedia(putMultimediaRequest)
-//            if (response.success) {
-//                uploadUrlCompletes(
-//                    response.data,
-//                    totalFilesToUpload,
-//                    conversation,
-//                    awsFileResponse,
-//                    continuation
-//                )
-//            } else {
-//                failedIndex.add(awsFileResponse.index)
-//                checkWorkerComplete(totalFilesToUpload, continuation)
-//            }
-//        }
-//    }
-
-    private fun uploadUrlCompletes(
-        response: PutMultimediaResponse?,
-        totalFilesToUpload: Int,
-        conversationViewData: ConversationViewData,
-        awsFileResponse: AWSFileResponse,
+    protected fun updateConversation(
+        response: AWSFileResponse,
+        urls: Pair<String?, String?>,
+        totalFileCount: Int,
         continuation: Continuation<Int>
     ) {
-        var conversation = response?.conversation
-        if (conversation != null) {
-            uploadedCount += 1
-            if (totalFilesToUpload != uploadedCount) {
-                conversation = conversation.toBuilder()
-                    .uploadWorkerUUID(conversationViewData.uploadWorkerUUID)
-                    .build()
-            }
-            val updateConversationRequest = UpdateConversationRequest.Builder()
-                .conversation(conversation)
-                .build()
-            lmChatClient.updateConversation(updateConversationRequest)
-        } else {
-            failedIndex.add(awsFileResponse.index)
+        //updateConversation
+        val attachments = conversation.attachments ?: return
+
+        val index = attachments.indexOfFirst {
+            it.index == response.index
         }
-        checkWorkerComplete(totalFilesToUpload, continuation)
+
+        var attachment = attachments[index]
+        attachment = attachment.toBuilder()
+            .url(urls.first)
+            .uri(Uri.parse(urls.first))
+            .thumbnail(urls.second)
+            .build()
+        attachments[index] = attachment
+
+        conversation = conversation.toBuilder()
+            .attachments(attachments)
+            .build()
+
+        uploadedCount += 1
+
+        //update local db
+        val updateConversationRequest = UpdateConversationRequest.Builder()
+            .conversation(ViewDataConverter.convertConversation(conversation))
+            .build()
+        lmChatClient.updateConversation(updateConversationRequest)
+
+        checkWorkerComplete(totalFileCount, continuation)
     }
 
     protected fun checkWorkerComplete(
         totalFilesToUpload: Int,
         continuation: Continuation<Int>
     ) {
+        Log.d(
+            "PUI", """
+                     in checkWorkerComplete -> outside it
+                    totalfiles: $totalFilesToUpload
+                    uploaded: $uploadedCount
+                    failed: ${failedIndex.size}
+                """.trimIndent()
+        )
         if (totalFilesToUpload == uploadedCount + failedIndex.size) {
+            Log.d(
+                "PUI", """
+                     in checkWorkerComplete -> inside if
+                    totalfiles: $totalFilesToUpload
+                    uploaded: $uploadedCount
+                """.trimIndent()
+            )
             if (totalFilesToUpload == uploadedCount) {
                 continuation.resume(WORKER_SUCCESS)
             } else {

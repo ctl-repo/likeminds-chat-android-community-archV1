@@ -1,19 +1,16 @@
 package com.likeminds.chatmm.utils.mediauploader.worker
 
 import android.content.Context
-import android.net.Uri
 import android.util.Log
 import androidx.work.*
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState
 import com.amazonaws.services.s3.model.CannedAccessControlList
-import com.likeminds.chatmm.conversation.model.ConversationViewData
 import com.likeminds.chatmm.media.model.IMAGE
 import com.likeminds.chatmm.utils.ViewDataConverter
 import com.likeminds.chatmm.utils.mediauploader.model.*
 import com.likeminds.chatmm.utils.mediauploader.utils.FileHelper
 import com.likeminds.likemindschat.conversation.model.GetConversationRequest
-import com.likeminds.likemindschat.conversation.model.UpdateConversationRequest
 import java.io.File
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.Continuation
@@ -24,20 +21,15 @@ class ConversationMediaUploadWorker(
 ) : MediaUploadWorker(context, workerParams) {
 
     private val conversationId by lazy { getStringParam(ARG_CONVERSATION_ID) }
-    private val totalMediaCount by lazy { getIntParam(ARG_TOTAL_MEDIA_COUNT) }
-
-    private lateinit var conversation: ConversationViewData
 
     companion object {
         const val ARG_CONVERSATION_ID = "ARG_CONVERSATION_ID"
-        const val ARG_TOTAL_MEDIA_COUNT = "ARG_TOTAL_MEDIA_COUNT"
 
-        fun getInstance(conversationId: String, totalMediaCount: Int): OneTimeWorkRequest {
+        fun getInstance(conversationId: String): OneTimeWorkRequest {
             return OneTimeWorkRequestBuilder<ConversationMediaUploadWorker>()
                 .setInputData(
                     workDataOf(
                         ARG_CONVERSATION_ID to conversationId,
-                        ARG_TOTAL_MEDIA_COUNT to totalMediaCount
                     )
                 )
                 .setConstraints(
@@ -57,7 +49,6 @@ class ConversationMediaUploadWorker(
 
     override fun checkArgs() {
         require(ARG_CONVERSATION_ID)
-        require(ARG_TOTAL_MEDIA_COUNT)
     }
 
     override fun init() {
@@ -205,83 +196,38 @@ class ConversationMediaUploadWorker(
         when (state) {
             TransferState.COMPLETED -> {
                 UploadHelper.removeAWSFileResponse(response)
-                uploadedCount += 1
-                checkWorkerComplete(totalFilesToUpload, continuation)
-                Log.d(
-                    "UPL", """
-                    upload complete
-                    isThumbnail: ${response.isThumbnail}
-                    hasThumbnail: ${response.hasThumbnail}
-                    awsFolderPath: ${response.awsFolderPath}
-                    responseURL: ${response.downloadUrl}
-                """.trimIndent()
-                )
+                val uploadUrl = response.downloadUrl
+                if (response.isThumbnail == true || response.hasThumbnail == true) {
+                    if (thumbnailMediaMap.containsKey(response.index)) {
 
-                if (response.isThumbnail == true) {
-                    Log.d("UPL", "case1 isThumbnail")
-                    val attachments = conversation.attachments ?: return
+                        /**
+                         * first -> media url
+                         * second -> thumbnail url
+                         */
+                        var urls = thumbnailMediaMap[response.index] ?: return
+                        if (urls.first == null) {
+                            thumbnailMediaMap[response.index] = Pair(uploadUrl, urls.second)
+                        } else if (urls.second == null) {
+                            thumbnailMediaMap[response.index] = Pair(urls.first, uploadUrl)
+                        }
 
-                    val index = attachments.indexOfFirst { attachmentViewData ->
-                        attachmentViewData.thumbnailAWSFolderPath == response.awsFolderPath
+                        urls = thumbnailMediaMap[response.index] ?: return
+                        updateConversation(response, urls, totalFilesToUpload, continuation)
+                    } else {
+                        if (response.isThumbnail == true) {
+                            thumbnailMediaMap[response.index] = Pair(null, uploadUrl)
+                        } else {
+                            thumbnailMediaMap[response.index] = Pair(uploadUrl, null)
+                        }
                     }
-                    Log.d("UPL", "index of attachment:$index")
-
-                    var attachment = attachments[index]
-
-                    Log.d(
-                        "UPL",
-                        "attachment found name:${attachment.name} thumbnail:${attachment.thumbnail}"
-                    )
-
-                    attachment = attachment.toBuilder()
-                        .thumbnail(response.downloadUrl)
-                        .build()
-
-                    Log.d(
-                        "UPL",
-                        "updated attachment name:${attachment.name} thumbnail:${attachment.thumbnail}"
-                    )
-
-                    attachments[index] = attachment
-
-                    conversation = conversation.toBuilder().attachments(attachments).build()
                 } else {
-                    Log.d("UPL", "case2 !isThumbnail")
-                    val attachments = conversation.attachments ?: return
-
-                    val index = attachments.indexOfFirst { attachmentViewData ->
-                        attachmentViewData.awsFolderPath == response.awsFolderPath
-                    }
-
-                    Log.d("UPL", "index of attachment:$index")
-
-                    var attachment = attachments[index]
-
-                    Log.d(
-                        "UPL",
-                        "attachment found name:${attachment.name} url:${attachment.url} uri:${attachment.uri}"
+                    updateConversation(
+                        response,
+                        Pair(uploadUrl, null),
+                        totalFilesToUpload,
+                        continuation
                     )
-
-                    attachment = attachment.toBuilder()
-                        .url(response.downloadUrl)
-                        .uri(Uri.parse(response.downloadUrl))
-                        .build()
-
-                    Log.d(
-                        "UPL",
-                        "updated attachment name:${attachment.name} url:${attachment.url} uri:${attachment.uri}"
-                    )
-
-                    attachments[index] = attachment
-
-                    conversation = conversation.toBuilder().attachments(attachments).build()
                 }
-
-                val updateConversationRequest = UpdateConversationRequest.Builder()
-                    .conversation(ViewDataConverter.convertConversation(conversation))
-                    .build()
-
-                lmChatClient.updateConversation(updateConversationRequest)
             }
 
             TransferState.FAILED -> {
