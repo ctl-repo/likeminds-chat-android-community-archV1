@@ -464,6 +464,7 @@ object ViewDataConverter {
             .id(attachment.id)
             .name(attachment.name)
             .uri(Uri.parse(attachment.url))
+            .url(attachment.url)
             .type(attachment.type)
             .index(attachment.index)
             .width(attachment.width)
@@ -784,14 +785,21 @@ object ViewDataConverter {
     private fun convertAttachmentViewData(
         attachmentViewData: AttachmentViewData,
     ): Attachment {
+        Log.d(
+            "PUI", """
+            converting attachment view data to network model
+            url:${attachmentViewData.url}
+            thumbnailUrl:${attachmentViewData.thumbnail}
+        """.trimIndent()
+        )
         return Attachment.Builder()
             .name(attachmentViewData.name)
-            .url(attachmentViewData.uri.toString())
+            .url(attachmentViewData.url.toString())
             .type(attachmentViewData.type)
             .index(attachmentViewData.index)
             .width(attachmentViewData.width)
             .height(attachmentViewData.height)
-            .localFilePath(attachmentViewData.uri.toString())
+            .localFilePath(attachmentViewData.localFilePath)
             .thumbnailUrl(attachmentViewData.thumbnail.toString())
             .thumbnailLocalFilePath(attachmentViewData.thumbnailLocalFilePath.toString())
             .meta(

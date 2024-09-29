@@ -2862,6 +2862,14 @@ class ChatroomDetailFragment :
                     //Observe for any updates to conversations already appended to the recyclerview, usually for
                     //deleted, edited, updating temporary conversations
                     getIndexedConversations(response.conversations).forEach { item ->
+                        Log.d(
+                            "PUI", """
+                            index: ${item.key}
+                            oldConversation: ${item.value.id}
+                            attachments url: ${item.value.attachments?.map { it.url }}
+                            attachments thumbnail url: ${item.value.attachments?.map { it.thumbnail }}
+                        """.trimIndent()
+                        )
                         chatroomDetailAdapter.update(item.key, item.value)
                     }
                     filterConversationWithWidget(response.conversations)
@@ -5125,6 +5133,8 @@ class ChatroomDetailFragment :
                     Log.d(
                         "PUI", """
                         oldConversation: ${oldConversation.id}
+                        attachments url: ${oldConversation.attachments?.map { it.url }}
+                        attachments thumbnail url: ${oldConversation.attachments?.map { it.thumbnail }}
                     """.trimIndent()
                     )
 
@@ -5143,6 +5153,8 @@ class ChatroomDetailFragment :
                     Log.d(
                         "PUI", """
                         updatedConversation:${updatedConversation.id}
+                        updatedConversation attachments url: ${oldConversation.attachments?.map { it.url }}
+                        updatedConversation attachments thumbnail url: ${oldConversation.attachments?.map { it.thumbnail }}
                     """.trimIndent()
                     )
 

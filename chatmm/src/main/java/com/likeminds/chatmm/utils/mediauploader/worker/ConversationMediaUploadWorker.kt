@@ -1,6 +1,7 @@
 package com.likeminds.chatmm.utils.mediauploader.worker
 
 import android.content.Context
+import android.net.Uri
 import android.util.Log
 import androidx.work.*
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener
@@ -217,35 +218,59 @@ class ConversationMediaUploadWorker(
                 )
 
                 if (response.isThumbnail == true) {
-                    Log.d("UPL","case1 isThumb")
+                    Log.d("UPL", "case1 isThumbnail")
                     val attachments = conversation.attachments ?: return
 
                     val index = attachments.indexOfFirst { attachmentViewData ->
                         attachmentViewData.thumbnailAWSFolderPath == response.awsFolderPath
                     }
-                    Log.d("UPL","")
+                    Log.d("UPL", "index of attachment:$index")
 
                     var attachment = attachments[index]
+
+                    Log.d(
+                        "UPL",
+                        "attachment found name:${attachment.name} thumbnail:${attachment.thumbnail}"
+                    )
 
                     attachment = attachment.toBuilder()
                         .thumbnail(response.downloadUrl)
                         .build()
 
+                    Log.d(
+                        "UPL",
+                        "updated attachment name:${attachment.name} thumbnail:${attachment.thumbnail}"
+                    )
+
                     attachments[index] = attachment
 
                     conversation = conversation.toBuilder().attachments(attachments).build()
                 } else {
+                    Log.d("UPL", "case2 !isThumbnail")
                     val attachments = conversation.attachments ?: return
 
                     val index = attachments.indexOfFirst { attachmentViewData ->
                         attachmentViewData.awsFolderPath == response.awsFolderPath
                     }
 
+                    Log.d("UPL", "index of attachment:$index")
+
                     var attachment = attachments[index]
+
+                    Log.d(
+                        "UPL",
+                        "attachment found name:${attachment.name} url:${attachment.url} uri:${attachment.uri}"
+                    )
 
                     attachment = attachment.toBuilder()
                         .url(response.downloadUrl)
+                        .uri(Uri.parse(response.downloadUrl))
                         .build()
+
+                    Log.d(
+                        "UPL",
+                        "updated attachment name:${attachment.name} url:${attachment.url} uri:${attachment.uri}"
+                    )
 
                     attachments[index] = attachment
 
