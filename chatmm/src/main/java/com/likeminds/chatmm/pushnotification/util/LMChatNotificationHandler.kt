@@ -12,6 +12,7 @@ import androidx.core.app.Person
 import androidx.core.app.RemoteInput
 import com.google.gson.Gson
 import com.likeminds.chatmm.*
+import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil
 import com.likeminds.chatmm.di.DaggerLikeMindsChatComponent
 import com.likeminds.chatmm.di.LikeMindsChatComponent
 import com.likeminds.chatmm.media.model.*
@@ -48,6 +49,7 @@ class LMChatNotificationHandler {
 
     companion object {
         private var notificationHandler: LMChatNotificationHandler? = null
+        private var launcherIntent: Intent? = null
 
         const val GENERAL_CHANNEL_ID = "notification_general"
         const val CHATROOM_CHANNEL_ID = "chatroom_channel_id"
@@ -239,10 +241,10 @@ class LMChatNotificationHandler {
 
             var resultPendingIntent: PendingIntent? = null
             if (intent != null) {
-                resultPendingIntent = PendingIntent.getActivity(
+                resultPendingIntent = PendingIntent.getActivities(
                     context,
                     notificationId,
-                    intent,
+                    arrayOf(launcherIntent, intent),
                     PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
                 )
             }
@@ -251,7 +253,7 @@ class LMChatNotificationHandler {
     }
 
     //create the instance of the handler and channel for notification
-    fun create(application: Application) {
+    fun create(application: Application, launcherIntent: Intent) {
         mApplication = application
         createRockyComponent(application)
 
@@ -260,6 +262,8 @@ class LMChatNotificationHandler {
         notificationIcon = R.drawable.lm_chat_ic_notification
 
         notificationTextColor = LMTheme.getButtonsColor()
+
+        LMChatNotificationHandler.launcherIntent = launcherIntent
 
         createNotificationChannel()
     }
@@ -907,7 +911,7 @@ class LMChatNotificationHandler {
         val audioCount = unreadConversation.attachments?.filter { it.type == AUDIO }?.size ?: 0
         val voiceNoteCount =
             unreadConversation.attachments?.filter { it.type == VOICE_NOTE }?.size ?: 0
-        var updatedContentText = contentText
+        var updatedContentText = ChatroomUtil.removeTemporaryText(contentText)
 
         updatedContentText = when {
             updatedContentText.isNotEmpty() -> updatedContentText
