@@ -140,6 +140,9 @@ class ChatroomDetailViewModel @Inject constructor(
     private val _memberBlocked: MutableLiveData<Boolean> by lazy { MutableLiveData() }
     val memberBlocked: LiveData<Boolean> by lazy { _memberBlocked }
 
+    private val _conversationPosted: MutableLiveData<Boolean> by lazy { MutableLiveData() }
+    val conversationPosted: LiveData<Boolean> by lazy { _conversationPosted }
+
     private var sendLinkPreview = true
 
     sealed class ConversationEvent {
@@ -1450,6 +1453,8 @@ class ChatroomDetailViewModel @Inject constructor(
         chatroomDetail = chatroomDetail.toBuilder().chatroom(newChatroomViewData).build()
     }
 
+
+    // post conversation with media
     fun postConversation(
         conversation: ConversationViewData,
         taggedUsers: List<TagViewData>,
@@ -1489,7 +1494,7 @@ class ChatroomDetailViewModel @Inject constructor(
 
             val response = lmChatClient.postConversation(postConversationRequest)
             if (response.success) {
-                onNonAttachmentConversationPosted(
+                onConversationPosted(
                     response.data,
                     conversation,
                     taggedUsers,
@@ -1504,6 +1509,7 @@ class ChatroomDetailViewModel @Inject constructor(
     }
 
 
+    // post conversation without media
     @SuppressLint("CheckResult")
     fun postConversation(
         context: Context,
@@ -1593,7 +1599,7 @@ class ChatroomDetailViewModel @Inject constructor(
                     val data = response.data
 
                     //post action on success
-                    onNonAttachmentConversationPosted(
+                    onConversationPosted(
                         data,
                         temporaryConversation,
                         taggedUsers,
@@ -1759,7 +1765,7 @@ class ChatroomDetailViewModel @Inject constructor(
      * @param replyConversationId [String?] -> reply conversation id
      * @param replyChatRoomId [String?] -> reply chat room id
      */
-    private fun onNonAttachmentConversationPosted(
+    private fun onConversationPosted(
         response: PostConversationResponse?,
         tempConversation: ConversationViewData?,
         taggedUsers: List<TagViewData>,
@@ -1795,151 +1801,9 @@ class ChatroomDetailViewModel @Inject constructor(
                 replyConversationId,
                 replyChatRoomId
             )
+
+            _conversationPosted.postValue(true)
         }
-    }
-
-    private fun onConversationPosted(
-        context: Context,
-        response: PostConversationResponse?,
-        updatedFileUris: List<SingleUriData>?,
-        tempConversation: ConversationViewData?,
-        taggedUsers: List<TagViewData>,
-        replyChatData: ChatReplyViewData?,
-        replyConversationId: String?,
-        replyChatRoomId: String?
-    ) {
-        if (response?.conversation != null) {
-            var uploadData: Pair<WorkContinuation?, String>? = null
-            val requestList = ArrayList<GenericFileRequest>()
-            if (!updatedFileUris.isNullOrEmpty()) {
-                uploadData = uploadFilesViaWorker(
-                    context,
-                    response.id!!
-                )
-                requestList.addAll(
-                    getUploadFileRequestList(
-                        context,
-                        updatedFileUris,
-                        chatroomDetail.chatroom?.id,
-                        response.id
-                    )
-                )
-            }
-            savePostedConversation(
-                requestList,
-                response,
-                uploadData?.second
-            )
-            postedConversation(
-                taggedUsers,
-                tempConversation,
-                replyChatData,
-                replyConversationId,
-                replyChatRoomId
-            )
-            // Start Uploading Files
-            uploadData?.first?.enqueue()
-        }
-    }
-
-    private fun getUploadFileRequestList(
-        context: Context,
-        fileUris: List<SingleUriData>,
-        chatroomId: String?,
-        conversationId: String?,
-    ): List<GenericFileRequest> {
-        return fileUris.mapIndexed { index, attachment ->
-            val attachmentMeta = AttachmentMetaViewData.Builder()
-                .duration(attachment.duration)
-                .numberOfPage(attachment.pdfPageCount)
-                .size(attachment.size)
-                .build()
-            var builder = GenericFileRequest.Builder()
-                .name(attachment.mediaName)
-                .fileUri(attachment.uri)
-                .fileType(attachment.fileType)
-                .width(attachment.width)
-                .height(attachment.height)
-                .meta(attachmentMeta)
-                .index(index)
-
-            val localFilePath = FileUtil.getRealPath(context, attachment.uri).path
-
-            val file = File(localFilePath)
-            val serverPath = UploadHelper.getConversationAttachmentFilePath(
-                chatroomId,
-                conversationId,
-                attachment.fileType,
-                file
-            )
-
-            //Add thumbnail is present
-            if (attachment.thumbnailUri != null) {
-                val thumbnailUri = attachment.thumbnailUri
-                val thumbnailLocalFilePath = FileUtil.getRealPath(context, thumbnailUri).path
-                val thumbnailFile = File(thumbnailLocalFilePath)
-                val thumbnailAWSFolderPath = UploadHelper.getConversationAttachmentFilePath(
-                    chatroomId,
-                    conversationId,
-                    attachment.fileType,
-                    thumbnailFile,
-                    isThumbnail = true
-                )
-                builder = builder.thumbnailUri(thumbnailUri)
-                    .thumbnailLocalFilePath(thumbnailLocalFilePath)
-                    .thumbnailAWSFolderPath(thumbnailAWSFolderPath)
-            }
-
-            builder.localFilePath(localFilePath).awsFolderPath(serverPath).build()
-        }
-    }
-
-    private fun savePostedConversation(
-        requestList: ArrayList<GenericFileRequest>,
-        response: PostConversationResponse,
-        uploadWorkerUUID: String?
-    ) {
-        val attachmentList = requestList.map { request ->
-            var builder = Attachment.Builder()
-                .name(request.name)
-                .url(request.fileUri.toString())
-                .type(request.fileType)
-                .index(request.index)
-                .width(request.width)
-                .height(request.height)
-                .awsFolderPath(request.awsFolderPath)
-                .localFilePath(request.localFilePath)
-                .meta(
-                    AttachmentMeta.Builder()
-                        .duration(request.meta?.duration)
-                        .numberOfPage(request.meta?.numberOfPage)
-                        .size(request.meta?.size)
-                        .build()
-                )
-            if (request.thumbnailUri != null) {
-                builder = builder.thumbnailUrl(request.thumbnailUri.toString())
-                    .thumbnailAWSFolderPath(request.thumbnailAWSFolderPath)
-                    .thumbnailLocalFilePath(request.thumbnailLocalFilePath)
-            }
-            return@map builder.build()
-        }
-
-        //Get widget from widgetMap and add it to updatedConversation
-        val widgetId = response.conversation.widgetId
-        val widget = response.widgets[widgetId]
-
-        val updatedConversation = response.conversation.toBuilder()
-            .uploadWorkerUUID(uploadWorkerUUID)
-            .attachments(attachmentList)
-            .widget(widget)
-            .build()
-
-        // request to save the posted conversation
-        val request = SavePostedConversationRequest.Builder()
-            .conversation(updatedConversation)
-            .isFromNotification(false)
-            .build()
-        lmChatClient.savePostedConversation(request)
     }
 
     private fun postedConversation(

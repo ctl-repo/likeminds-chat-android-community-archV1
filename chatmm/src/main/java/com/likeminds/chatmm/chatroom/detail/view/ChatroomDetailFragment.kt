@@ -3031,6 +3031,13 @@ class ChatroomDetailFragment :
                 }
             }
         }.observeInLifecycle(viewLifecycleOwner)
+
+        viewModel.conversationPosted.observe(viewLifecycleOwner) { sucess ->
+            if (sucess) {
+                memberTagging.clearTaggedMembers()
+                binding.inputBox.viewReply.chatReplyData = null
+            }
+        }
     }
 
     //filter conversation with widgets and return to customer
