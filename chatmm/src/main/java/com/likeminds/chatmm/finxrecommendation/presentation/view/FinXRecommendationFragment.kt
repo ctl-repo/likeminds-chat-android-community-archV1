@@ -23,7 +23,7 @@ import com.likeminds.chatmm.R
 import com.likeminds.chatmm.finxrecommendation.data.ApiCallState
 import com.likeminds.chatmm.finxrecommendation.data.FinXService
 import com.likeminds.chatmm.finxrecommendation.data.RetrofitHelper
-import com.likeminds.chatmm.finxrecommendation.domain.model.FinxRecommendationMetadata
+import com.likeminds.chatmm.finxrecommendation.domain.model.FinXRecommendationMetadata
 import com.likeminds.chatmm.finxrecommendation.domain.model.FinxSmSearchApiRsp
 import com.likeminds.chatmm.finxrecommendation.domain.repository.FinXRepositoryImpl
 import com.likeminds.chatmm.finxrecommendation.domain.util.FinXDialog
@@ -55,7 +55,7 @@ class FinXRecommendationFragment : Fragment() {
     private var slPrice: String? = null
     private var targetPrice: String? = null
     private var orderType: Boolean = true
-    private var finxRecommendationMetadata: FinxRecommendationMetadata? = null
+    private var finxRecommendationMetadata: FinXRecommendationMetadata? = null
     private var selectedScrip: FinxSmSearchApiRsp? = null
 
     //validation for input fields
@@ -196,7 +196,7 @@ class FinXRecommendationFragment : Fragment() {
             }
 
             if (isValid && selectedScrip != null) {
-                finxRecommendationMetadata = FinxRecommendationMetadata(
+                finxRecommendationMetadata = FinXRecommendationMetadata(
                     entryPrice = entryPriceValue.toString(),
                     slPrice = slPriceValue.toString(),
                     targetPrice = targetPriceValue.toString(),

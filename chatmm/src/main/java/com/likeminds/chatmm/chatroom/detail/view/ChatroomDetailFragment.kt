@@ -39,7 +39,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.gson.Gson
 import com.likeminds.chatmm.*
 import com.likeminds.chatmm.R
-import com.likeminds.chatmm.finxrecommendation.domain.model.FinxRecommendationMetadata
+import com.likeminds.chatmm.finxrecommendation.domain.model.FinXRecommendationMetadata
 import com.likeminds.chatmm.finxrecommendation.presentation.view.FinXRecommendationActivity
 import com.likeminds.chatmm.chatroom.detail.model.*
 import com.likeminds.chatmm.chatroom.detail.util.*
@@ -427,11 +427,11 @@ class ChatroomDetailFragment :
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val data: Intent? = result.data
-            val recommendation: FinxRecommendationMetadata? =
+            val recommendation: FinXRecommendationMetadata? =
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     data?.getParcelableExtra(
                         "recommendationData",
-                        FinxRecommendationMetadata::class.java
+                        FinXRecommendationMetadata::class.java
                     )
                 } else {
                     data?.getParcelableExtra("recommendationData")
@@ -670,11 +670,11 @@ class ChatroomDetailFragment :
         }
     }
 
-    override fun onClickFinxSmBuySell(recomData: FinxRecommendationMetadata) {
+    override fun onClickFinxSmBuySell(recomData: FinXRecommendationMetadata) {
         SDKApplication.getLikeMindsCallback()?.navigateToFinXSmPlaceOrder(recomData)
     }
 
-    override fun onClickFinxSmCompany(recomData: FinxRecommendationMetadata) {
+    override fun onClickFinxSmCompany(recomData: FinXRecommendationMetadata) {
         SDKApplication.getLikeMindsCallback()?.navigateToFinXSmCompany(recomData)
     }
 

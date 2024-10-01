@@ -6,7 +6,7 @@ import androidx.core.content.ContextCompat
 import com.google.gson.Gson
 import com.likeminds.chatmm.LMAnalytics
 import com.likeminds.chatmm.R
-import com.likeminds.chatmm.finxrecommendation.domain.model.FinxRecommendationMetadata
+import com.likeminds.chatmm.finxrecommendation.domain.model.FinXRecommendationMetadata
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomConversationItemViewDataBinderUtil
 import com.likeminds.chatmm.chatroom.detail.view.adapter.ChatroomDetailAdapterListener
 import com.likeminds.chatmm.conversation.model.ConversationViewData
@@ -55,7 +55,7 @@ class ConversationWidgetItemViewDataBinder(
             //Custom Widget Data
             val metadata = JSONObject(data.widgetViewData?.metadata.toString())
             val recomData =
-                Gson().fromJson(metadata.toString(), FinxRecommendationMetadata::class.java)
+                Gson().fromJson(metadata.toString(), FinXRecommendationMetadata::class.java)
 
             with(recomData) {
                 tvFinXRecommendationTitle.text = searchRsp?.getScripName()

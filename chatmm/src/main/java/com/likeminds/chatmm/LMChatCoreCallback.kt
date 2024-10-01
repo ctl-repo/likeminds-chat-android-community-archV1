@@ -1,6 +1,6 @@
 package com.likeminds.chatmm
 
-import com.likeminds.chatmm.finxrecommendation.domain.model.FinxRecommendationMetadata
+import com.likeminds.chatmm.finxrecommendation.domain.model.FinXRecommendationMetadata
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.widget.model.WidgetViewData
 
@@ -30,6 +30,6 @@ interface LMChatCoreCallback {
         return Pair(null, null)
     }
 
-    fun navigateToFinXSmPlaceOrder(recomData: FinxRecommendationMetadata)
-    fun navigateToFinXSmCompany(recomData: FinxRecommendationMetadata)
+    fun navigateToFinXSmPlaceOrder(recomData: FinXRecommendationMetadata)
+    fun navigateToFinXSmCompany(recomData: FinXRecommendationMetadata)
 }

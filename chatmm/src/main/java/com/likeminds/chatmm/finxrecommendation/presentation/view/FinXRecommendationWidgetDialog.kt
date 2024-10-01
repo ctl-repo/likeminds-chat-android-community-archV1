@@ -19,7 +19,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.likeminds.chatmm.finxrecommendation.data.ApiCallState
 import com.likeminds.chatmm.finxrecommendation.data.FinXService
 import com.likeminds.chatmm.finxrecommendation.data.RetrofitHelper
-import com.likeminds.chatmm.finxrecommendation.domain.model.FinxRecommendationMetadata
+import com.likeminds.chatmm.finxrecommendation.domain.model.FinXRecommendationMetadata
 import com.likeminds.chatmm.finxrecommendation.domain.model.FinxSmSearchApiRsp
 import com.likeminds.chatmm.finxrecommendation.domain.repository.FinXRepositoryImpl
 import com.likeminds.chatmm.finxrecommendation.domain.util.gone
@@ -29,7 +29,7 @@ import com.likeminds.chatmm.finxrecommendation.presentation.viewmodel.FinXViewMo
 import com.likeminds.chatmm.finxrecommendation.presentation.viewmodel.FinXViewModelFactory
 import com.likeminds.chatmm.databinding.DialogFinxRecommendationWidgetBinding
 
-class FinXRecommendationWidgetDialog(val onPostClicked: (FinxRecommendationMetadata?) -> Unit) :
+class FinXRecommendationWidgetDialog(val onPostClicked: (FinXRecommendationMetadata?) -> Unit) :
     BottomSheetDialogFragment() {
 
     private var _binding: DialogFinxRecommendationWidgetBinding? = null
@@ -44,7 +44,7 @@ class FinXRecommendationWidgetDialog(val onPostClicked: (FinxRecommendationMetad
     private var slPrice: String? = null
     private var targetPrice: String? = null
     private var orderType: Boolean = true
-    private var finxRecommendationMetadata: FinxRecommendationMetadata? = null
+    private var finxRecommendationMetadata: FinXRecommendationMetadata? = null
     private var selectedScrip: FinxSmSearchApiRsp? = null
 
     override fun onCreateView(
@@ -181,7 +181,7 @@ class FinXRecommendationWidgetDialog(val onPostClicked: (FinxRecommendationMetad
 
                     }
                 }
-                finxRecommendationMetadata = FinxRecommendationMetadata(
+                finxRecommendationMetadata = FinXRecommendationMetadata(
                     entryPrice = entryPriceValue,
                     slPrice = slPriceValue,
                     targetPrice = targetPriceValue,
