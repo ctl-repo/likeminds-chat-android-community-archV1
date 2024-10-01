@@ -1614,6 +1614,8 @@ class ChatroomDetailViewModel @Inject constructor(
                 //create upload worker
                 val uploadData = getUploadWorker(context, temporaryId)
 
+                Log.d("PUI", "upload started: ${uploadData.second}")
+
                 //update worker id local db
                 val updateWorkerUUIDRequest = UpdateConversationUploadWorkerUUIDRequest.Builder()
                     .uuid(uploadData.second)
@@ -1621,6 +1623,8 @@ class ChatroomDetailViewModel @Inject constructor(
                     .build()
 
                 lmChatClient.updateConversationUploadWorkerUUID(updateWorkerUUIDRequest)
+
+                Log.d("PUI", "upload enqueue")
 
                 //enqueue worker
                 uploadData.first.enqueue()

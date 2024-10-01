@@ -32,11 +32,6 @@ class ConversationMediaUploadWorker(
                         ARG_CONVERSATION_ID to conversationId,
                     )
                 )
-                .setConstraints(
-                    Constraints.Builder()
-                        .setRequiredNetworkType(NetworkType.CONNECTED)
-                        .build()
-                )
                 .setBackoffCriteria(
                     BackoffPolicy.LINEAR,
                     WorkRequest.MIN_BACKOFF_MILLIS,
@@ -177,6 +172,7 @@ class ConversationMediaUploadWorker(
             }
 
             override fun onError(id: Int, ex: Exception?) {
+                Log.e("PUI", "transfer listener failed: ${ex?.message}")
                 ex?.printStackTrace()
                 failedIndex.add(awsFileResponse.index)
                 checkWorkerComplete(totalFilesToUpload, continuation)
@@ -231,11 +227,13 @@ class ConversationMediaUploadWorker(
             }
 
             TransferState.FAILED -> {
+                Log.e("PUI", "transfer state failed")
                 failedIndex.add(response.index)
                 checkWorkerComplete(totalFilesToUpload, continuation)
             }
 
             else -> {
+                Log.d("PUI", "transfer state else:$state")
             }
         }
     }
