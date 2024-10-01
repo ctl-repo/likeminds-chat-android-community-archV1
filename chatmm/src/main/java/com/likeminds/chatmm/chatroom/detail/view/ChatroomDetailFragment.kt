@@ -39,8 +39,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.gson.Gson
 import com.likeminds.chatmm.*
 import com.likeminds.chatmm.R
-import com.likeminds.chatmm.buysellwidget.domain.model.FinxRecommendationMetadata
-import com.likeminds.chatmm.buysellwidget.presentation.view.FinxRecommendationActivity
+import com.likeminds.chatmm.finxrecommendation.domain.model.FinxRecommendationMetadata
+import com.likeminds.chatmm.finxrecommendation.presentation.view.FinXRecommendationActivity
 import com.likeminds.chatmm.chatroom.detail.model.*
 import com.likeminds.chatmm.chatroom.detail.util.*
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil.getTypeName
@@ -873,7 +873,7 @@ class ChatroomDetailFragment :
 
     //on click function when custom widget A is clicked
     private fun onCustomWidgetAAttachmentClicked() {
-        val intent = Intent(requireActivity(), FinxRecommendationActivity::class.java)
+        val intent = Intent(requireActivity(), FinXRecommendationActivity::class.java)
         startActivityForResultLauncher.launch(intent)
     }
 

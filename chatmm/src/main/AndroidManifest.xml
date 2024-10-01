@@ -31,7 +31,7 @@
 
     <application>
         <activity
-            android:name=".buysellwidget.presentation.view.FinxRecommendationActivity"
+            android:name=".finxrecommendation.presentation.view.FinXRecommendationActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/LMAppTheme.NoActionBar.NoAnimation"/>

@@ -32,7 +32,7 @@ import com.likeminds.chatmm.utils.connectivity.ConnectivityBroadcastReceiver
 import com.likeminds.chatmm.utils.connectivity.ConnectivityReceiverListener
 import com.likeminds.chatmm.utils.customview.BaseFragment
 import com.likeminds.chatmm.utils.snackbar.CustomSnackBar
-import com.likeminds.chatmm.xapp.XAppInstance
+import com.likeminds.chatmm.xapp.XLmcAppInstance
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
@@ -82,8 +82,8 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
         // Retrieve sessionId from arguments
         val sessionId = arguments?.getString(ARG_SESSION_ID)
         val userId = arguments?.getString(ARG_USER_ID)
-        XAppInstance.sessionID = sessionId
-        XAppInstance.userID = userId
+        XLmcAppInstance.sessionID = sessionId
+        XLmcAppInstance.userID = userId
     }
 
     private lateinit var pagerAdapter: ChatPagerAdapter
