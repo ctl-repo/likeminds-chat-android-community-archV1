@@ -788,6 +788,7 @@ object ViewDataConverter {
                         .header(chatroomName)
                         .communityName(communityName)
                         .communityId(communityId.toString())
+                        .member(createMember(chatroomNotificationViewData.chatroomCreator))
                         .build()
                 )
                 .chatroomLastConversation(
@@ -798,21 +799,7 @@ object ViewDataConverter {
                         .chatroomId(chatroomId)
                         .communityId(communityId.toString())
                         .attachments(createAttachmentsFromNotification(attachments))
-                        .member(
-                            //todo:
-                            Member.Builder().id("1234").uuid("1234")
-                                .imageUrl(chatroomLastConversationUserImage ?: "")
-                                .userUniqueId("1234")
-                                .name(chatroomLastConversationUserName ?: "")
-                                .sdkClientInfo(
-                                    SDKClientInfo(
-                                        communityId,
-                                        "1234",
-                                        "1234",
-                                        "1234"
-                                    )
-                                ).build()
-                        )
+                        .member(createMember(chatroomNotificationViewData.chatroomLastConversationCreator))
                         .build()
                 )
                 .build()
@@ -851,6 +838,38 @@ object ViewDataConverter {
             .size(attachmentMetaData.size)
             .numberOfPage(attachmentMetaData.numberOfPage)
             .build()
+    }
+
+    // creates [Member] from the member object received in notification
+    private fun createMember(memberViewData: MemberViewData?): Member? {
+        if (memberViewData == null) {
+            return null
+        }
+
+        return Member.Builder()
+            .id(memberViewData.id ?: "")
+            .imageUrl(memberViewData.imageUrl ?: "")
+            .isGuest(memberViewData.isGuest ?: false)
+            .name(memberViewData.name ?: "")
+            .updatedAt(memberViewData.updatedAt)
+            .userUniqueId(memberViewData.userUniqueId ?: "")
+            .uuid(memberViewData.uuid)
+            .sdkClientInfo(createSDKClientInfo(memberViewData.sdkClientInfo))
+            .build()
+    }
+
+    // creates [SDKClientInfo] from the sdk client info object received in notification
+    private fun createSDKClientInfo(sdkClientInfoViewData: SDKClientInfoViewData?): SDKClientInfo? {
+        if (sdkClientInfoViewData == null) {
+            return null
+        }
+
+        return SDKClientInfo(
+            sdkClientInfoViewData.communityId,
+            sdkClientInfoViewData.user,
+            sdkClientInfoViewData.userUniqueId,
+            sdkClientInfoViewData.uuid,
+        )
     }
 
     fun convertSearchChatroomHeaders(
