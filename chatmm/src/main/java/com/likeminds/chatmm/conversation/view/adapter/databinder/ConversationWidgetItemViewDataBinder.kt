@@ -89,7 +89,7 @@ class ConversationWidgetItemViewDataBinder(
             }
 
             btnFinXRecommendationBuy.setOnClickListener {
-                adapterListener.onClickFinxSmBuySell(recomData)
+                adapterListener.onClickFinxSmPlaceOrder(recomData)
                 onClick.invoke()
             }
 
