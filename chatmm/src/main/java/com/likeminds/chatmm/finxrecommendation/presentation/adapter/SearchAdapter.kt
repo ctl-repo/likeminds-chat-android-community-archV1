@@ -1,5 +1,6 @@
 package com.likeminds.chatmm.finxrecommendation.presentation.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,14 +16,16 @@ class SearchAdapter(
     inner class ViewHolder(val binding: ItemSearchScripLmBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
+        init {
+            binding.root.setOnClickListener {
+                itemClickListener(dataList[absoluteAdapterPosition])
+            }
+        }
+
         fun bind(item: FinxSmSearchApiRsp) {
             binding.tvScripName.text = item.getScripName()
             binding.tvExchangeName.text = "" //item.exchangeSegment
             binding.tvDesc.text = item.exchangeSegment
-
-            itemView.setOnClickListener(View.OnClickListener() {
-                itemClickListener(item)
-            })
         }
     }
 
