@@ -117,7 +117,7 @@ import com.likeminds.chatmm.utils.permissions.*
 import com.likeminds.chatmm.utils.recyclerview.LMSwipeController
 import com.likeminds.chatmm.utils.recyclerview.SwipeControllerActions
 import com.likeminds.chatmm.widget.model.WidgetViewData
-import com.likeminds.chatmm.xapp.XAppInstance
+import com.likeminds.chatmm.xapp.XLmcAppInstance
 import com.likeminds.likemindschat.chatroom.model.ChatRequestState
 import com.likeminds.likemindschat.user.model.MemberBlockState
 import com.vanniktech.emoji.EmojiPopup
@@ -243,7 +243,7 @@ class ChatroomDetailFragment :
     private var showTapToUndoLocally = true
 
     private val mResearchCustomWidgetVisibility: Int by lazy {
-        val isVisible = viewModel.isWidgetEnabled() && XAppInstance.isResearchPostAllowed
+        val isVisible = viewModel.isWidgetEnabled() && XLmcAppInstance.isResearchPostAllowed
         if (isVisible) View.VISIBLE else View.INVISIBLE
     }
 

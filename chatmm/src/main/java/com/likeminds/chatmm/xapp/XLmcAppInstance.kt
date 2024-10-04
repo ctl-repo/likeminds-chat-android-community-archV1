@@ -4,4 +4,5 @@ object XLmcAppInstance {
 
     var sessionID: String? = null
     var userID: String? = null
+    var isResearchPostAllowed: Boolean = false
 }
