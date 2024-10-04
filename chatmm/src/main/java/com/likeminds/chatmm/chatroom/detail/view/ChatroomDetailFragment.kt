@@ -670,7 +670,7 @@ class ChatroomDetailFragment :
         }
     }
 
-    override fun onClickFinxSmBuySell(recomData: FinXRecommendationMetadata) {
+    override fun onClickFinxSmPlaceOrder(recomData: FinXRecommendationMetadata) {
         SDKApplication.getLikeMindsCallback()?.navigateToFinXSmPlaceOrder(recomData)
     }
 
