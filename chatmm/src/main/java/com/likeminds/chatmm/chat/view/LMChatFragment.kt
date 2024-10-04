@@ -58,6 +58,7 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
         const val TAG = "ChatFragment"
         private const val ARG_SESSION_ID = "ARG_SESSION_ID"
         private const val ARG_USER_ID = "ARG_USER_ID"
+        private const val ARG_RESEARCH_POST_ALLOWED = "ARG_RESEARCH_POST_ALLOWED"
 
         @RequiresApi(Build.VERSION_CODES.TIRAMISU)
         private const val POST_NOTIFICATIONS = Manifest.permission.POST_NOTIFICATIONS
@@ -67,11 +68,16 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
             return fragment
         }
 
-        fun newInstance(sessionId: String, userId: String): LMChatFragment {
+        fun newInstance(
+            sessionId: String,
+            userId: String,
+            researchPostAllowed: Boolean
+        ): LMChatFragment {
             val fragment = LMChatFragment()
             val args = Bundle()
             args.putString(ARG_SESSION_ID, sessionId)
             args.putString(ARG_USER_ID, userId)
+            args.putBoolean(ARG_RESEARCH_POST_ALLOWED, researchPostAllowed)
             fragment.arguments = args
             return fragment
         }
@@ -82,8 +88,10 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
         // Retrieve sessionId from arguments
         val sessionId = arguments?.getString(ARG_SESSION_ID)
         val userId = arguments?.getString(ARG_USER_ID)
+        val isResearchPostAllowed = arguments?.getBoolean(ARG_RESEARCH_POST_ALLOWED, false) ?: false
         XLmcAppInstance.sessionID = sessionId
         XLmcAppInstance.userID = userId
+        XLmcAppInstance.isResearchPostAllowed = isResearchPostAllowed
     }
 
     private lateinit var pagerAdapter: ChatPagerAdapter

@@ -117,6 +117,7 @@ import com.likeminds.chatmm.utils.permissions.*
 import com.likeminds.chatmm.utils.recyclerview.LMSwipeController
 import com.likeminds.chatmm.utils.recyclerview.SwipeControllerActions
 import com.likeminds.chatmm.widget.model.WidgetViewData
+import com.likeminds.chatmm.xapp.XAppInstance
 import com.likeminds.likemindschat.chatroom.model.ChatRequestState
 import com.likeminds.likemindschat.user.model.MemberBlockState
 import com.vanniktech.emoji.EmojiPopup
@@ -240,6 +241,11 @@ class ChatroomDetailFragment :
     private var isDMRequestSent = false
 
     private var showTapToUndoLocally = true
+
+    private val mResearchCustomWidgetVisibility: Int by lazy {
+        val isVisible = viewModel.isWidgetEnabled() && XAppInstance.isResearchPostAllowed
+        if (isVisible) View.VISIBLE else View.INVISIBLE
+    }
 
     private val progressReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -793,9 +799,7 @@ class ChatroomDetailFragment :
             }
 
             //to check whether widget is enabled or not
-            val isWidgetEnabled = viewModel.isWidgetEnabled()
-
-            inputBox.ivCustomWidget.isVisible = isWidgetEnabled
+            inputBox.ivCustomWidget.visibility = mResearchCustomWidgetVisibility
             inputBox.ivCustomWidget.setOnClickListener {
                 initVisibilityOfAttachmentsBar(View.GONE)
                 onCustomWidgetAAttachmentClicked()
@@ -857,13 +861,13 @@ class ChatroomDetailFragment :
 //            //to check whether widget is enabled or not
 //            val isWidgetEnabled = viewModel.isWidgetEnabled()
 //
-            ivCustomWidgetA.isVisible = false
+            /*ivCustomWidgetA.isVisible = false
             tvCustomWidgetATitle.isVisible = false
 
             ivCustomWidgetA.setOnClickListener {
                 initVisibilityOfAttachmentsBar(View.GONE)
                 onCustomWidgetAAttachmentClicked()
-            }
+            }*/
 
             clBottomBar.setOnClickListener {
                 initVisibilityOfAttachmentsBar(View.GONE)
@@ -1627,7 +1631,7 @@ class ChatroomDetailFragment :
                     }
                     if (!isVoiceNoteLocked && !isVoiceNoteRecording && !isDMRequestSent) {
                         inputBox.ivAttachment.visibility = View.VISIBLE
-                        inputBox.ivCustomWidget.visibility = View.VISIBLE
+                        inputBox.ivCustomWidget.visibility = mResearchCustomWidgetVisibility
                     }
                     inputBox.viewLink.clLink.visibility = View.GONE
                     inputBox.viewReply.clReply.visibility = View.GONE
@@ -1648,7 +1652,7 @@ class ChatroomDetailFragment :
                     }
                     if (!isVoiceNoteLocked && !isVoiceNoteRecording) {
                         inputBox.ivAttachment.visibility = View.VISIBLE
-                        inputBox.ivCustomWidget.visibility = View.VISIBLE
+                        inputBox.ivCustomWidget.visibility = mResearchCustomWidgetVisibility
                     }
                     inputBox.viewLink.clLink.visibility = View.GONE
                     inputBox.viewReply.clReply.visibility = View.VISIBLE
