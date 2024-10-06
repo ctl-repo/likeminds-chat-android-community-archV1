@@ -826,11 +826,17 @@ class ChatroomDetailFragment :
     private fun initAttachmentsView() {
         attachmentBarAdapter = LMChatAttachmentBarAdapter(this)
 
-        binding.layoutAttachments.rvAttachments.apply {
-            adapter = attachmentBarAdapter
-            layoutManager = GridLayoutManager(requireContext(), 3)
+        binding.layoutAttachments.apply {
+            rvAttachments.adapter = attachmentBarAdapter
+            rvAttachments.layoutManager = GridLayoutManager(requireContext(), 3)
+
+            attachmentBarAdapter.replace(getSupportedAttachmentTypes())
+
+            clBottomBar.setOnClickListener {
+                initVisibilityOfAttachmentsBar(View.GONE)
+            }
         }
-        attachmentBarAdapter.replace(getSupportedAttachmentTypes())
+
 
 //        binding.layoutAttachments.apply {
 //            ivGallery.setOnClickListener {
