@@ -57,6 +57,7 @@ import com.likeminds.chatmm.media.util.MediaAudioForegroundService.Companion.BRO
 import com.likeminds.chatmm.media.util.MediaAudioForegroundService.Companion.BROADCAST_PROGRESS
 import com.likeminds.chatmm.media.util.MediaAudioForegroundService.Companion.BROADCAST_SEEKBAR_DRAGGED
 import com.likeminds.chatmm.media.util.MediaAudioForegroundService.Companion.PROGRESS_SEEKBAR_DRAGGED
+import com.likeminds.chatmm.media.view.LMChatMediaPickerActivity
 import com.likeminds.chatmm.media.view.LMChatMediaPickerActivity.Companion.ARG_MEDIA_PICKER_RESULT
 import com.likeminds.chatmm.media.view.MediaActivity
 import com.likeminds.chatmm.media.view.MediaActivity.Companion.BUNDLE_MEDIA_EXTRAS
@@ -833,7 +834,67 @@ class ChatroomDetailFragment :
     }
 
     override fun onAttachmentClicked(attachmentItem: LMChatAttachmentItemViewData) {
+        when (attachmentItem.attachmentType) {
+            LMChatAttachmentType.CAMERA -> {
+                initCameraAttachment()
+            }
 
+            LMChatAttachmentType.GALLERY -> {
+                initVisibilityOfAttachmentsBar(View.GONE)
+                onScreenChanged()
+
+                val extras = if (viewModel.isOtherUserAIBot()) {
+                    LMChatMediaPickerExtras.Builder()
+                        .senderName(viewModel.chatroomDetail.chatroom?.header)
+                        .allowMultipleSelect(false)
+                        .mediaTypes(listOf(IMAGE))
+                        .build()
+                } else {
+                    LMChatMediaPickerExtras.Builder()
+                        .senderName(viewModel.chatroomDetail.chatroom?.header)
+                        .mediaTypes(listOf(IMAGE, VIDEO))
+                        .build()
+                }
+
+                val intent = LMChatMediaPickerActivity.getIntent(requireContext(), extras)
+                galleryLauncher.launch(intent)
+            }
+
+            LMChatAttachmentType.DOCUMENT -> {
+                initVisibilityOfAttachmentsBar(View.GONE)
+                onScreenChanged()
+                val extra = LMChatMediaPickerExtras.Builder()
+                    .senderName(viewModel.chatroomDetail.chatroom?.header)
+                    .mediaTypes(listOf(PDF))
+                    .build()
+                val intent = LMChatMediaPickerActivity.getIntent(requireContext(), extra)
+                documentLauncher.launch(intent)
+            }
+
+            LMChatAttachmentType.AUDIO -> {
+                initVisibilityOfAttachmentsBar(View.GONE)
+                onScreenChanged()
+                val extra = LMChatMediaPickerExtras.Builder()
+                    .senderName(viewModel.chatroomDetail.chatroom?.header)
+                    .mediaTypes(listOf(AUDIO))
+                    .build()
+                val intent = LMChatMediaPickerActivity.getIntent(requireContext(), extra)
+                audioLauncher.launch(intent)
+            }
+
+            LMChatAttachmentType.POLL -> {
+                initVisibilityOfAttachmentsBar(View.GONE)
+                CreateConversationPollDialog.show(
+                    childFragmentManager,
+                    getChatroomViewData(),
+                    chatroomDetailExtras
+                )
+            }
+
+            LMChatAttachmentType.CUSTOM_WIDGET -> {
+                onCustomWidgetAAttachmentClicked()
+            }
+        }
     }
 
     private fun initAttachmentsView() {
@@ -3982,6 +4043,7 @@ class ChatroomDetailFragment :
                 .isExternallyShared(isExternallyShared)
                 .isSecretChatroom(getChatroomViewData()?.isSecret)
                 .isTaggingEnabled(!viewModel.isDmChatroom())
+                .allowMultipleSelect(!viewModel.isOtherUserAIBot())
                 .build()
 
             val intent =
