@@ -576,8 +576,21 @@ class ChatroomDetailFragment :
                 if (it?.toString()?.trim()
                         .isNullOrEmpty() && viewModel.isVoiceNoteSupportEnabled()
                 ) {
-                    fabSend.hide()
-                    fabMic.show()
+                    if (viewModel.isDmChatroom()) {
+                        val chatRequestState = viewModel.getChatroomViewData()?.chatRequestState
+
+                        //in request as no attachment is not allowed
+                        if (chatRequestState == ChatRequestState.ACCEPTED) {
+                            fabSend.hide()
+                            fabMic.show()
+                        } else {
+                            fabSend.show()
+                            fabMic.hide()
+                        }
+                    } else {
+                        fabSend.hide()
+                        fabMic.show()
+                    }
                 } else {
                     fabSend.show()
                     fabMic.hide()
@@ -1506,10 +1519,6 @@ class ChatroomDetailFragment :
         binding.apply {
             if (showDM) {
                 val isPrivateMember = viewModel.getChatroomViewData()?.isPrivateMember
-                if (isPrivateMember == false) {
-                    tvSendDmRequestToMember.hide()
-                    return
-                }
                 if (isBlocked == true) {
                     hideAllChatBoxViews()
                     tvRestrictedMessage.visibility = View.VISIBLE
@@ -1531,6 +1540,15 @@ class ChatroomDetailFragment :
                                 R.string.lm_chat_send_a_dm_request_to_s,
                                 viewModel.getOtherDmMember()?.name
                             )
+
+                        if (isPrivateMember == false) {
+                            tvSendDmRequestToMember.hide()
+                        }
+
+                        //as no attachment is allowed in request
+                        fabSend.show()
+                        fabMic.hide()
+
                         isDMRequestSent = true
                         inputBox.ivAttachment.visibility = View.INVISIBLE
                         return
@@ -1662,11 +1680,23 @@ class ChatroomDetailFragment :
                     }
                     inputBox.viewLink.clLink.visibility = View.GONE
                     inputBox.viewReply.clReply.visibility = View.GONE
-                    if (inputBox.etAnswer.text?.trim()
-                            .isNullOrEmpty() && viewModel.isVoiceNoteSupportEnabled()
+                    if (inputBox.etAnswer.text?.trim().isNullOrEmpty() &&
+                        viewModel.isVoiceNoteSupportEnabled()
                     ) {
-                        fabSend.hide()
-                        fabMic.show()
+                        if (viewModel.isDmChatroom()) {
+                            val chatRequestState = viewModel.getChatroomViewData()?.chatRequestState
+                            //in request as no attachment is not allowed
+                            if (chatRequestState == ChatRequestState.ACCEPTED) {
+                                fabSend.hide()
+                                fabMic.show()
+                            } else {
+                                fabSend.show()
+                                fabMic.hide()
+                            }
+                        } else {
+                            fabSend.hide()
+                            fabMic.show()
+                        }
                     } else {
                         fabSend.show()
                         fabMic.hide()
@@ -1975,7 +2005,6 @@ class ChatroomDetailFragment :
                     if (
                         viewModel.isDmChatroom()
                         && (viewModel.getChatroomViewData()?.chatRequestState == ChatRequestState.NOTHING)
-                        && (viewModel.getChatroomViewData()?.isPrivateMember == true)
                     ) {
                         viewModel.dmRequestText = inputText
                         if (inputText.length >= DM_SEND_REQUEST_TEXT_LIMIT) {
