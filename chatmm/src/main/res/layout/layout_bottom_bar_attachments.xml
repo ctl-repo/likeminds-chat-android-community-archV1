@@ -23,6 +23,19 @@
             android:paddingBottom="23dp"
             app:layout_constraintBottom_toBottomOf="parent">
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_attachments"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:spanCount="3"
+                tools:itemCount="6"
+                tools:listitem="@layout/lm_chat_item_attachment" />
+
             <ImageView
                 android:id="@+id/iv_camera"
                 android:layout_width="wrap_content"
