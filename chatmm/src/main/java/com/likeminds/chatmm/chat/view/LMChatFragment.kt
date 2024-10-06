@@ -59,7 +59,7 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
 
         private const val ARG_USER_ID = "ARG_USER_ID"
         private const val ARG_SESSION_ID = "ARG_SESSION_ID"
-        private const val ARG_RESEARCH_POST_ALLOWED = "ARG_RESEARCH_POST_ALLOWED"
+        private const val ARG_IS_RESEARCH_POST_ALLOWED = "ARG_RESEARCH_POST_ALLOWED"
 
         @RequiresApi(Build.VERSION_CODES.TIRAMISU)
         private const val POST_NOTIFICATIONS = Manifest.permission.POST_NOTIFICATIONS
@@ -72,13 +72,13 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
         fun newInstance(
             userId: String,
             sessionId: String,
-            researchPostAllowed: Boolean
+            isResearchPostAllowed: Boolean
         ): LMChatFragment {
             val fragment = LMChatFragment()
             val args = Bundle()
             args.putString(ARG_USER_ID, userId)
             args.putString(ARG_SESSION_ID, sessionId)
-            args.putBoolean(ARG_RESEARCH_POST_ALLOWED, researchPostAllowed)
+            args.putBoolean(ARG_IS_RESEARCH_POST_ALLOWED, isResearchPostAllowed)
             fragment.arguments = args
             return fragment
         }
@@ -91,7 +91,7 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
             XLmcAppInstance.setUserData(
                 userId = getString(ARG_USER_ID),
                 sessionId = getString(ARG_SESSION_ID),
-                researchPostAllowed = getBoolean(ARG_RESEARCH_POST_ALLOWED, false)
+                isResearchPostAllowed = getBoolean(ARG_IS_RESEARCH_POST_ALLOWED, false)
             )
         }
     }

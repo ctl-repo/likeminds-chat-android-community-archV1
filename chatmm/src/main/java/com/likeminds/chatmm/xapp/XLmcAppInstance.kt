@@ -5,12 +5,12 @@ object XLmcAppInstance {
         private set
     var sessionId: String? = null
         private set
-    var researchPostAllowed: Boolean = false
+    var isResearchPostAllowed: Boolean = false
         private set
 
-    fun setUserData(userId: String?, sessionId: String?, researchPostAllowed: Boolean) {
+    fun setUserData(userId: String?, sessionId: String?, isResearchPostAllowed: Boolean) {
         this.userId = userId
         this.sessionId = sessionId
-        this.researchPostAllowed = researchPostAllowed
+        this.isResearchPostAllowed = isResearchPostAllowed
     }
 }
