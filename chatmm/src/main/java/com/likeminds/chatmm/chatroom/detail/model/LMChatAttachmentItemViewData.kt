@@ -10,7 +10,7 @@ import kotlinx.parcelize.Parcelize
 class LMChatAttachmentItemViewData private constructor(
     val attachmentName: String,
     @DrawableRes val attachmentIcon: Int,
-    val attachmentType: String
+    val attachmentType: LMChatAttachmentType
 ) : Parcelable, BaseViewType {
     override val viewType: Int
         get() = ITEM_ATTACHMENT_ITEM
@@ -25,11 +25,14 @@ class LMChatAttachmentItemViewData private constructor(
     class Builder {
         private var attachmentName: String = ""
         private var attachmentIcon: Int = 0
-        private var attachmentType: String = ""
+        private var attachmentType: LMChatAttachmentType = LMChatAttachmentType.CAMERA
 
         fun attachmentName(attachmentName: String) = apply { this.attachmentName = attachmentName }
-        fun attachmentIcon(@DrawableRes attachmentIcon: Int) = apply { this.attachmentIcon = attachmentIcon }
-        fun attachmentType(attachmentType: String) = apply { this.attachmentType = attachmentType }
+        fun attachmentIcon(@DrawableRes attachmentIcon: Int) =
+            apply { this.attachmentIcon = attachmentIcon }
+
+        fun attachmentType(attachmentType: LMChatAttachmentType) =
+            apply { this.attachmentType = attachmentType }
 
         fun build(): LMChatAttachmentItemViewData {
             return LMChatAttachmentItemViewData(
