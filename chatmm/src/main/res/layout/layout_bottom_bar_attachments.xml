@@ -149,6 +149,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="@+id/tv_document_title"
                 app:layout_constraintStart_toStartOf="@+id/tv_document_title"
                 app:layout_constraintTop_toBottomOf="@id/tv_document_title"
@@ -165,6 +166,7 @@
                 android:textColor="@color/lm_chat_brown_grey"
                 android:textSize="13sp"
                 app:fontType="regular"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="@+id/iv_custom_widget_a"
                 app:layout_constraintStart_toStartOf="@+id/iv_custom_widget_a"
                 app:layout_constraintTop_toBottomOf="@+id/iv_custom_widget_a" />

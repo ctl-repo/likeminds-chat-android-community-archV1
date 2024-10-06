@@ -175,7 +175,7 @@ class LMChatCustomSearchBar @JvmOverloads constructor(
                     searchToolbar.visibility = View.GONE
                 }
             }
-            AnimationUtils.circleHideView(searchToolbar, listenerAdapter)
+            /*AnimationUtils.circleHideView(searchToolbar, listenerAdapter)*/
             mSearchViewListener?.onSearchViewClosed()
         }
     }
@@ -201,7 +201,7 @@ class LMChatCustomSearchBar @JvmOverloads constructor(
             // Get focus
             etSearch.setText("")
             etSearch.requestFocus()
-            AnimationUtils.circleRevealView(searchToolbar)
+            /*AnimationUtils.circleRevealView(searchToolbar)*/
             setBackgroundColor(LMTheme.getHeaderColor())
             elevation = 20F
             isOpen = true
