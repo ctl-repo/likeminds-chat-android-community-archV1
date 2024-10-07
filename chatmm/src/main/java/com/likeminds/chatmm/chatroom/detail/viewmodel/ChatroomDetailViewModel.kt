@@ -1521,16 +1521,6 @@ class ChatroomDetailViewModel @Inject constructor(
             )
             sendPostedConversationsToUI(temporaryConversation, postConversationRequest.triggerBot)
 
-            /**
-             * check if request have attachments
-             * if not
-             *       call create conversation
-             *       replace temp conversation
-             * else
-             *      upload all attachments
-             *      once done call create conversation
-             *      replace temp conversation
-             */
             if (updatedFileUris.isNullOrEmpty()) { // no attachments
                 //call API
                 val response = lmChatClient.postConversation(postConversationRequest)

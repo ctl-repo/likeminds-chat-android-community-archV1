@@ -3140,8 +3140,8 @@ class ChatroomDetailFragment :
             }
         }.observeInLifecycle(viewLifecycleOwner)
 
-        viewModel.conversationPosted.observe(viewLifecycleOwner) { sucess ->
-            if (sucess) {
+        viewModel.conversationPosted.observe(viewLifecycleOwner) { success ->
+            if (success) {
                 memberTagging.clearTaggedMembers()
                 binding.inputBox.viewReply.chatReplyData = null
             }
