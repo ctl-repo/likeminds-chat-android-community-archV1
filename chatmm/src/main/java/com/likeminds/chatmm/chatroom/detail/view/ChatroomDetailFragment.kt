@@ -766,6 +766,20 @@ class ChatroomDetailFragment :
         }
     }
 
+    /**
+     * create the list of supported attachments as per the chatroom
+     * Case 1 -> If it is Group Chatroom
+     * Allow all the attachments, but if poll and audio is enabled from backend
+     *
+     * Case 2 -> If it is 1-1 Chatroom with user
+     * Allow all the attachments, except Polls
+     *
+     * Case 3 -> If it is 1-1 Chatroom with AI Chatbot
+     * Allow only Camera, Gallery (images only) and Audio
+     *
+     * Case 4 -> If Custom widget is enabled from backend
+     * Add custom widget allow.
+     */
     private fun getSupportedAttachmentTypes(): List<LMChatAttachmentItemViewData> {
         val supportedAttachments = mutableListOf<LMChatAttachmentItemViewData>()
 
@@ -910,77 +924,6 @@ class ChatroomDetailFragment :
                 initVisibilityOfAttachmentsBar(View.GONE)
             }
         }
-
-
-//        binding.layoutAttachments.apply {
-//            ivGallery.setOnClickListener {
-//                initVisibilityOfAttachmentsBar(View.GONE)
-//                onScreenChanged()
-//                val extras = LMChatMediaPickerExtras.Builder()
-//                    .senderName(viewModel.chatroomDetail.chatroom?.header)
-//                    .mediaTypes(listOf(IMAGE, VIDEO))
-//                    .build()
-//
-//                val intent = LMChatMediaPickerActivity.getIntent(requireContext(), extras)
-//                galleryLauncher.launch(intent)
-//            }
-//
-//            ivDocument.setOnClickListener {
-//                initVisibilityOfAttachmentsBar(View.GONE)
-//                onScreenChanged()
-//                val extra = LMChatMediaPickerExtras.Builder()
-//                    .senderName(viewModel.chatroomDetail.chatroom?.header)
-//                    .mediaTypes(listOf(PDF))
-//                    .build()
-//                val intent = LMChatMediaPickerActivity.getIntent(requireContext(), extra)
-//                documentLauncher.launch(intent)
-//            }
-//
-//            if (!viewModel.isAudioSupportEnabled()) {
-//                ivAudio.hide()
-//                tvAudioTitle.hide()
-//            }
-//            ivAudio.setOnClickListener {
-//                initVisibilityOfAttachmentsBar(View.GONE)
-//                onScreenChanged()
-//                val extra = LMChatMediaPickerExtras.Builder()
-//                    .senderName(viewModel.chatroomDetail.chatroom?.header)
-//                    .mediaTypes(listOf(AUDIO))
-//                    .build()
-//                val intent = LMChatMediaPickerActivity.getIntent(requireContext(), extra)
-//                audioLauncher.launch(intent)
-//            }
-//
-//            ivCamera.setOnClickListener {
-//                initCameraAttachment()
-//            }
-//
-//            ivPoll.isVisible = (viewModel.isMicroPollsEnabled() && !viewModel.isDmChatroom())
-//            tvPollTitle.isVisible = (viewModel.isMicroPollsEnabled() && !viewModel.isDmChatroom())
-//            ivPoll.setOnClickListener {
-//                initVisibilityOfAttachmentsBar(View.GONE)
-//                CreateConversationPollDialog.show(
-//                    childFragmentManager,
-//                    getChatroomViewData(),
-//                    chatroomDetailExtras
-//                )
-//            }
-//
-//            //to check whether widget is enabled or not
-//            val isWidgetEnabled = viewModel.isWidgetEnabled()
-//
-//            ivCustomWidgetA.isVisible = isWidgetEnabled
-//            tvCustomWidgetATitle.isVisible = isWidgetEnabled
-//
-//            ivCustomWidgetA.setOnClickListener {
-//                initVisibilityOfAttachmentsBar(View.GONE)
-//                onCustomWidgetAAttachmentClicked()
-//            }
-//
-//            clBottomBar.setOnClickListener {
-//                initVisibilityOfAttachmentsBar(View.GONE)
-//            }
-//        }
     }
 
     //on click function when custom widget A is clicked

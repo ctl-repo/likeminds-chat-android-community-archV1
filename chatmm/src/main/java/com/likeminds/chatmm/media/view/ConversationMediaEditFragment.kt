@@ -152,6 +152,7 @@ class ConversationMediaEditFragment :
             LMTheme.getTextLinkColor()
         )
 
+        //hide add media button if only allowMultipleSelection is enabled.
         val allowMultipleSelect = mediaExtras.allowMultipleSelect
         binding.groupAllowMultipleSelection.isVisible = allowMultipleSelect
 
