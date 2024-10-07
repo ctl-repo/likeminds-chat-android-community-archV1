@@ -5240,24 +5240,10 @@ class ChatroomDetailFragment :
         when (workInfo.state) {
             WorkInfo.State.SUCCEEDED -> {
                 val position = getIndexOfConversation(conversation.id)
-                Log.d(
-                    "PUI",
-                    "observeConversationWorkerLiveData WorkInfo.State.SUCCEEDED position:$position"
-                )
                 if (position >= 0) {
                     val oldConversation = chatroomDetailAdapter[position]
                             as? ConversationViewData
                         ?: return
-
-                    Log.d(
-                        "PUI", """
-                        observeConversationWorkerLiveData WorkInfo.State.SUCCEEDED
-                        oldConversation: ${oldConversation.id}
-                        attachments url: ${oldConversation.attachments?.map { it.url }}
-                        attachments thumbnail url: ${oldConversation.attachments?.map { it.thumbnail }}
-                    """.trimIndent()
-                    )
-
                     val updatedConversation = oldConversation.toBuilder()
                         .attachmentsUploaded(true)
                         .uploadWorkerUUID("")
@@ -5270,15 +5256,8 @@ class ChatroomDetailFragment :
                             } as ArrayList<AttachmentViewData>?)
                         .build()
 
-                    Log.d(
-                        "PUI", """
-                            observeConversationWorkerLiveData WorkInfo.State.SUCCEEDED
-                        updatedConversation:${updatedConversation.id}
-                        updatedConversation attachments url: ${oldConversation.attachments?.map { it.url }}
-                        updatedConversation attachments thumbnail url: ${oldConversation.attachments?.map { it.thumbnail }}
-                    """.trimIndent()
-                    )
 
+                    //send analytics
                     val chatReplyData = binding.inputBox.viewReply.chatReplyData
                     val listOfTaggedUser =
                         workInfo.outputData.getStringArray(ARG_WORKER_RESULT_TAGGED_USER)?.toList()

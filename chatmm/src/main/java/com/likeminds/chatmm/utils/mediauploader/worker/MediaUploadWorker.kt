@@ -2,7 +2,6 @@ package com.likeminds.chatmm.utils.mediauploader.worker
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import androidx.work.*
 import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.conversation.model.AttachmentViewData
@@ -12,7 +11,8 @@ import com.likeminds.chatmm.utils.mediauploader.model.*
 import com.likeminds.chatmm.utils.mediauploader.utils.WorkerUtil.getIntOrNull
 import com.likeminds.likemindschat.LMChatClient
 import com.likeminds.likemindschat.conversation.model.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import kotlin.coroutines.*
 
@@ -73,17 +73,7 @@ abstract class MediaUploadWorker(
             }
             return@withContext when (result) {
                 WORKER_SUCCESS -> {
-                    Log.d("PUI", "worker success called")
-                    Log.d(
-                        "PUI", """
-                        worker success called
-                        conversation: ${conversation.id}
-                        attachments url:${conversation.attachments?.map { it.url }}
-                        attachments uri:${conversation.attachments?.map { it.uri }}
-                        attachments thumbnail:${conversation.attachments?.map { it.thumbnail }}
-                    """.trimIndent()
-                    )
-
+                    //call create conversation
                     val postConversationRequestBuilder = PostConversationRequest.Builder()
                         .chatroomId(conversation.chatroomId ?: "")
                         .text(conversation.answer)
@@ -119,12 +109,10 @@ abstract class MediaUploadWorker(
                 }
 
                 WORKER_RETRY -> {
-                    Log.d("PUI", "worker retry called")
                     Result.retry()
                 }
 
                 else -> {
-                    Log.d("PUI", "worker else called")
                     getFailureResult(failedIndex.toIntArray())
                 }
             }
@@ -194,16 +182,6 @@ abstract class MediaUploadWorker(
             awsFileRequestList.add(request)
         }
         attachmentsToUpload.forEach { attachment ->
-
-            Log.d(
-                "PUI", """
-                createAWSRequestList
-                attachment url: ${attachment.url}
-                attachment uri: ${attachment.uri}
-                attachment file path: ${attachment.localFilePath}
-            """.trimIndent()
-            )
-
             val request = GenericFileRequest.Builder()
                 .name(attachment.name)
                 .fileType(attachment.type)
@@ -283,22 +261,7 @@ abstract class MediaUploadWorker(
         totalFilesToUpload: Int,
         continuation: Continuation<Int>,
     ) {
-        Log.d(
-            "PUI", """
-                     in checkWorkerComplete -> outside it
-                    totalfiles: $totalFilesToUpload
-                    uploaded: $uploadedCount
-                    failed: ${failedIndex.size}
-                """.trimIndent()
-        )
         if (totalFilesToUpload == uploadedCount + failedIndex.size) {
-            Log.d(
-                "PUI", """
-                     in checkWorkerComplete -> inside if
-                    totalfiles: $totalFilesToUpload
-                    uploaded: $uploadedCount
-                """.trimIndent()
-            )
             if (totalFilesToUpload == uploadedCount) {
                 continuation.resume(WORKER_SUCCESS)
             } else {

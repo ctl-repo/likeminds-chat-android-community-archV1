@@ -1450,62 +1450,6 @@ class ChatroomDetailViewModel @Inject constructor(
         chatroomDetail = chatroomDetail.toBuilder().chatroom(newChatroomViewData).build()
     }
 
-
-    // post conversation with media
-    fun postConversation(
-        conversation: ConversationViewData,
-        taggedUsers: List<TagViewData>,
-        replyChatData: ChatReplyViewData?,
-    ) {
-        viewModelScope.launchIO {
-            val chatroomId = chatroomDetail.chatroom?.id ?: return@launchIO
-            val temporaryId = conversation.id
-
-            Log.d(
-                "PUI", """
-                postConversation: $temporaryId
-                attachments url: ${conversation.attachments?.map { it.url }}
-                attachments uri: ${conversation.attachments?.map { it.uri }}
-            """.trimIndent()
-            )
-
-            val postConversationRequestBuilder = PostConversationRequest.Builder()
-                .chatroomId(chatroomId)
-                .text(conversation.answer)
-                .temporaryId(temporaryId)
-                .repliedConversationId(conversation.replyConversation?.id)
-                .repliedChatroomId(conversation.replyChatroomId)
-                .attachments(ViewDataConverter.convertAttachmentViewDataList(conversation.attachments))
-
-            val widget = conversation.widgetViewData
-
-            if (widget?.metadata != null) {
-                postConversationRequestBuilder.metadata(JSONObject(widget.metadata.toString()))
-            }
-
-            if (isOtherUserAIBot()) {
-                postConversationRequestBuilder.triggerBot(true)
-            }
-
-            val postConversationRequest = postConversationRequestBuilder.build()
-
-            val response = lmChatClient.postConversation(postConversationRequest)
-            if (response.success) {
-                onConversationPosted(
-                    response.data,
-                    conversation,
-                    taggedUsers,
-                    replyChatData,
-                    conversation.replyConversation?.id,
-                    conversation.replyChatroomId
-                )
-            } else {
-                errorEventChannel.send(ErrorMessageEvent.PostConversation(response.errorMessage))
-            }
-        }
-    }
-
-
     // post conversation without media
     @SuppressLint("CheckResult")
     fun postConversation(
@@ -1611,8 +1555,6 @@ class ChatroomDetailViewModel @Inject constructor(
                 //create upload worker
                 val uploadData = getUploadWorker(context, temporaryId, taggedUsers.map { it.name })
 
-                Log.d("PUI", "upload started: ${uploadData.second}")
-
                 //update worker id local db
                 val updateWorkerUUIDRequest = UpdateConversationUploadWorkerUUIDRequest.Builder()
                     .uuid(uploadData.second)
@@ -1620,8 +1562,6 @@ class ChatroomDetailViewModel @Inject constructor(
                     .build()
 
                 lmChatClient.updateConversationUploadWorkerUUID(updateWorkerUUIDRequest)
-
-                Log.d("PUI", "upload enqueue")
 
                 //enqueue worker
                 uploadData.first.enqueue()
@@ -1937,13 +1877,6 @@ class ChatroomDetailViewModel @Inject constructor(
 
     private fun postFailedConversation(context: Context, conversation: ConversationViewData) {
         viewModelScope.launchIO {
-            Log.d(
-                "PUI", """
-                conversation.id: ${conversation.id}
-                conversation.attachmentCount: ${conversation.attachmentCount}
-                conversation.attachments: ${conversation.attachments?.map { it.name }}
-            """.trimIndent()
-            )
             if (conversation.attachments.isNullOrEmpty()) {
                 val chatroomId = chatroomDetail.chatroom?.id ?: return@launchIO
                 val postConversationRequestBuilder = PostConversationRequest.Builder()
@@ -1988,8 +1921,6 @@ class ChatroomDetailViewModel @Inject constructor(
                 //create upload worker
                 val uploadData = getUploadWorker(context, conversation.id, emptyList())
 
-                Log.d("PUI", "upload started: ${uploadData.second}")
-
                 //update worker id local db
                 val updateWorkerUUIDRequest = UpdateConversationUploadWorkerUUIDRequest.Builder()
                     .uuid(uploadData.second)
@@ -1997,8 +1928,6 @@ class ChatroomDetailViewModel @Inject constructor(
                     .build()
 
                 lmChatClient.updateConversationUploadWorkerUUID(updateWorkerUUIDRequest)
-
-                Log.d("PUI", "upload enqueue")
 
                 //enqueue worker
                 uploadData.first.enqueue()

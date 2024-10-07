@@ -536,13 +536,6 @@ object ChatroomConversationItemViewDataBinderUtil {
         val attachmentCount = conversation?.attachmentCount ?: 0
         val uploadWorkerUUID = conversation?.uploadWorkerUUID
         val transferUtility by lazy { SDKApplication.getInstance().transferUtility }
-
-        Log.d("UUID","""
-            ------------------------------------------------------------------------------------------
-            conversation: ${conversation?.answer}
-            attachmentCount: $attachmentCount
-        """.trimIndent())
-
         var uuid: UUID? = null
         var isInProgress = false
         var mediaActionsVisible = false
@@ -567,7 +560,6 @@ object ChatroomConversationItemViewDataBinderUtil {
             when {
                 //When worker is present for this media action
                 !uploadWorkerUUID.isNullOrEmpty() -> {
-                    Log.d("UUID", "UUID: $uploadWorkerUUID")
                     uuid = UUID.fromString(uploadWorkerUUID)
                     val workInfo = WorkManager.getInstance(root.context)
                         .getWorkInfoById(uuid!!).get() ?: return Triple(
@@ -577,7 +569,6 @@ object ChatroomConversationItemViewDataBinderUtil {
                     )
                     when (workInfo.state) {
                         WorkInfo.State.ENQUEUED, WorkInfo.State.BLOCKED, WorkInfo.State.RUNNING -> {
-                            Log.d("UUID", "worker state is enqueued, running or blocked")
                             isInProgress = true
                             groupMediaUploading.visibility = View.VISIBLE
                             tvRetry.visibility = View.GONE
@@ -585,14 +576,12 @@ object ChatroomConversationItemViewDataBinderUtil {
                         }
 
                         WorkInfo.State.SUCCEEDED -> {
-                            Log.d("UUID", "worker state is succeeded")
                             groupMediaUploading.visibility = View.GONE
                             tvRetry.visibility = View.GONE
                             mediaActionsVisible = false
                         }
 
                         else -> {
-                            Log.d("UUID", "worker state is failed")
                             tvRetry.visibility = View.VISIBLE
                             groupMediaUploading.visibility = View.GONE
                             mediaActionsVisible = true
@@ -601,26 +590,22 @@ object ChatroomConversationItemViewDataBinderUtil {
                 }
 
                 conversation?.isFailed() == true -> {
-                    Log.d("UUID", "conversation failed")
                     workerState = "failed"
                     groupMediaUploading.visibility = View.GONE
                 }
 
                 conversation?.isSending() == true -> {
-                    Log.d("UUID", "conversation sending")
                     workerState = "sending"
                     groupMediaUploading.visibility = View.VISIBLE
                     tvRetry.visibility = View.GONE
                 }
 
                 (conversation?.isTemporaryConversation() == false && conversation.isSending()) -> {
-                    Log.d("UUID", "conversation sending and temporary")
                     tvRetry.visibility = View.VISIBLE
                     groupMediaUploading.visibility = View.GONE
                 }
 
                 else -> {
-                    Log.d("UUID", "conversation sent")
                     groupMediaUploading.visibility = View.GONE
                     tvRetry.visibility = View.GONE
                     mediaActionsVisible = false
