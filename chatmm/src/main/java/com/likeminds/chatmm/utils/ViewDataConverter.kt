@@ -729,16 +729,6 @@ object ViewDataConverter {
         }
 
         val attachment = attachmentBuilder.build()
-
-        Log.d(
-            "PUI", """
-            saving temporary conversation
-            attachment url: ${attachment.url}
-            attachment uri: ${attachment.url}
-            attachment file path: ${attachment.localFilePath}
-        """.trimIndent()
-        )
-
         return attachment
     }
 
@@ -785,13 +775,6 @@ object ViewDataConverter {
     private fun convertAttachmentViewData(
         attachmentViewData: AttachmentViewData,
     ): Attachment {
-        Log.d(
-            "PUI", """
-            converting attachment view data to network model
-            url:${attachmentViewData.url}
-            thumbnailUrl:${attachmentViewData.thumbnail}
-        """.trimIndent()
-        )
         return Attachment.Builder()
             .name(attachmentViewData.name)
             .url(attachmentViewData.url ?: "")

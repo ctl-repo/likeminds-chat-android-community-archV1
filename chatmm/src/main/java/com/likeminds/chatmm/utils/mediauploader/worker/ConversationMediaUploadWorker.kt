@@ -24,13 +24,26 @@ class ConversationMediaUploadWorker(
 
     companion object {
         const val ARG_CONVERSATION_ID = "ARG_CONVERSATION_ID"
+        const val ARG_IS_OTHER_USER_AI_BOT = "ARG_IS_OTHER_USER_AI_BOT"
+        const val ARG_LIST_OF_TAGGER_USERS = "ARG_LIST_OF_TAGGER_USERS"
 
-        fun getInstance(conversationId: String): OneTimeWorkRequest {
+        fun getInstance(
+            conversationId: String,
+            isOtherUserAI: Boolean,
+            listOfterTaggerUsers: List<String>
+        ): OneTimeWorkRequest {
             return OneTimeWorkRequestBuilder<ConversationMediaUploadWorker>()
                 .setInputData(
                     workDataOf(
                         ARG_CONVERSATION_ID to conversationId,
+                        ARG_IS_OTHER_USER_AI_BOT to isOtherUserAI,
+                        ARG_LIST_OF_TAGGER_USERS to listOfterTaggerUsers.toTypedArray()
                     )
+                )
+                .setConstraints(
+                    Constraints.Builder()
+                        .setRequiredNetworkType(NetworkType.CONNECTED)
+                        .build()
                 )
                 .setBackoffCriteria(
                     BackoffPolicy.LINEAR,
@@ -53,6 +66,8 @@ class ConversationMediaUploadWorker(
         val response = lmChatClient.getConversation(getConversationRequest)
         Log.d("PUI", "init upload worker: ${response.data?.conversation?.id}")
         conversation = ViewDataConverter.convertConversation(response.data?.conversation) ?: return
+        listOfTaggerUsers = getStringArray(ARG_LIST_OF_TAGGER_USERS)
+        isOtherUserAI = getBooleanParam(ARG_IS_OTHER_USER_AI_BOT)
 
         Log.d(
             "PUI", """
@@ -172,7 +187,7 @@ class ConversationMediaUploadWorker(
             }
 
             override fun onError(id: Int, ex: Exception?) {
-                Log.e("PUI", "transfer listener failed: ${ex?.message}")
+                Log.e("pooo", "transfer listener failed: ${ex?.message}")
                 ex?.printStackTrace()
                 failedIndex.add(awsFileResponse.index)
                 checkWorkerComplete(totalFilesToUpload, continuation)
@@ -208,7 +223,12 @@ class ConversationMediaUploadWorker(
                         }
 
                         urls = thumbnailMediaMap[response.index] ?: return
-                        updateConversation(response, urls, totalFilesToUpload, continuation)
+                        postConversation(
+                            response,
+                            urls,
+                            totalFilesToUpload,
+                            continuation,
+                        )
                     } else {
                         if (response.isThumbnail == true) {
                             thumbnailMediaMap[response.index] = Pair(null, uploadUrl)
@@ -217,23 +237,23 @@ class ConversationMediaUploadWorker(
                         }
                     }
                 } else {
-                    updateConversation(
+                    postConversation(
                         response,
                         Pair(uploadUrl, null),
                         totalFilesToUpload,
-                        continuation
+                        continuation,
                     )
                 }
             }
 
             TransferState.FAILED -> {
-                Log.e("PUI", "transfer state failed")
+                Log.e("pooo", "transfer state failed")
                 failedIndex.add(response.index)
                 checkWorkerComplete(totalFilesToUpload, continuation)
             }
 
             else -> {
-                Log.d("PUI", "transfer state else:$state")
+                Log.d("pooo", "transfer state else:$state")
             }
         }
     }

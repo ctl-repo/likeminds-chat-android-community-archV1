@@ -19,7 +19,7 @@ class LikeMindsChatActivity : AppCompatActivity() {
         setContentView(R.layout.activity_likeminds_chat)
 
         val successCallback = { userResponse: UserResponse ->
-            replaceFragment()
+
         }
 
         val errorCallback = { error: String? ->
@@ -33,6 +33,8 @@ class LikeMindsChatActivity : AppCompatActivity() {
             successCallback,
             errorCallback
         )
+
+        replaceFragment()
     }
 
     private fun replaceFragment() {

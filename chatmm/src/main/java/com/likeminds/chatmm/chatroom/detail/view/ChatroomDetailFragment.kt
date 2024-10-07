@@ -101,6 +101,7 @@ import com.likeminds.chatmm.utils.customview.*
 import com.likeminds.chatmm.utils.databinding.ImageBindingUtil
 import com.likeminds.chatmm.utils.file.util.FileUtil
 import com.likeminds.chatmm.utils.mediauploader.worker.MediaUploadWorker
+import com.likeminds.chatmm.utils.mediauploader.worker.MediaUploadWorker.Companion.ARG_WORKER_RESULT_TAGGED_USER
 import com.likeminds.chatmm.utils.membertagging.MemberTaggingDecoder
 import com.likeminds.chatmm.utils.membertagging.model.MemberTaggingExtras
 import com.likeminds.chatmm.utils.membertagging.model.TagViewData
@@ -2976,25 +2977,15 @@ class ChatroomDetailFragment :
         viewModel.conversationEventFlow.onEach { response ->
             when (response) {
                 is ChatroomDetailViewModel.ConversationEvent.UpdatedConversation -> {
-                    Log.d("PUI", "ConversationEvent.UpdatedConversation")
                     //Observe for any updates to conversations already appended to the recyclerview, usually for
                     //deleted, edited, updating temporary conversations
                     getIndexedConversations(response.conversations).forEach { item ->
-                        Log.d(
-                            "PUI", """
-                            index: ${item.key}
-                            oldConversation: ${item.value.id}
-                            attachments url: ${item.value.attachments?.map { it.url }}
-                            attachments thumbnail url: ${item.value.attachments?.map { it.thumbnail }}
-                        """.trimIndent()
-                        )
                         chatroomDetailAdapter.update(item.key, item.value)
                     }
                     filterConversationWithWidget(response.conversations)
                 }
 
                 is ChatroomDetailViewModel.ConversationEvent.NewConversation -> {
-                    Log.d("PUI", "ConversationEvent.NewConversation")
                     //Observe for any new conversations triggered by the database callback
                     val isAddedBelow: Boolean
                     val conversations =
@@ -3008,7 +2999,6 @@ class ChatroomDetailFragment :
                         !isConversationAlreadyPresent(conversations[indexOfHeaderConversation].id)
                     ) {
                         //Contains a header conversation
-                        Log.d("PUI", "header conversation")
                         chatroomDetailAdapter.add(
                             0,
                             conversations[indexOfHeaderConversation]
@@ -5250,7 +5240,10 @@ class ChatroomDetailFragment :
         when (workInfo.state) {
             WorkInfo.State.SUCCEEDED -> {
                 val position = getIndexOfConversation(conversation.id)
-                Log.d("PUI", "position:$position")
+                Log.d(
+                    "PUI",
+                    "observeConversationWorkerLiveData WorkInfo.State.SUCCEEDED position:$position"
+                )
                 if (position >= 0) {
                     val oldConversation = chatroomDetailAdapter[position]
                             as? ConversationViewData
@@ -5258,6 +5251,7 @@ class ChatroomDetailFragment :
 
                     Log.d(
                         "PUI", """
+                        observeConversationWorkerLiveData WorkInfo.State.SUCCEEDED
                         oldConversation: ${oldConversation.id}
                         attachments url: ${oldConversation.attachments?.map { it.url }}
                         attachments thumbnail url: ${oldConversation.attachments?.map { it.thumbnail }}
@@ -5278,6 +5272,7 @@ class ChatroomDetailFragment :
 
                     Log.d(
                         "PUI", """
+                            observeConversationWorkerLiveData WorkInfo.State.SUCCEEDED
                         updatedConversation:${updatedConversation.id}
                         updatedConversation attachments url: ${oldConversation.attachments?.map { it.url }}
                         updatedConversation attachments thumbnail url: ${oldConversation.attachments?.map { it.thumbnail }}
@@ -5285,11 +5280,25 @@ class ChatroomDetailFragment :
                     )
 
                     val chatReplyData = binding.inputBox.viewReply.chatReplyData
-                    viewModel.postConversation(
-                        updatedConversation,
-                        memberTagging.getTaggedMembers(),
-                        chatReplyData
+                    val listOfTaggedUser =
+                        workInfo.outputData.getStringArray(ARG_WORKER_RESULT_TAGGED_USER)?.toList()
+
+                    if (chatReplyData != null) {
+                        viewModel.sendMessageReplyEvent(
+                            updatedConversation,
+                            chatReplyData.repliedMemberId,
+                            chatReplyData.repliedMemberState,
+                            conversation.replyConversation?.id,
+                            chatReplyData.type
+                        )
+                    }
+                    viewModel.sendChatroomResponded(
+                        listOfTaggedUser ?: emptyList(),
+                        updatedConversation
                     )
+                    if (ChatroomUtil.getConversationType(updatedConversation) == VOICE_NOTE) {
+                        viewModel.sendVoiceNoteSent(updatedConversation.id)
+                    }
 
                     chatroomDetailAdapter.update(position, updatedConversation)
                 }

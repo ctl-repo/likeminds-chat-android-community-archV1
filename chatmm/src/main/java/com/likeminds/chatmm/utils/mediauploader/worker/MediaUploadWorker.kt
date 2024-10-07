@@ -11,9 +11,9 @@ import com.likeminds.chatmm.utils.ViewDataConverter
 import com.likeminds.chatmm.utils.mediauploader.model.*
 import com.likeminds.chatmm.utils.mediauploader.utils.WorkerUtil.getIntOrNull
 import com.likeminds.likemindschat.LMChatClient
-import com.likeminds.likemindschat.conversation.model.UpdateConversationRequest
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import com.likeminds.likemindschat.conversation.model.*
+import kotlinx.coroutines.*
+import org.json.JSONObject
 import kotlin.coroutines.*
 
 abstract class MediaUploadWorker(
@@ -32,6 +32,8 @@ abstract class MediaUploadWorker(
     private val progressMap by lazy { HashMap<Int, Pair<Long, Long>>() }
 
     protected lateinit var conversation: ConversationViewData
+    protected lateinit var listOfTaggerUsers: List<String>
+    protected var isOtherUserAI: Boolean = false
 
     abstract fun checkArgs()
     abstract fun init()
@@ -40,6 +42,7 @@ abstract class MediaUploadWorker(
     companion object {
         const val ARG_MEDIA_INDEX_LIST = "ARG_MEDIA_INDEX_LIST"
         const val ARG_PROGRESS = "ARG_PROGRESS"
+        const val ARG_WORKER_RESULT_TAGGED_USER = "ARG_WORKER_RESULT_TAGGED_USER"
 
         fun getProgress(workInfo: WorkInfo): Pair<Long, Long>? {
             val progress = workInfo.progress.getLongArray(ARG_PROGRESS)
@@ -80,7 +83,39 @@ abstract class MediaUploadWorker(
                         attachments thumbnail:${conversation.attachments?.map { it.thumbnail }}
                     """.trimIndent()
                     )
-                    Result.success()
+
+                    val postConversationRequestBuilder = PostConversationRequest.Builder()
+                        .chatroomId(conversation.chatroomId ?: "")
+                        .text(conversation.answer)
+                        .temporaryId(conversation.id)
+                        .repliedConversationId(conversation.replyConversation?.id)
+                        .repliedChatroomId(conversation.replyChatroomId)
+                        .attachments(ViewDataConverter.convertAttachmentViewDataList(conversation.attachments))
+
+                    val widget = conversation.widgetViewData
+
+                    if (widget?.metadata != null) {
+                        postConversationRequestBuilder.metadata(JSONObject(widget.metadata.toString()))
+                    }
+
+                    if (isOtherUserAI) {
+                        postConversationRequestBuilder.triggerBot(true)
+                    }
+
+                    val postConversationRequest = postConversationRequestBuilder.build()
+
+                    val postConversationResponse =
+                        lmChatClient.postConversation(postConversationRequest)
+                    if (postConversationResponse.success) {
+                        onConversationPosted(postConversationResponse.data)
+                        Result.success(
+                            workDataOf(
+                                ARG_WORKER_RESULT_TAGGED_USER to listOfTaggerUsers.toTypedArray()
+                            )
+                        )
+                    } else {
+                        getFailureResult(failedIndex.toIntArray())
+                    }
                 }
 
                 WORKER_RETRY -> {
@@ -131,6 +166,14 @@ abstract class MediaUploadWorker(
             ?: throw Error("$key is required")
     }
 
+    protected fun getBooleanParam(key: String): Boolean {
+        return params.inputData.getBoolean(key, false)
+    }
+
+    protected fun getStringArray(key: String): List<String> {
+        return params.inputData.getStringArray(key)?.toList() ?: throw Error("$key is required")
+    }
+
     protected fun containsParam(key: String): Boolean {
         return params.inputData.keyValueMap.containsKey(key)
     }
@@ -177,7 +220,7 @@ abstract class MediaUploadWorker(
         return awsFileRequestList
     }
 
-    protected fun updateConversation(
+    protected fun postConversation(
         response: AWSFileResponse,
         urls: Pair<String?, String?>,
         totalFileCount: Int,
@@ -213,9 +256,32 @@ abstract class MediaUploadWorker(
         checkWorkerComplete(totalFileCount, continuation)
     }
 
+    private fun onConversationPosted(data: PostConversationResponse?) {
+        val conversation = data?.conversation
+        if (conversation != null) {
+            //Get widget from widgetMap and add it to updatedConversation
+            val widgetId = conversation.widgetId
+            val widget = data.widgets[widgetId]
+
+            //update conversation with widget
+            val updatedConversation = conversation.toBuilder()
+                .widget(widget)
+                .build()
+
+            // request to save the posted conversation
+            val request = SavePostedConversationRequest.Builder()
+                .conversation(updatedConversation)
+                .isFromNotification(false)
+                .build()
+
+            // update db with response
+            lmChatClient.savePostedConversation(request)
+        }
+    }
+
     protected fun checkWorkerComplete(
         totalFilesToUpload: Int,
-        continuation: Continuation<Int>
+        continuation: Continuation<Int>,
     ) {
         Log.d(
             "PUI", """

@@ -25,9 +25,7 @@ import com.likeminds.chatmm.utils.ValueUtils.getEmailIfExist
 import com.likeminds.chatmm.utils.ValueUtils.getUrlIfExist
 import com.likeminds.chatmm.utils.coroutine.*
 import com.likeminds.chatmm.utils.file.util.FileUtil
-import com.likeminds.chatmm.utils.mediauploader.model.GenericFileRequest
 import com.likeminds.chatmm.utils.mediauploader.worker.ConversationMediaUploadWorker
-import com.likeminds.chatmm.utils.mediauploader.worker.UploadHelper
 import com.likeminds.chatmm.utils.membertagging.model.TagViewData
 import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.likemindschat.LMChatClient
@@ -45,7 +43,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import org.json.JSONObject
-import java.io.File
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.*
@@ -1612,7 +1609,7 @@ class ChatroomDetailViewModel @Inject constructor(
                 }
             } else { // with attachments
                 //create upload worker
-                val uploadData = getUploadWorker(context, temporaryId)
+                val uploadData = getUploadWorker(context, temporaryId, taggedUsers.map { it.name })
 
                 Log.d("PUI", "upload started: ${uploadData.second}")
 
@@ -1706,8 +1703,6 @@ class ChatroomDetailViewModel @Inject constructor(
             conversationCreatedEpoch,
             loggedInUserUUID
         )
-
-        Log.d("PUI", "save temp conversation: ${conversation.id}")
 
         val saveConversationRequest = SaveConversationRequest.Builder()
             .conversation(conversation)
@@ -1810,7 +1805,7 @@ class ChatroomDetailViewModel @Inject constructor(
         }
     }
 
-    private fun postedConversation(
+    fun postedConversation(
         taggedUsers: List<TagViewData>,
         conversationViewData: ConversationViewData?,
         replyChatData: ChatReplyViewData? = null,
@@ -1826,7 +1821,7 @@ class ChatroomDetailViewModel @Inject constructor(
                 replyChatData.type
             )
         }
-        sendChatroomResponded(taggedUsers, conversationViewData)
+        sendChatroomResponded(taggedUsers.map { it.name }, conversationViewData)
         if (ChatroomUtil.getConversationType(conversationViewData) == VOICE_NOTE) {
             sendVoiceNoteSent(conversationViewData?.id)
         }
@@ -1840,7 +1835,7 @@ class ChatroomDetailViewModel @Inject constructor(
         if (conversationId.isEmpty() || attachmentCount <= 0) {
             return
         }
-        val uploadData = uploadFilesViaWorker(context, conversationId)
+        val uploadData = getUploadWorker(context, conversationId, emptyList())
         val updateConversationUploadWorkerUUIDRequest =
             UpdateConversationUploadWorkerUUIDRequest.Builder()
                 .conversationId(conversationId)
@@ -1854,20 +1849,14 @@ class ChatroomDetailViewModel @Inject constructor(
     private fun getUploadWorker(
         context: Context,
         temporaryId: String,
+        listOfTaggedUsers: List<String>
     ): Pair<WorkContinuation, String> {
         val oneTimeWorkRequest =
-            ConversationMediaUploadWorker.getInstance(temporaryId)
-        val workContinuation = WorkManager.getInstance(context).beginWith(oneTimeWorkRequest)
-        return Pair(workContinuation, oneTimeWorkRequest.id.toString())
-    }
-
-    @SuppressLint("CheckResult", "EnqueueWork", "RestrictedApi")
-    private fun uploadFilesViaWorker(
-        context: Context,
-        conversationId: String,
-    ): Pair<WorkContinuation, String> {
-        val oneTimeWorkRequest =
-            ConversationMediaUploadWorker.getInstance(conversationId)
+            ConversationMediaUploadWorker.getInstance(
+                temporaryId,
+                isOtherUserAIBot(),
+                listOfTaggedUsers
+            )
         val workContinuation = WorkManager.getInstance(context).beginWith(oneTimeWorkRequest)
         return Pair(workContinuation, oneTimeWorkRequest.id.toString())
     }
@@ -1948,104 +1937,75 @@ class ChatroomDetailViewModel @Inject constructor(
 
     private fun postFailedConversation(context: Context, conversation: ConversationViewData) {
         viewModelScope.launchIO {
-            //todo add attadchments
-            val chatroomId = chatroomDetail.chatroom?.id ?: return@launchIO
-            val postConversationRequest = PostConversationRequest.Builder()
-                .chatroomId(chatroomId)
-                .text(conversation.answer)
-                .shareLink(conversation.ogTags?.url)
-                .ogTags(ViewDataConverter.convertLinkOGTags(conversation.ogTags))
-                .repliedConversationId(conversation.replyConversation?.id)
-                .repliedChatroomId(conversation.replyChatroomId)
-                .temporaryId(conversation.temporaryId)
-                .build()
-
-            val updateTemporaryConversationRequest = UpdateTemporaryConversationRequest.Builder()
-                .conversationId(conversation.id)
-                .localSavedEpoch(conversation.localCreatedEpoch ?: System.currentTimeMillis())
-                .build()
-            lmChatClient.updateTemporaryConversation(updateTemporaryConversationRequest)
-
-            val response = lmChatClient.postConversation(postConversationRequest)
-            if (response.success) {
-                onFailedConversationPosted(
-                    context,
-                    conversation,
-                    response.data
-                )
-            }
-        }
-    }
-
-    private fun onFailedConversationPosted(
-        context: Context,
-        conversation: ConversationViewData,
-        response: PostConversationResponse?,
-    ) {
-        if (response?.conversation != null) {
-            var uploadData: Pair<WorkContinuation?, String>? = null
-            val requestList = ArrayList<GenericFileRequest>()
-            if (!conversation.attachments.isNullOrEmpty()) {
-                uploadData = uploadFilesViaWorker(
-                    context,
-                    response.id!!
-                )
-                requestList.addAll(getUploadFileRequestList(context, conversation))
-            }
-
-            postedConversation(
-                emptyList(),
-                conversation
+            Log.d(
+                "PUI", """
+                conversation.id: ${conversation.id}
+                conversation.attachmentCount: ${conversation.attachmentCount}
+                conversation.attachments: ${conversation.attachments?.map { it.name }}
+            """.trimIndent()
             )
+            if (conversation.attachments.isNullOrEmpty()) {
+                val chatroomId = chatroomDetail.chatroom?.id ?: return@launchIO
+                val postConversationRequestBuilder = PostConversationRequest.Builder()
+                    .chatroomId(chatroomId)
+                    .text(conversation.answer)
+                    .shareLink(conversation.ogTags?.url)
+                    .ogTags(ViewDataConverter.convertLinkOGTags(conversation.ogTags))
+                    .repliedConversationId(conversation.replyConversation?.id)
+                    .repliedChatroomId(conversation.replyChatroomId)
+                    .temporaryId(conversation.temporaryId)
 
-            // Start Uploading Files
-            uploadData?.first?.enqueue()
-        }
-    }
+                if (isOtherUserAIBot()) {
+                    postConversationRequestBuilder.triggerBot(true)
+                }
 
-    private fun getUploadFileRequestList(
-        context: Context,
-        conversation: ConversationViewData,
-    ): List<GenericFileRequest> {
-        return conversation.attachments.orEmpty().mapIndexed { index, attachment ->
-            var builder = GenericFileRequest.Builder()
-                .name(attachment.name ?: attachment.uri.lastPathSegment)
-                .fileUri(attachment.uri)
-                .fileType(attachment.type)
-                .width(attachment.width)
-                .height(attachment.height)
-                .meta(attachment.meta)
-                .index(index)
+                val postConversationRequest = postConversationRequestBuilder.build()
 
-            val localFilePath = FileUtil.getRealPath(context, attachment.uri).path
-            val file = File(localFilePath)
-            val serverPath = UploadHelper.getConversationAttachmentFilePath(
-                conversation.chatroomId,
-                conversation.id,
-                attachment.type,
-                file
-            )
+                val updateTemporaryConversationRequest =
+                    UpdateTemporaryConversationRequest.Builder()
+                        .conversationId(conversation.id)
+                        .localSavedEpoch(
+                            conversation.localCreatedEpoch ?: System.currentTimeMillis()
+                        )
+                        .build()
+                lmChatClient.updateTemporaryConversation(updateTemporaryConversationRequest)
 
-            //Add thumbnail is present
-            if (!attachment.thumbnail.isNullOrEmpty()) {
-                val thumbnailUri = Uri.parse(attachment.thumbnail)
-                val thumbnailLocalFilePath = FileUtil.getRealPath(context, thumbnailUri).path
-                val thumbnailFile = File(thumbnailLocalFilePath)
-                val thumbnailAWSFolderPath = UploadHelper.getConversationAttachmentFilePath(
-                    conversation.chatroomId,
-                    conversation.id,
-                    attachment.type,
-                    thumbnailFile,
-                    isThumbnail = true
-                )
-                builder = builder.thumbnailUri(thumbnailUri)
-                    .thumbnailLocalFilePath(thumbnailLocalFilePath)
-                    .thumbnailAWSFolderPath(thumbnailAWSFolderPath)
+
+                val response = lmChatClient.postConversation(postConversationRequest)
+                if (response.success) {
+                    onConversationPosted(
+                        response.data,
+                        conversation,
+                        emptyList(),
+                        null,
+                        null,
+                        null
+                    )
+                } else {
+                    errorEventChannel.send(ErrorMessageEvent.PostConversation(response.errorMessage))
+                }
+            } else {
+                //create upload worker
+                val uploadData = getUploadWorker(context, conversation.id, emptyList())
+
+                Log.d("PUI", "upload started: ${uploadData.second}")
+
+                //update worker id local db
+                val updateWorkerUUIDRequest = UpdateConversationUploadWorkerUUIDRequest.Builder()
+                    .uuid(uploadData.second)
+                    .conversationId(conversation.id)
+                    .build()
+
+                lmChatClient.updateConversationUploadWorkerUUID(updateWorkerUUIDRequest)
+
+                Log.d("PUI", "upload enqueue")
+
+                //enqueue worker
+                uploadData.first.enqueue()
             }
-
-            builder.localFilePath(localFilePath).awsFolderPath(serverPath).build()
         }
     }
+
 
     fun deleteFailedConversation(conversationId: String) {
         val deleteConversationPermanentlyRequest = DeleteConversationPermanentlyRequest.Builder()
@@ -2493,7 +2453,7 @@ class ChatroomDetailViewModel @Inject constructor(
     /**
      * Triggers when the user sends a voice message
      **/
-    private fun sendVoiceNoteSent(conversationId: String?) {
+    fun sendVoiceNoteSent(conversationId: String?) {
         if (conversationId.isNullOrEmpty()) return
         getChatroomViewData()?.let { chatroom ->
             LMAnalytics.track(
@@ -2661,7 +2621,7 @@ class ChatroomDetailViewModel @Inject constructor(
     /**
      * Triggers when the user replies to message
      **/
-    private fun sendMessageReplyEvent(
+    fun sendMessageReplyEvent(
         conversation: ConversationViewData?,
         repliedMemberId: String?,
         repliedMemberState: String?,
@@ -2689,8 +2649,8 @@ class ChatroomDetailViewModel @Inject constructor(
      * @param taggedUsers List of all the tagged users present in the sent conversation
      * @param conversation Conversation object
      */
-    private fun sendChatroomResponded(
-        taggedUsers: List<TagViewData>,
+    fun sendChatroomResponded(
+        taggedUsers: List<String>,
         conversation: ConversationViewData?,
     ) {
         if (conversation == null) {
@@ -2709,7 +2669,7 @@ class ChatroomDetailViewModel @Inject constructor(
 
         if (taggedUsers.isNotEmpty()) {
             eventDataMap["count_tagged_user"] = taggedUsers.size.toString()
-            eventDataMap["name_tagged_user"] = taggedUsers.joinToString { it.name }
+            eventDataMap["name_tagged_user"] = taggedUsers.joinToString { it }
         }
 
         LMAnalytics.track(
