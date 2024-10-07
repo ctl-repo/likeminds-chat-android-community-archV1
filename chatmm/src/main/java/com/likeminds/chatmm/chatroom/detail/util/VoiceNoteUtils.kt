@@ -66,7 +66,7 @@ class VoiceNoteUtils(
         binding.apply {
             voiceNoteInterface.onVoiceNoteStarted()
             inputBox.groupEditText.hide()
-            inputBox.ivCustomWidget.hide()
+            inputBox.ivFinxRecommendationCw.hide()
             enlargeFAB(fabMic)
 
             ivMicRecording.apply {
@@ -296,7 +296,7 @@ class VoiceNoteUtils(
                                             override fun onAnimationEnd(animation: Animator) {
                                                 Handler(Looper.getMainLooper()).postDelayed({
                                                     inputBox.groupEditText.show()
-                                                    inputBox.ivCustomWidget.isVisible = researchCWVisibility
+                                                    inputBox.ivFinxRecommendationCw.isVisible = researchCWVisibility
                                                 }, 400)
                                             }
                                         }).start()

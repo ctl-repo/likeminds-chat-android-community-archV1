@@ -811,8 +811,8 @@ class ChatroomDetailFragment :
             }
 
             //to check whether widget is enabled or not
-            /*inputBox.ivCustomWidget.visibility = mResearchCustomWidgetVisibility*/
-            inputBox.ivCustomWidget.setOnClickListener {
+            /*inputBox.ivFinxRecommendationCw.visibility = mResearchCustomWidgetVisibility*/
+            inputBox.ivFinxRecommendationCw.setOnClickListener {
                 /*initVisibilityOfAttachmentsBar(View.GONE)*/
                 onCustomWidgetAAttachmentClicked()
             }
@@ -905,7 +905,7 @@ class ChatroomDetailFragment :
         binding.apply {
             fabSend.isEnabled = state
             inputBox.ivAttachment.isEnabled = state
-            inputBox.ivCustomWidget.isEnabled = state
+            inputBox.ivFinxRecommendationCw.isEnabled = state
             inputBox.etAnswer.isEnabled = state
             inputBox.etAnswer.setHint(R.string.lm_chat_type_your_response)
         }
@@ -1521,7 +1521,7 @@ class ChatroomDetailFragment :
 
                         isDMRequestSent = true
                         inputBox.ivAttachment.visibility = View.INVISIBLE
-                        inputBox.ivCustomWidget.visibility = View.INVISIBLE
+                        inputBox.ivFinxRecommendationCw.visibility = View.INVISIBLE
                         return
                     }
 
@@ -1648,7 +1648,7 @@ class ChatroomDetailFragment :
                     }
                     if (!isVoiceNoteLocked && !isVoiceNoteRecording && !isDMRequestSent) {
                         inputBox.ivAttachment.visibility = View.VISIBLE
-                        inputBox.ivCustomWidget.isVisible = mResearchCWVisibility
+                        inputBox.ivFinxRecommendationCw.isVisible = mResearchCWVisibility
                     }
                     inputBox.viewLink.clLink.visibility = View.GONE
                     inputBox.viewReply.clReply.visibility = View.GONE
@@ -1681,7 +1681,7 @@ class ChatroomDetailFragment :
                     }
                     if (!isVoiceNoteLocked && !isVoiceNoteRecording) {
                         inputBox.ivAttachment.visibility = View.VISIBLE
-                        inputBox.ivCustomWidget.isVisible = mResearchCWVisibility
+                        inputBox.ivFinxRecommendationCw.isVisible = mResearchCWVisibility
                     }
                     inputBox.viewLink.clLink.visibility = View.GONE
                     inputBox.viewReply.clReply.visibility = View.VISIBLE
@@ -1692,7 +1692,7 @@ class ChatroomDetailFragment :
                         inputBox.clChatContainer.setBackgroundResource(R.drawable.lm_chat_background_white_12top_24_bottom_black10_1)
                     }
                     inputBox.ivAttachment.visibility = View.INVISIBLE
-                    inputBox.ivCustomWidget.visibility = View.INVISIBLE
+                    inputBox.ivFinxRecommendationCw.visibility = View.INVISIBLE
                     inputBox.viewLink.clLink.visibility = View.VISIBLE
                     inputBox.viewReply.clReply.visibility = View.GONE
                 }
@@ -1703,7 +1703,7 @@ class ChatroomDetailFragment :
                     }
                     fabSend.show()
                     inputBox.ivAttachment.visibility = View.INVISIBLE
-                    inputBox.ivCustomWidget.visibility = View.INVISIBLE
+                    inputBox.ivFinxRecommendationCw.visibility = View.INVISIBLE
                     inputBox.viewLink.clLink.visibility = View.GONE
                     inputBox.viewReply.clReply.visibility = View.GONE
                 }
@@ -2665,13 +2665,13 @@ class ChatroomDetailFragment :
         binding.layoutAttachments.apply {
             if (visibility == View.VISIBLE) {
                 root.startRevealAnimation(binding.inputBox.ivAttachment)
-                root.startRevealAnimation(binding.inputBox.ivCustomWidget)
+                root.startRevealAnimation(binding.inputBox.ivFinxRecommendationCw)
             } else {
                 isAttachmentsSheetHiding = true
                 root.endRevealAnimation(binding.inputBox.ivAttachment) {
                     isAttachmentsSheetHiding = false
                 }
-                root.endRevealAnimation(binding.inputBox.ivCustomWidget) {
+                root.endRevealAnimation(binding.inputBox.ivFinxRecommendationCw) {
                     isAttachmentsSheetHiding = false
                 }
             }
@@ -5456,7 +5456,7 @@ class ChatroomDetailFragment :
     private fun setEditMessageViewConversationData(conversation: ConversationViewData) {
         binding.inputBox.apply {
             ivAttachment.visibility = View.INVISIBLE
-            ivCustomWidget.visibility = View.INVISIBLE
+            ivFinxRecommendationCw.visibility = View.INVISIBLE
             viewReply.replySourceType = REPLY_SOURCE_CONVERSATION
             viewReply.conversationViewData = conversation
             val editData = ChatReplyUtil.getEditConversationData(conversation)
@@ -5471,7 +5471,7 @@ class ChatroomDetailFragment :
     private fun setEditMessageViewChatRoomData(chatRoom: ChatroomViewData) {
         binding.inputBox.apply {
             ivAttachment.visibility = View.INVISIBLE
-            ivCustomWidget.visibility = View.INVISIBLE
+            ivFinxRecommendationCw.visibility = View.INVISIBLE
             viewReply.replySourceType = REPLY_SOURCE_CHATROOM
             viewReply.chatRoomViewData = chatRoom
             val editData = ChatReplyUtil.getEditChatRoomData(chatRoom)
