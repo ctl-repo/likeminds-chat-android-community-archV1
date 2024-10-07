@@ -220,7 +220,7 @@ class ChatroomDetailFragment :
     private var showTapAndHoldToast = true
     private var motionDownHandler: Handler? = null
     private val voiceNoteUtils: VoiceNoteUtils by lazy {
-        VoiceNoteUtils(requireContext(), this)
+        VoiceNoteUtils(requireContext(), this, mResearchCWVisibility)
     }
     private var firstX: Float = 0f
     private var firstY: Float = 0f
@@ -242,9 +242,8 @@ class ChatroomDetailFragment :
 
     private var showTapToUndoLocally = true
 
-    private val mResearchCustomWidgetVisibility: Int by lazy {
-        val isVisible = viewModel.isWidgetEnabled() && XLmcAppInstance.isResearchPostAllowed
-        if (isVisible) View.VISIBLE else View.INVISIBLE
+    private val mResearchCWVisibility: Boolean by lazy {
+        viewModel.isWidgetEnabled() && XLmcAppInstance.isResearchPostAllowed
     }
 
     private val progressReceiver = object : BroadcastReceiver() {
@@ -812,9 +811,9 @@ class ChatroomDetailFragment :
             }
 
             //to check whether widget is enabled or not
-            inputBox.ivCustomWidget.visibility = mResearchCustomWidgetVisibility
+            /*inputBox.ivCustomWidget.visibility = mResearchCustomWidgetVisibility*/
             inputBox.ivCustomWidget.setOnClickListener {
-                initVisibilityOfAttachmentsBar(View.GONE)
+                /*initVisibilityOfAttachmentsBar(View.GONE)*/
                 onCustomWidgetAAttachmentClicked()
             }
         }
@@ -1649,7 +1648,7 @@ class ChatroomDetailFragment :
                     }
                     if (!isVoiceNoteLocked && !isVoiceNoteRecording && !isDMRequestSent) {
                         inputBox.ivAttachment.visibility = View.VISIBLE
-                        inputBox.ivCustomWidget.visibility = mResearchCustomWidgetVisibility
+                        inputBox.ivCustomWidget.isVisible = mResearchCWVisibility
                     }
                     inputBox.viewLink.clLink.visibility = View.GONE
                     inputBox.viewReply.clReply.visibility = View.GONE
@@ -1682,7 +1681,7 @@ class ChatroomDetailFragment :
                     }
                     if (!isVoiceNoteLocked && !isVoiceNoteRecording) {
                         inputBox.ivAttachment.visibility = View.VISIBLE
-                        inputBox.ivCustomWidget.visibility = mResearchCustomWidgetVisibility
+                        inputBox.ivCustomWidget.isVisible = mResearchCWVisibility
                     }
                     inputBox.viewLink.clLink.visibility = View.GONE
                     inputBox.viewReply.clReply.visibility = View.VISIBLE

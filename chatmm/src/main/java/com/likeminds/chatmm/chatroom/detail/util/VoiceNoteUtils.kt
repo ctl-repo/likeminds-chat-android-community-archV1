@@ -7,10 +7,8 @@ import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.util.TypedValue
-import android.view.animation.AnimationUtils
-import android.view.animation.DecelerateInterpolator
-import android.view.animation.LinearInterpolator
-import android.view.animation.OvershootInterpolator
+import android.view.animation.*
+import androidx.core.view.isVisible
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.chatroom.detail.model.*
@@ -27,6 +25,7 @@ import java.util.*
 class VoiceNoteUtils(
     val context: Context,
     private val voiceNoteInterface: VoiceNoteInterface,
+    val researchCWVisibility: Boolean
 ) {
 
     private var animBlink = AnimationUtils.loadAnimation(context, R.anim.lm_chat_blink)
@@ -67,6 +66,7 @@ class VoiceNoteUtils(
         binding.apply {
             voiceNoteInterface.onVoiceNoteStarted()
             inputBox.groupEditText.hide()
+            inputBox.ivCustomWidget.hide()
             enlargeFAB(fabMic)
 
             ivMicRecording.apply {
@@ -296,6 +296,7 @@ class VoiceNoteUtils(
                                             override fun onAnimationEnd(animation: Animator) {
                                                 Handler(Looper.getMainLooper()).postDelayed({
                                                     inputBox.groupEditText.show()
+                                                    inputBox.ivCustomWidget.isVisible = researchCWVisibility
                                                 }, 400)
                                             }
                                         }).start()
