@@ -532,7 +532,7 @@ class ChatroomDetailFragment :
         initGiphy()
         initEnterClick()
         initAttachmentClick()
-        initAttachmentsView()
+        initAttachmentsPickerBarView()
         disableAnswerPosting()
         initReplyView()
         initDMRequestClickListeners()
@@ -798,50 +798,46 @@ class ChatroomDetailFragment :
             .attachmentName(requireContext().getString(R.string.lm_chat_gallery))
             .build()
 
-        //add document
-        val documentAttachment = LMChatAttachmentPickerItemViewData.Builder()
-            .attachmentType(LMChatAttachmentType.DOCUMENT)
-            .attachmentIcon(R.drawable.lm_chat_ic_document_new)
-            .attachmentName(requireContext().getString(R.string.lm_chat_document))
-            .build()
-
-        //add audio
-        val audioAttachment = LMChatAttachmentPickerItemViewData.Builder()
-            .attachmentType(LMChatAttachmentType.AUDIO)
-            .attachmentIcon(R.drawable.lm_chat_ic_create_music)
-            .attachmentName(requireContext().getString(R.string.lm_chat_audio))
-            .build()
-
-        //add poll
-        val pollAttachment = LMChatAttachmentPickerItemViewData.Builder()
-            .attachmentType(LMChatAttachmentType.POLL)
-            .attachmentIcon(R.drawable.lm_chat_ic_poll_create_message_selector)
-            .attachmentName(requireContext().getString(R.string.lm_chat_poll))
-            .build()
-
-        //add custom widget
-        val customWidgetAttachment = LMChatAttachmentPickerItemViewData.Builder()
-            .attachmentType(LMChatAttachmentType.CUSTOM_WIDGET)
-            .attachmentIcon(R.drawable.ic_create_custom_widget_a)
-            .attachmentName(requireContext().getString(R.string.lm_chat_custom_widget_a))
-            .build()
-
         supportedAttachments.add(cameraAttachment)
         supportedAttachments.add(galleryAttachment)
 
         if (!viewModel.isOtherUserAIBot()) {
+            //add document
+            val documentAttachment = LMChatAttachmentPickerItemViewData.Builder()
+                .attachmentType(LMChatAttachmentType.DOCUMENT)
+                .attachmentIcon(R.drawable.lm_chat_ic_document_new)
+                .attachmentName(requireContext().getString(R.string.lm_chat_document))
+                .build()
             supportedAttachments.add(documentAttachment)
         }
 
         if (viewModel.isAudioSupportEnabled()) {
+            //add audio
+            val audioAttachment = LMChatAttachmentPickerItemViewData.Builder()
+                .attachmentType(LMChatAttachmentType.AUDIO)
+                .attachmentIcon(R.drawable.lm_chat_ic_create_music)
+                .attachmentName(requireContext().getString(R.string.lm_chat_audio))
+                .build()
             supportedAttachments.add(audioAttachment)
         }
 
         if (viewModel.isMicroPollsEnabled() && !viewModel.isDmChatroom()) {
+            //add poll
+            val pollAttachment = LMChatAttachmentPickerItemViewData.Builder()
+                .attachmentType(LMChatAttachmentType.POLL)
+                .attachmentIcon(R.drawable.lm_chat_ic_poll_create_message_selector)
+                .attachmentName(requireContext().getString(R.string.lm_chat_poll))
+                .build()
             supportedAttachments.add(pollAttachment)
         }
 
         if (viewModel.isWidgetEnabled()) {
+            //add custom widget
+            val customWidgetAttachment = LMChatAttachmentPickerItemViewData.Builder()
+                .attachmentType(LMChatAttachmentType.CUSTOM_WIDGET)
+                .attachmentIcon(R.drawable.ic_create_custom_widget_a)
+                .attachmentName(requireContext().getString(R.string.lm_chat_custom_widget_a))
+                .build()
             supportedAttachments.add(customWidgetAttachment)
         }
 
@@ -912,7 +908,7 @@ class ChatroomDetailFragment :
         }
     }
 
-    private fun initAttachmentsView() {
+    private fun initAttachmentsPickerBarView() {
         attachmentBarAdapter = LMChatAttachmentBarAdapter(this)
 
         binding.layoutAttachments.apply {
@@ -3585,7 +3581,7 @@ class ChatroomDetailFragment :
             setChatInputBoxViewType(CHAT_BOX_NORMAL)
         }
         viewModel.canMemberCreatePoll.observe(viewLifecycleOwner) {
-            initAttachmentsView()
+            initAttachmentsPickerBarView()
         }
     }
 

@@ -300,6 +300,7 @@ class ChatroomDetailViewModel @Inject constructor(
         }
     }
 
+    //will return if DM is with a bot User
     fun isOtherUserAIBot(): Boolean {
         val otherUser = getOtherDmMember()
         return (otherUser?.roles?.contains(UserRole.CHATBOT) == true)

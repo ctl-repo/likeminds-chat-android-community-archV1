@@ -3,7 +3,7 @@ package com.likeminds.chatmm.chatroom.detail.model
 import android.os.Parcelable
 import androidx.annotation.DrawableRes
 import com.likeminds.chatmm.utils.model.BaseViewType
-import com.likeminds.chatmm.utils.model.ITEM_ATTACHMENT_ITEM
+import com.likeminds.chatmm.utils.model.ITEM_ATTACHMENT_PICKER
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -13,7 +13,7 @@ class LMChatAttachmentPickerItemViewData private constructor(
     val attachmentType: LMChatAttachmentType
 ) : Parcelable, BaseViewType {
     override val viewType: Int
-        get() = ITEM_ATTACHMENT_ITEM
+        get() = ITEM_ATTACHMENT_PICKER
 
     class Builder {
         private var attachmentName: String = ""

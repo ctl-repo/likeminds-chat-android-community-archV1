@@ -35,7 +35,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:spanCount="3"
                 tools:itemCount="6"
-                tools:listitem="@layout/lm_chat_item_attachment" />
+                tools:listitem="@layout/lm_chat_item_picker_attachment" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
