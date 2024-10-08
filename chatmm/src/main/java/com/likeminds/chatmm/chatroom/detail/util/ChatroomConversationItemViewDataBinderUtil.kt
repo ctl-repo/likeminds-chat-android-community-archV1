@@ -20,7 +20,6 @@ import androidx.core.text.util.LinkifyCompat
 import androidx.core.view.isVisible
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
-import com.google.android.exoplayer2.util.Log
 import com.google.android.material.button.MaterialButton
 import com.likeminds.chatmm.*
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
@@ -1951,6 +1950,9 @@ object ChatroomConversationItemViewDataBinderUtil {
         }
     }
 
+    /***
+     * This function helps to finds the text between **<text>** to make it as bold using [SpannableString]
+     */
     private fun decodeBoldText(tvConversation: TextView) {
         val text = tvConversation.text
         val spannableStringBuilder = SpannableStringBuilder()

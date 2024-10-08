@@ -781,46 +781,46 @@ class ChatroomDetailFragment :
      * Case 4 -> If Custom widget is enabled from backend
      * Add custom widget allow.
      */
-    private fun getSupportedAttachmentTypes(): List<LMChatAttachmentItemViewData> {
-        val supportedAttachments = mutableListOf<LMChatAttachmentItemViewData>()
+    private fun getSupportedAttachmentTypes(): List<LMChatAttachmentPickerItemViewData> {
+        val supportedAttachments = mutableListOf<LMChatAttachmentPickerItemViewData>()
 
         //add camera
-        val cameraAttachment = LMChatAttachmentItemViewData.Builder()
+        val cameraAttachment = LMChatAttachmentPickerItemViewData.Builder()
             .attachmentType(LMChatAttachmentType.CAMERA)
             .attachmentIcon(R.drawable.lm_chat_ic_create_camera)
             .attachmentName(requireContext().getString(R.string.lm_chat_camera))
             .build()
 
         //add gallery
-        val galleryAttachment = LMChatAttachmentItemViewData.Builder()
+        val galleryAttachment = LMChatAttachmentPickerItemViewData.Builder()
             .attachmentType(LMChatAttachmentType.GALLERY)
             .attachmentIcon(R.drawable.lm_chat_ic_create_gallery)
             .attachmentName(requireContext().getString(R.string.lm_chat_gallery))
             .build()
 
         //add document
-        val documentAttachment = LMChatAttachmentItemViewData.Builder()
+        val documentAttachment = LMChatAttachmentPickerItemViewData.Builder()
             .attachmentType(LMChatAttachmentType.DOCUMENT)
             .attachmentIcon(R.drawable.lm_chat_ic_document_new)
             .attachmentName(requireContext().getString(R.string.lm_chat_document))
             .build()
 
         //add audio
-        val audioAttachment = LMChatAttachmentItemViewData.Builder()
+        val audioAttachment = LMChatAttachmentPickerItemViewData.Builder()
             .attachmentType(LMChatAttachmentType.AUDIO)
             .attachmentIcon(R.drawable.lm_chat_ic_create_music)
             .attachmentName(requireContext().getString(R.string.lm_chat_audio))
             .build()
 
         //add poll
-        val pollAttachment = LMChatAttachmentItemViewData.Builder()
+        val pollAttachment = LMChatAttachmentPickerItemViewData.Builder()
             .attachmentType(LMChatAttachmentType.POLL)
             .attachmentIcon(R.drawable.lm_chat_ic_poll_create_message_selector)
             .attachmentName(requireContext().getString(R.string.lm_chat_poll))
             .build()
 
         //add custom widget
-        val customWidgetAttachment = LMChatAttachmentItemViewData.Builder()
+        val customWidgetAttachment = LMChatAttachmentPickerItemViewData.Builder()
             .attachmentType(LMChatAttachmentType.CUSTOM_WIDGET)
             .attachmentIcon(R.drawable.ic_create_custom_widget_a)
             .attachmentName(requireContext().getString(R.string.lm_chat_custom_widget_a))
@@ -848,7 +848,7 @@ class ChatroomDetailFragment :
         return supportedAttachments
     }
 
-    override fun onAttachmentClicked(attachmentItem: LMChatAttachmentItemViewData) {
+    override fun onAttachmentBarItemClicked(attachmentItem: LMChatAttachmentPickerItemViewData) {
         when (attachmentItem.attachmentType) {
             LMChatAttachmentType.CAMERA -> {
                 initCameraAttachment()

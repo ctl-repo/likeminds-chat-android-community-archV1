@@ -1,7 +1,6 @@
 package com.likeminds.chatmm.conversation.model
 
 import android.os.Parcelable
-import android.util.Log
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil
 import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.member.model.MemberViewData

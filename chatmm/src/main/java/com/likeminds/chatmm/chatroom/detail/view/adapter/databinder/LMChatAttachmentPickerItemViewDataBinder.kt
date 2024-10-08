@@ -2,15 +2,15 @@ package com.likeminds.chatmm.chatroom.detail.view.adapter.databinder
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import com.likeminds.chatmm.chatroom.detail.model.LMChatAttachmentItemViewData
+import com.likeminds.chatmm.chatroom.detail.model.LMChatAttachmentPickerItemViewData
 import com.likeminds.chatmm.chatroom.detail.view.adapter.LMChatAttachmentBarAdapterListener
 import com.likeminds.chatmm.databinding.LmChatItemAttachmentBinding
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
 import com.likeminds.chatmm.utils.model.ITEM_ATTACHMENT_ITEM
 
-class LMChatAttachmentItemViewDataBinder(
+class LMChatAttachmentPickerItemViewDataBinder(
     val listener: LMChatAttachmentBarAdapterListener
-) : ViewDataBinder<LmChatItemAttachmentBinding, LMChatAttachmentItemViewData>() {
+) : ViewDataBinder<LmChatItemAttachmentBinding, LMChatAttachmentPickerItemViewData>() {
     override val viewType: Int
         get() = ITEM_ATTACHMENT_ITEM
 
@@ -28,7 +28,7 @@ class LMChatAttachmentItemViewDataBinder(
 
     override fun bindData(
         binding: LmChatItemAttachmentBinding,
-        data: LMChatAttachmentItemViewData,
+        data: LMChatAttachmentPickerItemViewData,
         position: Int
     ) {
         binding.apply {
@@ -42,7 +42,7 @@ class LMChatAttachmentItemViewDataBinder(
     private fun setListener(binding: LmChatItemAttachmentBinding) {
         binding.root.setOnClickListener {
             val attachmentData = binding.attachmentData ?: return@setOnClickListener
-            listener.onAttachmentClicked(attachmentData)
+            listener.onAttachmentBarItemClicked(attachmentData)
         }
     }
 }

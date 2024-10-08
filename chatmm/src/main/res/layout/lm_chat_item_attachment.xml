@@ -7,7 +7,7 @@
 
         <variable
             name="attachmentData"
-            type="com.likeminds.chatmm.chatroom.detail.model.LMChatAttachmentItemViewData" />
+            type="com.likeminds.chatmm.chatroom.detail.model.LMChatAttachmentPickerItemViewData" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
