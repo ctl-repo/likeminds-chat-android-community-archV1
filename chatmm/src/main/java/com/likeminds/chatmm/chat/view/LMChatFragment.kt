@@ -56,9 +56,10 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
     companion object {
         const val CHAT_EXTRAS = "chat_extras"
         const val TAG = "ChatFragment"
-        private const val ARG_SESSION_ID = "ARG_SESSION_ID"
+
         private const val ARG_USER_ID = "ARG_USER_ID"
-        private const val ARG_RESEARCH_POST_ALLOWED = "ARG_RESEARCH_POST_ALLOWED"
+        private const val ARG_SESSION_ID = "ARG_SESSION_ID"
+        private const val ARG_IS_RESEARCH_POST_ALLOWED = "ARG_RESEARCH_POST_ALLOWED"
 
         @RequiresApi(Build.VERSION_CODES.TIRAMISU)
         private const val POST_NOTIFICATIONS = Manifest.permission.POST_NOTIFICATIONS
@@ -69,15 +70,15 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
         }
 
         fun newInstance(
-            sessionId: String,
             userId: String,
-            researchPostAllowed: Boolean
+            sessionId: String,
+            isResearchPostAllowed: Boolean
         ): LMChatFragment {
             val fragment = LMChatFragment()
             val args = Bundle()
-            args.putString(ARG_SESSION_ID, sessionId)
             args.putString(ARG_USER_ID, userId)
-            args.putBoolean(ARG_RESEARCH_POST_ALLOWED, researchPostAllowed)
+            args.putString(ARG_SESSION_ID, sessionId)
+            args.putBoolean(ARG_IS_RESEARCH_POST_ALLOWED, isResearchPostAllowed)
             fragment.arguments = args
             return fragment
         }
@@ -85,13 +86,14 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
 
     override fun receiveExtras() {
         super.receiveExtras()
-        // Retrieve sessionId from arguments
-        val sessionId = arguments?.getString(ARG_SESSION_ID)
-        val userId = arguments?.getString(ARG_USER_ID)
-        val isResearchPostAllowed = arguments?.getBoolean(ARG_RESEARCH_POST_ALLOWED, false) ?: false
-        XLmcAppInstance.sessionID = sessionId
-        XLmcAppInstance.userID = userId
-        XLmcAppInstance.isResearchPostAllowed = isResearchPostAllowed
+
+        arguments?.apply {
+            XLmcAppInstance.setUserData(
+                userId = getString(ARG_USER_ID),
+                sessionId = getString(ARG_SESSION_ID),
+                isResearchPostAllowed = getBoolean(ARG_IS_RESEARCH_POST_ALLOWED, false)
+            )
+        }
     }
 
     private lateinit var pagerAdapter: ChatPagerAdapter
@@ -178,6 +180,7 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
     }
 
     private fun initToolbar() {
+
         binding.apply {
             (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
 
