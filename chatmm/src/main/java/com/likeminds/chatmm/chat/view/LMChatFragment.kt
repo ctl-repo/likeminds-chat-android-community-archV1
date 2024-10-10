@@ -22,6 +22,9 @@ import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.chat.adapter.ChatPagerAdapter
 import com.likeminds.chatmm.chat.viewmodel.ChatViewModel
+import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailExtras
+import com.likeminds.chatmm.chatroom.detail.view.ChatroomDetailActivity
+import com.likeminds.chatmm.chatroom.detail.view.ChatroomDetailFragment
 import com.likeminds.chatmm.databinding.FragmentChatBinding
 import com.likeminds.chatmm.dm.model.CheckDMTabViewData
 import com.likeminds.chatmm.member.model.MemberViewData
@@ -320,6 +323,26 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
                     snackBar.showNoInternet(view)
                 }
             }
+        }
+    }
+
+    fun forceRedirectionToChatRoom() {
+        if (XLmcAppInstance.chatroomId != null
+            && XLmcAppInstance.communityId != null
+        ) {
+            val extra = ChatroomDetailExtras.Builder()
+                .chatroomId(XLmcAppInstance.chatroomId ?: "")
+                .communityId(XLmcAppInstance.communityId)
+                .conversationId(XLmcAppInstance.conversationId)
+                .source(ChatroomDetailFragment.SOURCE_HOME_FEED)
+                .build()
+            ChatroomDetailActivity.start(requireContext(), extra)
+
+            XLmcAppInstance.setChatPersistData(
+                chatroomId = null,
+                communityId = null,
+                conversationId = null
+            )
         }
     }
 }

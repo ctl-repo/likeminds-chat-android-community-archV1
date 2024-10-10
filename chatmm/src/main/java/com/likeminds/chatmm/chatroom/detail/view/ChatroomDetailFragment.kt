@@ -676,11 +676,21 @@ class ChatroomDetailFragment :
         }
     }
 
+    private fun setChatPersistData() {
+        XLmcAppInstance.setChatPersistData(
+            chatroomId = chatroomDetailExtras.chatroomId,
+            communityId = chatroomDetailExtras.communityId,
+            conversationId = chatroomDetailExtras.conversationId
+        )
+    }
+
     override fun onClickFinxSmPlaceOrder(recomData: FinXRecommendationMetadata) {
+        setChatPersistData()
         SDKApplication.getLikeMindsCallback()?.navigateToFinXSmPlaceOrder(recomData)
     }
 
     override fun onClickFinxSmCompany(recomData: FinXRecommendationMetadata) {
+        setChatPersistData()
         SDKApplication.getLikeMindsCallback()?.navigateToFinXSmCompany(recomData)
     }
 
