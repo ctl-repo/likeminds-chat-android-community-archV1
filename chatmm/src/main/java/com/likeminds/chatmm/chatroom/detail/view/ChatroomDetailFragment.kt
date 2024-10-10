@@ -39,8 +39,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.gson.Gson
 import com.likeminds.chatmm.*
 import com.likeminds.chatmm.R
-import com.likeminds.chatmm.finxrecommendation.domain.model.FinXRecommendationMetadata
-import com.likeminds.chatmm.finxrecommendation.presentation.view.FinXRecommendationActivity
 import com.likeminds.chatmm.chatroom.detail.model.*
 import com.likeminds.chatmm.chatroom.detail.util.*
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil.getTypeName
@@ -52,6 +50,8 @@ import com.likeminds.chatmm.conversation.model.*
 import com.likeminds.chatmm.conversation.util.ChatReplyUtil
 import com.likeminds.chatmm.databinding.*
 import com.likeminds.chatmm.dm.view.*
+import com.likeminds.chatmm.finxrecommendation.domain.model.FinXRecommendationMetadata
+import com.likeminds.chatmm.finxrecommendation.presentation.view.FinXRecommendationActivity
 import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.media.util.*
 import com.likeminds.chatmm.media.util.MediaAudioForegroundService.Companion.AUDIO_SERVICE_PROGRESS_EXTRA
@@ -676,22 +676,12 @@ class ChatroomDetailFragment :
         }
     }
 
-    private fun setChatPersistData() {
-        XLmcAppInstance.setChatPersistData(
-            chatroomId = chatroomDetailExtras.chatroomId,
-            communityId = chatroomDetailExtras.communityId,
-            conversationId = chatroomDetailExtras.conversationId
-        )
-    }
-
     override fun onClickFinxSmPlaceOrder(recomData: FinXRecommendationMetadata) {
-        setChatPersistData()
-        SDKApplication.getLikeMindsCallback()?.navigateToFinXSmPlaceOrder(recomData)
+        SDKApplication.getLikeMindsCallback()?.navigateToFinXSmPlaceOrder(recomData, chatroomDetailExtras)
     }
 
     override fun onClickFinxSmCompany(recomData: FinXRecommendationMetadata) {
-        setChatPersistData()
-        SDKApplication.getLikeMindsCallback()?.navigateToFinXSmCompany(recomData)
+        SDKApplication.getLikeMindsCallback()?.navigateToFinXSmCompany(recomData, chatroomDetailExtras)
     }
 
     private fun initEmojiView() {

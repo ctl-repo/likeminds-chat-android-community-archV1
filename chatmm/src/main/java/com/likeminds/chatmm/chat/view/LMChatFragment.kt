@@ -326,23 +326,13 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
         }
     }
 
-    fun forceRedirectionToChatRoom() {
-        if (XLmcAppInstance.chatroomId != null
-            && XLmcAppInstance.communityId != null
-        ) {
-            val extra = ChatroomDetailExtras.Builder()
-                .chatroomId(XLmcAppInstance.chatroomId ?: "")
-                .communityId(XLmcAppInstance.communityId)
-                .conversationId(XLmcAppInstance.conversationId)
-                .source(ChatroomDetailFragment.SOURCE_HOME_FEED)
-                .build()
-            ChatroomDetailActivity.start(requireContext(), extra)
-
-            XLmcAppInstance.setChatPersistData(
-                chatroomId = null,
-                communityId = null,
-                conversationId = null
-            )
-        }
+    fun redirectionToChatroom(chatroomDetailExtras: ChatroomDetailExtras) {
+        val extra = ChatroomDetailExtras.Builder()
+            .chatroomId(chatroomDetailExtras.chatroomId)
+            .communityId(chatroomDetailExtras.communityId)
+            .conversationId(chatroomDetailExtras.conversationId)
+            .source(ChatroomDetailFragment.SOURCE_HOME_FEED)
+            .build()
+        ChatroomDetailActivity.start(requireContext(), extra)
     }
 }
