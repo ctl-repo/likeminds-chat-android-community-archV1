@@ -22,6 +22,9 @@ import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.chat.adapter.ChatPagerAdapter
 import com.likeminds.chatmm.chat.viewmodel.ChatViewModel
+import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailExtras
+import com.likeminds.chatmm.chatroom.detail.view.ChatroomDetailActivity
+import com.likeminds.chatmm.chatroom.detail.view.ChatroomDetailFragment
 import com.likeminds.chatmm.databinding.FragmentChatBinding
 import com.likeminds.chatmm.dm.model.CheckDMTabViewData
 import com.likeminds.chatmm.member.model.MemberViewData
@@ -321,5 +324,15 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
                 }
             }
         }
+    }
+
+    fun redirectionToChatroom(chatroomDetailExtras: ChatroomDetailExtras) {
+        val extra = ChatroomDetailExtras.Builder()
+            .chatroomId(chatroomDetailExtras.chatroomId)
+            .communityId(chatroomDetailExtras.communityId)
+            .conversationId(chatroomDetailExtras.conversationId)
+            .source(ChatroomDetailFragment.SOURCE_HOME_FEED)
+            .build()
+        ChatroomDetailActivity.start(requireContext(), extra)
     }
 }
