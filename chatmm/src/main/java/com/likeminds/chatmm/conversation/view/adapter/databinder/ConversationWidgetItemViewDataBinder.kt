@@ -58,12 +58,13 @@ class ConversationWidgetItemViewDataBinder(
                 Gson().fromJson(metadata.toString(), FinXRecommendationMetadata::class.java)
 
             with(recomData) {
-                tvFinXRecommendationTitle.text = searchRsp?.getScripName()
-                tvStopLossTitleValue.text = slPrice
-                tvEntryPriceValue.text = entryPrice
-                tvTargetPriceValue.text = targetPrice
+
+                val action = if (isBuy == true) "Buy" else "Sell"
+                tvFinXRecommendationTitle.text =
+                    "$action ${searchRsp?.getScripName()} at Rs.$entryPrice SL Rs.$slPrice for the target of Rs.$targetPrice"
+
                 btnFinXRecommendationBuy.let {
-                    it.text = if (isBuy == true) "Buy" else "Sell"
+                    it.text = action
                     it.setBackgroundColor(
                         ContextCompat.getColor(
                             context,
