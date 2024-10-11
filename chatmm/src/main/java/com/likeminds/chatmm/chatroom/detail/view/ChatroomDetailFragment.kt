@@ -688,12 +688,39 @@ class ChatroomDetailFragment :
         }
     }
 
-    override fun onClickFinxSmPlaceOrder(recomData: FinXRecommendationMetadata) {
-        SDKApplication.getLikeMindsCallback()?.navigateToFinXSmPlaceOrder(recomData, chatroomDetailExtras)
+    override fun onClickFinxSmPlaceOrder(
+        recomData: FinXRecommendationMetadata,
+        conversationId: String
+    ) {
+
+        val extra = ChatroomDetailExtras.Builder()
+            .chatroomId(chatroomDetailExtras.chatroomId)
+            .communityId(chatroomDetailExtras.communityId)
+            .conversationId(conversationId)
+            .source(SOURCE_HOME_FEED)
+            .build()
+
+
+        SDKApplication.getLikeMindsCallback()?.navigateToFinXSmPlaceOrder(
+            recomData,
+            extra
+        )
     }
 
-    override fun onClickFinxSmCompany(recomData: FinXRecommendationMetadata) {
-        SDKApplication.getLikeMindsCallback()?.navigateToFinXSmCompany(recomData, chatroomDetailExtras)
+    override fun onClickFinxSmCompany(
+        recomData: FinXRecommendationMetadata,
+        conversationId: String
+    ) {
+
+        val extra = ChatroomDetailExtras.Builder()
+            .chatroomId(chatroomDetailExtras.chatroomId)
+            .communityId(chatroomDetailExtras.communityId)
+            .conversationId(conversationId)
+            .source(SOURCE_HOME_FEED)
+            .build()
+
+        SDKApplication.getLikeMindsCallback()
+            ?.navigateToFinXSmCompany(recomData, extra)
     }
 
     private fun initEmojiView() {

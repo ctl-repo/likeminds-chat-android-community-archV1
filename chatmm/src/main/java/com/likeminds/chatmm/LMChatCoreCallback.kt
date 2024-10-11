@@ -31,6 +31,6 @@ interface LMChatCoreCallback {
         return Pair(null, null)
     }
 
-    fun navigateToFinXSmPlaceOrder(recomData: FinXRecommendationMetadata, chatRoomDetails: ChatroomDetailExtras)
-    fun navigateToFinXSmCompany(recomData: FinXRecommendationMetadata, chatRoomDetails: ChatroomDetailExtras)
+    fun navigateToFinXSmPlaceOrder(recomData: FinXRecommendationMetadata, chatroomDetailExtras: ChatroomDetailExtras)
+    fun navigateToFinXSmCompany(recomData: FinXRecommendationMetadata, chatroomDetailExtras: ChatroomDetailExtras)
 }

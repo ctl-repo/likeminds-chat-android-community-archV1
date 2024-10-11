@@ -259,6 +259,13 @@ interface ChatroomDetailAdapterListener {
     fun blockMember(index: Int, state: MemberBlockState) {}
     fun onMemberTagClicked(memberTag: Uri) {}
 
-    fun onClickFinxSmPlaceOrder(recomData: FinXRecommendationMetadata)
-    fun onClickFinxSmCompany(recomData: FinXRecommendationMetadata)
+    fun onClickFinxSmPlaceOrder(
+        recomData: FinXRecommendationMetadata,
+        conversationId: String
+    )
+
+    fun onClickFinxSmCompany(
+        recomData: FinXRecommendationMetadata,
+        conversationId: String
+    )
 }
