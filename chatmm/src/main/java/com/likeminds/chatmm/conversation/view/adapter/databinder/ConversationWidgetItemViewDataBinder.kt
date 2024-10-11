@@ -6,11 +6,11 @@ import androidx.core.content.ContextCompat
 import com.google.gson.Gson
 import com.likeminds.chatmm.LMAnalytics
 import com.likeminds.chatmm.R
-import com.likeminds.chatmm.finxrecommendation.domain.model.FinXRecommendationMetadata
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomConversationItemViewDataBinderUtil
 import com.likeminds.chatmm.chatroom.detail.view.adapter.ChatroomDetailAdapterListener
 import com.likeminds.chatmm.conversation.model.ConversationViewData
 import com.likeminds.chatmm.databinding.ItemConversationCustomWidgetBinding
+import com.likeminds.chatmm.finxrecommendation.domain.model.FinXRecommendationMetadata
 import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.reactions.util.ReactionUtil
 import com.likeminds.chatmm.reactions.util.ReactionsPreferences
@@ -89,12 +89,18 @@ class ConversationWidgetItemViewDataBinder(
             }
 
             btnFinXRecommendationBuy.setOnClickListener {
-                adapterListener.onClickFinxSmPlaceOrder(recomData)
+                adapterListener.onClickFinxSmPlaceOrder(
+                    recomData = recomData,
+                    conversationId = data.id
+                )
                 onClick.invoke()
             }
 
             btnFinXRecommendationScripInfo.setOnClickListener {
-                adapterListener.onClickFinxSmCompany(recomData)
+                adapterListener.onClickFinxSmCompany(
+                    recomData = recomData,
+                    conversationId = data.id
+                )
                 onClick.invoke()
             }
 

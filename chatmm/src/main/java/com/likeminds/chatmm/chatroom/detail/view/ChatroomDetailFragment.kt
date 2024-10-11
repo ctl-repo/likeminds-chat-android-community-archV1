@@ -220,7 +220,7 @@ class ChatroomDetailFragment :
     private var showTapAndHoldToast = true
     private var motionDownHandler: Handler? = null
     private val voiceNoteUtils: VoiceNoteUtils by lazy {
-        VoiceNoteUtils(requireContext(), this)
+        VoiceNoteUtils(requireContext(), this, mResearchCWVisibility)
     }
     private var firstX: Float = 0f
     private var firstY: Float = 0f
@@ -242,9 +242,8 @@ class ChatroomDetailFragment :
 
     private var showTapToUndoLocally = true
 
-    private val mResearchCustomWidgetVisibility: Int by lazy {
-        val isVisible = viewModel.isWidgetEnabled() && XLmcAppInstance.isResearchPostAllowed
-        if (isVisible) View.VISIBLE else View.INVISIBLE
+    private val mResearchCWVisibility: Boolean by lazy {
+        viewModel.isWidgetEnabled() && XLmcAppInstance.isResearchPostAllowed
     }
 
     private val progressReceiver = object : BroadcastReceiver() {
@@ -610,8 +609,21 @@ class ChatroomDetailFragment :
                 if (it?.toString()?.trim()
                         .isNullOrEmpty() && viewModel.isVoiceNoteSupportEnabled()
                 ) {
-                    fabSend.hide()
-                    fabMic.show()
+                    if (viewModel.isDmChatroom()) {
+                        val chatRequestState = viewModel.getChatroomViewData()?.chatRequestState
+
+                        //in request as no attachment is not allowed
+                        if (chatRequestState == ChatRequestState.ACCEPTED) {
+                            fabSend.hide()
+                            fabMic.show()
+                        } else {
+                            fabSend.show()
+                            fabMic.hide()
+                        }
+                    } else {
+                        fabSend.hide()
+                        fabMic.show()
+                    }
                 } else {
                     fabSend.show()
                     fabMic.hide()
@@ -676,12 +688,41 @@ class ChatroomDetailFragment :
         }
     }
 
-    override fun onClickFinxSmPlaceOrder(recomData: FinXRecommendationMetadata) {
-        SDKApplication.getLikeMindsCallback()?.navigateToFinXSmPlaceOrder(recomData, chatroomDetailExtras)
+    override fun onClickFinxSmPlaceOrder(
+        recomData: FinXRecommendationMetadata,
+        conversationId: String
+    ) {
+
+        val extra = ChatroomDetailExtras.Builder()
+            .chatroomId(chatroomDetailExtras.chatroomId)
+            .communityId(chatroomDetailExtras.communityId)
+            .conversationId(conversationId)
+            .source(SOURCE_HOME_FEED)
+            .build()
+
+
+        SDKApplication.getLikeMindsCallback()?.navigateToFinXSmPlaceOrder(
+            recomData = recomData,
+            chatroomDetailExtras = extra
+        )
     }
 
-    override fun onClickFinxSmCompany(recomData: FinXRecommendationMetadata) {
-        SDKApplication.getLikeMindsCallback()?.navigateToFinXSmCompany(recomData, chatroomDetailExtras)
+    override fun onClickFinxSmCompany(
+        recomData: FinXRecommendationMetadata,
+        conversationId: String
+    ) {
+
+        val extra = ChatroomDetailExtras.Builder()
+            .chatroomId(chatroomDetailExtras.chatroomId)
+            .communityId(chatroomDetailExtras.communityId)
+            .conversationId(conversationId)
+            .source(SOURCE_HOME_FEED)
+            .build()
+
+        SDKApplication.getLikeMindsCallback()?.navigateToFinXSmCompany(
+            recomData = recomData,
+            chatroomDetailExtras = extra
+        )
     }
 
     private fun initEmojiView() {
@@ -799,9 +840,9 @@ class ChatroomDetailFragment :
             }
 
             //to check whether widget is enabled or not
-            inputBox.ivCustomWidget.visibility = mResearchCustomWidgetVisibility
-            inputBox.ivCustomWidget.setOnClickListener {
-                initVisibilityOfAttachmentsBar(View.GONE)
+            //inputBox.ivFinxRecommendationCw.visibility = mResearchCustomWidgetVisibility
+            inputBox.ivFinxRecommendationCw.setOnClickListener {
+                //initVisibilityOfAttachmentsBar(View.GONE)
                 onCustomWidgetAAttachmentClicked()
             }
         }
@@ -893,7 +934,7 @@ class ChatroomDetailFragment :
         binding.apply {
             fabSend.isEnabled = state
             inputBox.ivAttachment.isEnabled = state
-            inputBox.ivCustomWidget.isEnabled = state
+            inputBox.ivFinxRecommendationCw.isEnabled = state
             inputBox.etAnswer.isEnabled = state
             inputBox.etAnswer.setHint(R.string.lm_chat_type_your_response)
         }
@@ -1477,10 +1518,6 @@ class ChatroomDetailFragment :
         binding.apply {
             if (showDM) {
                 val isPrivateMember = viewModel.getChatroomViewData()?.isPrivateMember
-                if (isPrivateMember == false) {
-                    tvSendDmRequestToMember.hide()
-                    return
-                }
                 if (isBlocked == true) {
                     hideAllChatBoxViews()
                     tvRestrictedMessage.visibility = View.VISIBLE
@@ -1502,9 +1539,18 @@ class ChatroomDetailFragment :
                                 R.string.lm_chat_send_a_dm_request_to_s,
                                 viewModel.getOtherDmMember()?.name
                             )
+
+                        if (isPrivateMember == false) {
+                            tvSendDmRequestToMember.hide()
+                        }
+
+                        //as no attachment is allowed in request
+                        fabSend.show()
+                        fabMic.hide()
+
                         isDMRequestSent = true
                         inputBox.ivAttachment.visibility = View.INVISIBLE
-                        inputBox.ivCustomWidget.visibility = View.INVISIBLE
+                        inputBox.ivFinxRecommendationCw.visibility = View.INVISIBLE
                         return
                     }
 
@@ -1631,15 +1677,27 @@ class ChatroomDetailFragment :
                     }
                     if (!isVoiceNoteLocked && !isVoiceNoteRecording && !isDMRequestSent) {
                         inputBox.ivAttachment.visibility = View.VISIBLE
-                        inputBox.ivCustomWidget.visibility = mResearchCustomWidgetVisibility
+                        inputBox.ivFinxRecommendationCw.isVisible = mResearchCWVisibility
                     }
                     inputBox.viewLink.clLink.visibility = View.GONE
                     inputBox.viewReply.clReply.visibility = View.GONE
-                    if (inputBox.etAnswer.text?.trim()
-                            .isNullOrEmpty() && viewModel.isVoiceNoteSupportEnabled()
+                    if (inputBox.etAnswer.text?.trim().isNullOrEmpty() &&
+                        viewModel.isVoiceNoteSupportEnabled()
                     ) {
-                        fabSend.hide()
-                        fabMic.show()
+                        if (viewModel.isDmChatroom()) {
+                            val chatRequestState = viewModel.getChatroomViewData()?.chatRequestState
+                            //in request as no attachment is not allowed
+                            if (chatRequestState == ChatRequestState.ACCEPTED) {
+                                fabSend.hide()
+                                fabMic.show()
+                            } else {
+                                fabSend.show()
+                                fabMic.hide()
+                            }
+                        } else {
+                            fabSend.hide()
+                            fabMic.show()
+                        }
                     } else {
                         fabSend.show()
                         fabMic.hide()
@@ -1652,7 +1710,7 @@ class ChatroomDetailFragment :
                     }
                     if (!isVoiceNoteLocked && !isVoiceNoteRecording) {
                         inputBox.ivAttachment.visibility = View.VISIBLE
-                        inputBox.ivCustomWidget.visibility = mResearchCustomWidgetVisibility
+                        inputBox.ivFinxRecommendationCw.isVisible = mResearchCWVisibility
                     }
                     inputBox.viewLink.clLink.visibility = View.GONE
                     inputBox.viewReply.clReply.visibility = View.VISIBLE
@@ -1663,7 +1721,7 @@ class ChatroomDetailFragment :
                         inputBox.clChatContainer.setBackgroundResource(R.drawable.lm_chat_background_white_12top_24_bottom_black10_1)
                     }
                     inputBox.ivAttachment.visibility = View.INVISIBLE
-                    inputBox.ivCustomWidget.visibility = View.INVISIBLE
+                    inputBox.ivFinxRecommendationCw.visibility = View.INVISIBLE
                     inputBox.viewLink.clLink.visibility = View.VISIBLE
                     inputBox.viewReply.clReply.visibility = View.GONE
                 }
@@ -1674,7 +1732,7 @@ class ChatroomDetailFragment :
                     }
                     fabSend.show()
                     inputBox.ivAttachment.visibility = View.INVISIBLE
-                    inputBox.ivCustomWidget.visibility = View.INVISIBLE
+                    inputBox.ivFinxRecommendationCw.visibility = View.INVISIBLE
                     inputBox.viewLink.clLink.visibility = View.GONE
                     inputBox.viewReply.clReply.visibility = View.GONE
                 }
@@ -1951,7 +2009,6 @@ class ChatroomDetailFragment :
                     if (
                         viewModel.isDmChatroom()
                         && (viewModel.getChatroomViewData()?.chatRequestState == ChatRequestState.NOTHING)
-                        && (viewModel.getChatroomViewData()?.isPrivateMember == true)
                     ) {
                         viewModel.dmRequestText = inputText
                         if (inputText.length >= DM_SEND_REQUEST_TEXT_LIMIT) {
@@ -2637,13 +2694,13 @@ class ChatroomDetailFragment :
         binding.layoutAttachments.apply {
             if (visibility == View.VISIBLE) {
                 root.startRevealAnimation(binding.inputBox.ivAttachment)
-                root.startRevealAnimation(binding.inputBox.ivCustomWidget)
+                root.startRevealAnimation(binding.inputBox.ivFinxRecommendationCw)
             } else {
                 isAttachmentsSheetHiding = true
                 root.endRevealAnimation(binding.inputBox.ivAttachment) {
                     isAttachmentsSheetHiding = false
                 }
-                root.endRevealAnimation(binding.inputBox.ivCustomWidget) {
+                root.endRevealAnimation(binding.inputBox.ivFinxRecommendationCw) {
                     isAttachmentsSheetHiding = false
                 }
             }
@@ -5428,7 +5485,7 @@ class ChatroomDetailFragment :
     private fun setEditMessageViewConversationData(conversation: ConversationViewData) {
         binding.inputBox.apply {
             ivAttachment.visibility = View.INVISIBLE
-            ivCustomWidget.visibility = View.INVISIBLE
+            ivFinxRecommendationCw.visibility = View.INVISIBLE
             viewReply.replySourceType = REPLY_SOURCE_CONVERSATION
             viewReply.conversationViewData = conversation
             val editData = ChatReplyUtil.getEditConversationData(conversation)
@@ -5443,7 +5500,7 @@ class ChatroomDetailFragment :
     private fun setEditMessageViewChatRoomData(chatRoom: ChatroomViewData) {
         binding.inputBox.apply {
             ivAttachment.visibility = View.INVISIBLE
-            ivCustomWidget.visibility = View.INVISIBLE
+            ivFinxRecommendationCw.visibility = View.INVISIBLE
             viewReply.replySourceType = REPLY_SOURCE_CHATROOM
             viewReply.chatRoomViewData = chatRoom
             val editData = ChatReplyUtil.getEditChatRoomData(chatRoom)
