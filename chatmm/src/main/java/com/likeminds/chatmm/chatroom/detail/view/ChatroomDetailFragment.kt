@@ -702,8 +702,8 @@ class ChatroomDetailFragment :
 
 
         SDKApplication.getLikeMindsCallback()?.navigateToFinXSmPlaceOrder(
-            recomData,
-            extra
+            recomData = recomData,
+            chatroomDetailExtras = extra
         )
     }
 
@@ -719,8 +719,10 @@ class ChatroomDetailFragment :
             .source(SOURCE_HOME_FEED)
             .build()
 
-        SDKApplication.getLikeMindsCallback()
-            ?.navigateToFinXSmCompany(recomData, extra)
+        SDKApplication.getLikeMindsCallback()?.navigateToFinXSmCompany(
+            recomData = recomData,
+            chatroomDetailExtras = extra
+        )
     }
 
     private fun initEmojiView() {
@@ -838,9 +840,9 @@ class ChatroomDetailFragment :
             }
 
             //to check whether widget is enabled or not
-            /*inputBox.ivFinxRecommendationCw.visibility = mResearchCustomWidgetVisibility*/
+            //inputBox.ivFinxRecommendationCw.visibility = mResearchCustomWidgetVisibility
             inputBox.ivFinxRecommendationCw.setOnClickListener {
-                /*initVisibilityOfAttachmentsBar(View.GONE)*/
+                //initVisibilityOfAttachmentsBar(View.GONE)
                 onCustomWidgetAAttachmentClicked()
             }
         }
