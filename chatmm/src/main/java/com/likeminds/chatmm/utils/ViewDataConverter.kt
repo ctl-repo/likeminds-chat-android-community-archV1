@@ -789,6 +789,8 @@ object ViewDataConverter {
                         .communityName(communityName)
                         .communityId(communityId.toString())
                         .member(createMember(chatroomNotificationViewData.chatroomCreator))
+                        .muteStatus(false)
+                        .followStatus(true)
                         .build()
                 )
                 .chatroomLastConversation(

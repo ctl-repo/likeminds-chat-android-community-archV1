@@ -655,7 +655,7 @@ class LMChatNotificationHandler {
     ) {
         createNotificationChannel()
         var sortedUnreadConversations =
-            unreadConversations.sortedByDescending { it.chatroomLastConversationUserTimestamp }
+            unreadConversations.sortedByDescending { it.chatroomLastConversationTimestamp }
 
         val list = ValueUtils.generateLexicoGraphicalList(sortedUnreadConversations.size)
         // Add the numeric lex number as sorting key
