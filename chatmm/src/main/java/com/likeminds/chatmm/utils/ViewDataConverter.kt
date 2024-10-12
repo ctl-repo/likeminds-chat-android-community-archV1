@@ -1,5 +1,6 @@
 package com.likeminds.chatmm.utils
 
+import android.content.Context
 import android.net.Uri
 import com.likeminds.chatmm.chatroom.detail.model.*
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil
@@ -18,6 +19,8 @@ import com.likeminds.chatmm.reactions.model.ReactionViewData
 import com.likeminds.chatmm.report.model.ReportTagViewData
 import com.likeminds.chatmm.search.model.*
 import com.likeminds.chatmm.search.util.SearchUtils
+import com.likeminds.chatmm.utils.file.util.FileUtil
+import com.likeminds.chatmm.utils.mediauploader.worker.UploadHelper
 import com.likeminds.chatmm.utils.membertagging.model.TagViewData
 import com.likeminds.chatmm.utils.model.ITEM_VIEW_PARTICIPANTS
 import com.likeminds.chatmm.widget.model.WidgetViewData
@@ -34,6 +37,7 @@ import com.likeminds.likemindschat.search.model.SearchChatroom
 import com.likeminds.likemindschat.search.model.SearchConversation
 import com.likeminds.likemindschat.user.model.*
 import com.likeminds.likemindschat.widget.model.Widget
+import java.io.File
 
 object ViewDataConverter {
 
@@ -280,6 +284,7 @@ object ViewDataConverter {
             .uuid(member.uuid)
             .isOwner(member.isOwner)
             .memberSince(member.memberSince)
+            .roles(member.roles)
             .build()
     }
 
@@ -337,6 +342,7 @@ object ViewDataConverter {
             .updatedAt(memberStateResponse.updatedAt)
             .isOwner(memberStateResponse.isOwner)
             .sdkClientInfo(convertSDKClientInfo(memberStateResponse.sdkClientInfo))
+            .roles(memberStateResponse.roles)
             .build()
     }
 
@@ -457,6 +463,7 @@ object ViewDataConverter {
             .id(attachment.id)
             .name(attachment.name)
             .uri(Uri.parse(attachment.url))
+            .url(attachment.url)
             .type(attachment.type)
             .index(attachment.index)
             .width(attachment.width)
@@ -483,6 +490,7 @@ object ViewDataConverter {
             .customTitle(user.customTitle)
             .isGuest(user.isGuest)
             .sdkClientInfo(convertSDKClientInfo(user.sdkClientInfo))
+            .roles(user.roles)
             .build()
     }
 
@@ -602,11 +610,13 @@ object ViewDataConverter {
 
     // creates a Conversation network model for posting a conversation
     fun convertConversation(
+        context: Context,
         uuid: String,
         communityId: String?,
         request: PostConversationRequest,
         fileUris: List<SingleUriData>?,
-        conversationCreatedEpoch: Long
+        conversationCreatedEpoch: Long,
+        loggedInUserUUID: String
     ): Conversation {
 
         val metadata = request.metadata
@@ -622,21 +632,23 @@ object ViewDataConverter {
             null
         }
 
+        val chatroomId = request.chatroomId
+
         return Conversation.Builder()
             .id(request.temporaryId)
-            .chatroomId(request.chatroomId)
+            .chatroomId(chatroomId)
             .communityId(communityId)
             .answer(request.text)
             .state(STATE_NORMAL)
             .createdEpoch(conversationCreatedEpoch)
             .memberId(uuid)
             .createdAt(TimeUtil.generateCreatedAt(conversationCreatedEpoch))
-            .attachments(convertAttachments(fileUris))
+            .attachments(convertAttachments(context, fileUris, chatroomId, loggedInUserUUID))
             .lastSeen(true)
             .ogTags(request.ogTags)
             .date(TimeUtil.generateDate(conversationCreatedEpoch))
             .replyConversationId(request.repliedConversationId)
-            .attachmentCount(request.attachmentCount ?: 0)
+            .attachmentCount(fileUris?.size ?: 0)
             .localCreatedEpoch(conversationCreatedEpoch)
             .temporaryId(request.temporaryId)
             .isEdited(false)
@@ -647,35 +659,76 @@ object ViewDataConverter {
     }
 
     // converts list of SingleUriData to list of network Attachment model
-    private fun convertAttachments(fileUris: List<SingleUriData>?): List<Attachment>? {
+    private fun convertAttachments(
+        context: Context,
+        fileUris: List<SingleUriData>?,
+        chatroomId: String,
+        loggedInUserUUID: String
+    ): List<Attachment>? {
         return fileUris?.mapIndexed { index, singleUriData ->
-            convertAttachment(singleUriData, index)
+            convertAttachment(context, singleUriData, index, chatroomId, loggedInUserUUID)
         }
     }
 
     // converts SingleUriData to network Attachment model
     private fun convertAttachment(
+        context: Context,
         singleUriData: SingleUriData,
-        index: Int
+        index: Int,
+        chatroomId: String,
+        loggedInUserUUID: String
     ): Attachment {
-        return Attachment.Builder()
+        val attachmentMeta = AttachmentMeta.Builder()
+            .numberOfPage(singleUriData.pdfPageCount)
+            .duration(singleUriData.duration)
+            .size(singleUriData.size)
+            .build()
+
+        //local file path
+        val localFilePath = FileUtil.getRealPath(context, singleUriData.uri).path
+
+        //file
+        val file = File(localFilePath)
+
+        //server path
+        val serverPath = UploadHelper.getAttachmentFilePath(
+            chatroomId,
+            loggedInUserUUID,
+            singleUriData.fileType,
+            file
+        )
+
+        val attachmentBuilder = Attachment.Builder()
             .name(singleUriData.mediaName)
             .url(singleUriData.uri.toString())
             .type(singleUriData.fileType)
             .index(index)
             .width(singleUriData.width)
             .height(singleUriData.height)
-            .localFilePath(singleUriData.uri.toString())
-            .thumbnailUrl(singleUriData.thumbnailUri.toString())
-            .thumbnailLocalFilePath(singleUriData.thumbnailUri.toString())
-            .meta(
-                AttachmentMeta.Builder()
-                    .numberOfPage(singleUriData.pdfPageCount)
-                    .duration(singleUriData.duration)
-                    .size(singleUriData.size)
-                    .build()
+            .awsFolderPath(serverPath)
+            .localFilePath(localFilePath)
+            .meta(attachmentMeta)
+
+        //add thumbnail meta if exist
+        val thumbnailUri = singleUriData.thumbnailUri
+        if (thumbnailUri != null) {
+            val thumbnailLocalFilePath = FileUtil.getRealPath(context, thumbnailUri).path
+            val thumbnailFile = File(thumbnailLocalFilePath)
+            val thumbnailAWSFolderPath = UploadHelper.getAttachmentFilePath(
+                chatroomId,
+                loggedInUserUUID,
+                singleUriData.fileType,
+                thumbnailFile,
+                isThumbnail = true
             )
-            .build()
+
+            attachmentBuilder.thumbnailUrl(thumbnailUri.toString())
+                .thumbnailLocalFilePath(thumbnailLocalFilePath)
+                .thumbnailAWSFolderPath(thumbnailAWSFolderPath)
+        }
+
+        val attachment = attachmentBuilder.build()
+        return attachment
     }
 
     // converts [ConversationViewData] to [Conversation] model
@@ -711,7 +764,7 @@ object ViewDataConverter {
     }
 
     // converts list of AttachmentViewData to list of network Attachment model
-    private fun convertAttachmentViewDataList(attachmentViewDataList: List<AttachmentViewData>?): List<Attachment>? {
+    fun convertAttachmentViewDataList(attachmentViewDataList: List<AttachmentViewData>?): List<Attachment>? {
         return attachmentViewDataList?.map { attachmentViewData ->
             convertAttachmentViewData(attachmentViewData)
         }
@@ -723,12 +776,12 @@ object ViewDataConverter {
     ): Attachment {
         return Attachment.Builder()
             .name(attachmentViewData.name)
-            .url(attachmentViewData.uri.toString())
+            .url(attachmentViewData.url ?: "")
             .type(attachmentViewData.type)
             .index(attachmentViewData.index)
             .width(attachmentViewData.width)
             .height(attachmentViewData.height)
-            .localFilePath(attachmentViewData.uri.toString())
+            .localFilePath(attachmentViewData.localFilePath)
             .thumbnailUrl(attachmentViewData.thumbnail.toString())
             .thumbnailLocalFilePath(attachmentViewData.thumbnailLocalFilePath.toString())
             .meta(
@@ -947,6 +1000,7 @@ object ViewDataConverter {
         val member = MemberViewData.Builder()
             .id(searchChatroom.member.id)
             .name(searchChatroom.member.name)
+            .roles(searchChatroom.member.roles)
             .build()
 
         return ChatroomViewData.Builder()
@@ -1028,6 +1082,7 @@ object ViewDataConverter {
         val member = MemberViewData.Builder()
             .id(searchConversation.member.id)
             .name(searchConversation.member.name)
+            .roles(searchConversation.member.roles)
             .build()
 
         return ConversationViewData.Builder()
@@ -1057,6 +1112,7 @@ object ViewDataConverter {
             .userUniqueId(participant.userUniqueId)
             .customTitle(participant.customTitle)
             .sdkClientInfo(convertSDKClientInfo(participant.sdkClientInfo))
+            .roles(participant.roles)
             .build()
     }
 
