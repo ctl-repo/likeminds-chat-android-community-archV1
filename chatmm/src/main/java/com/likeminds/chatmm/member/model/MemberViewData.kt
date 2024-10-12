@@ -1,6 +1,7 @@
 package com.likeminds.chatmm.member.model
 
 import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
 import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.chatmm.utils.model.ITEM_MEMBER
 import com.likeminds.likemindschat.user.model.UserRole
@@ -8,13 +9,17 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 class MemberViewData private constructor(
+    @SerializedName("id")
     val id: String?,
+    @SerializedName("name")
     val name: String?,
+    @SerializedName("image_url")
     val imageUrl: String?,
     val dynamicViewType: Int,
     val state: Int,
     val communityId: String?,
     val communityName: String?,
+    @SerializedName("is_guest")
     val isGuest: Boolean?,
     val isOwner: Boolean?,
     val hideBottomLine: Boolean?,
@@ -24,9 +29,13 @@ class MemberViewData private constructor(
     val memberSince: String?,
     val listOfMenu: List<MemberActionViewData>?,
     val parentViewItemPosition: Int?,
+    @SerializedName("updated_at")
     val updatedAt: Long?,
+    @SerializedName("user_unique_id")
     val userUniqueId: String?,
+    @SerializedName("sdk_client_info")
     val sdkClientInfo: SDKClientInfoViewData,
+    @SerializedName("uuid")
     val uuid: String,
     val roles: List<UserRole>
 ) : Parcelable, BaseViewType {
