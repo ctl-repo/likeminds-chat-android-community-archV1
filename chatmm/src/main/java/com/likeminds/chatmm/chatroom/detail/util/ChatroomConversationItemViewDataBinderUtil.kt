@@ -339,7 +339,7 @@ object ChatroomConversationItemViewDataBinderUtil {
             trimmedText,
             true,
             LMTheme.getTextLinkColor()
-        ) { it ->
+        ) {
             adapterListener?.onMemberTagClicked(it)
         }
 
@@ -1967,7 +1967,7 @@ object ChatroomConversationItemViewDataBinderUtil {
             val matchEnd = match.range.last
 
             // Append the text before the match
-            spannableStringBuilder.append(text.substring(lastIndex, matchStart))
+            spannableStringBuilder.append(text.subSequence(lastIndex, matchStart))
 
             // Get the bold text without the asterisks
             val boldText = match.groupValues[1]
@@ -1989,8 +1989,8 @@ object ChatroomConversationItemViewDataBinderUtil {
         }
 
         // Append any remaining text after the last match
-        spannableStringBuilder.append(text.substring(lastIndex))
+        spannableStringBuilder.append(text.subSequence(lastIndex, text.length))
 
-        tvConversation.setText(spannableStringBuilder)
+        tvConversation.text = spannableStringBuilder
     }
 }
