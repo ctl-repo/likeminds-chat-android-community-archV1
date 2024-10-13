@@ -31,6 +31,7 @@ object Route {
 
     const val PARAM_CHATROOM_ID = "chatroom_id"
     const val PARAM_COMMUNITY_ID = "community_id"
+    const val PARAM_COMMUNITY_NAME = "community_name"
     private const val PARAM_COHORT_ID = "cohort_id"
 
     fun getQueryParam(route: String?, param: String?): String? {
@@ -153,33 +154,40 @@ object Route {
         flags: Int = 0,
         source: String? = null,
         map: HashMap<String, String>? = null,
-        deepLinkUrl: String? = null
+        deepLinkUrl: String? = null,
+        notificationId: Int? = null // required when you need to cancel the notification via action when activity is opened
     ): Intent? {
         val route = Uri.parse(routeString)
         var intent: Intent? = null
-        when {
-            route.host == ROUTE_CHATROOM -> {
+        when (route.host) {
+            ROUTE_CHATROOM, ROUTE_POLL_CHATROOM -> {
                 intent = getRouteToChatroom(
                     context,
                     getChatroomRouteWithExtraParameters(route, map),
+                    source,
+                    deepLinkUrl,
+                    notificationId = notificationId
+                )
+            }
+
+            ROUTE_BROWSER -> {
+                intent = getRouteToBrowser(route)
+            }
+
+            ROUTE_CHATROOM_DETAIL -> {
+                intent = getRouteToChatroomDetail(
+                    context,
+                    route,
                     source,
                     deepLinkUrl
                 )
             }
 
-            route.host == ROUTE_BROWSER -> {
-                intent = getRouteToBrowser(route)
-            }
-
-            route.host == ROUTE_CHATROOM_DETAIL -> {
-                intent = getRouteToChatroomDetail(context, route, source, deepLinkUrl)
-            }
-
-            route.host == ROUTE_MAIL -> {
+            ROUTE_MAIL -> {
                 intent = getRouteToMail(route)
             }
 
-            route.host == ROUTE_DIRECT_MESSAGE -> {
+            ROUTE_DIRECT_MESSAGE -> {
                 intent = getRouteToDirectMessage(context, route)
             }
         }
@@ -194,19 +202,23 @@ object Route {
         context: Context,
         route: Uri,
         source: String?,
-        deepLinkUrl: String?
+        deepLinkUrl: String?,
+        notificationId: Int? = null
     ): Intent {
         val chatroomId = route.getQueryParameter("collabcard_id")
         val sourceChatroomId = route.getQueryParameter(PARAM_CHATROOM_ID)
         val sourceCommunityId = route.getQueryParameter(PARAM_COMMUNITY_ID)
+        val communityName = route.getQueryParameter(PARAM_COMMUNITY_NAME)
         val cohortId = route.getQueryParameter(PARAM_COHORT_ID)
 
         val builder = ChatroomDetailExtras.Builder()
-            .chatroomId(chatroomId.toString())
+            .chatroomId(chatroomId ?: sourceChatroomId.toString())
             .source(source)
             .sourceChatroomId(sourceChatroomId)
             .sourceCommunityId(sourceCommunityId)
+            .communityName(communityName)
             .cohortId(cohortId)
+            .notificationId(notificationId)
 
         when (source) {
             LMAnalytics.Source.NOTIFICATION -> {
@@ -315,11 +327,13 @@ object Route {
     private fun getRouteToDirectMessage(context: Context, route: Uri): Intent? {
         val chatroomId = route.getQueryParameter("chatroom_id") ?: return null
         val communityId = route.getQueryParameter("community_id")
+        val communityName = route.getQueryParameter(PARAM_COMMUNITY_NAME)
         return ChatroomDetailActivity.getIntent(
             context,
             ChatroomDetailExtras.Builder()
                 .chatroomId(chatroomId)
                 .communityId(communityId)
+                .communityName(communityName)
                 .build()
         )
     }
