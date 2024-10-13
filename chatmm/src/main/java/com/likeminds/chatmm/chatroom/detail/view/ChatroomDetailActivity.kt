@@ -92,6 +92,7 @@ class ChatroomDetailActivity : BaseAppCompatActivity() {
         }
     }
 
+    // cancels the notification if screen is opened from notification
     private fun cancelNotification(notificationId: Int?) {
         if (notificationId != null) {
             val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager

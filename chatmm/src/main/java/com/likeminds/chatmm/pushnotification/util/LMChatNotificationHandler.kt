@@ -540,7 +540,7 @@ class LMChatNotificationHandler {
                 .addAction(
                     NotificationCompat.Action.Builder(
                         R.drawable.lm_chat_ic_vote,
-                        "Vote",
+                        context.getString(R.string.lm_chat_vote),
                         resultPendingIntent
                     ).build()
                 )
