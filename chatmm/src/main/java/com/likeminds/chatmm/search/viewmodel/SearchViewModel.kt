@@ -177,6 +177,10 @@ class SearchViewModel @Inject constructor() : ViewModel() {
                             .checkForSeparator(true)
                             .build()
                     )
+
+                    if (conversations.size < PAGE_SIZE) {
+                        _chatroomConversationsSearchFinished.postValue(true)
+                    }
                 }
             } else {
                 _chatroomConversationsSearchFinished.postValue(true)

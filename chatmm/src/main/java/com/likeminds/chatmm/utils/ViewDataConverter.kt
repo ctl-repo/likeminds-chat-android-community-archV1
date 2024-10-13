@@ -1089,6 +1089,13 @@ object ViewDataConverter {
             .id(searchConversation.id.toString())
             .state(searchConversation.state)
             .attachmentCount(searchConversation.attachmentCount)
+            .attachments(
+                searchConversation.attachments.mapNotNull { attachment ->
+                    convertAttachment(attachment)
+                }.let {
+                    ArrayList(it)
+                }
+            )
             .attachmentsUploaded(searchConversation.attachmentsUploaded)
             .isEdited(searchConversation.isEdited)
             .createdAt(searchConversation.createdAt.toString())

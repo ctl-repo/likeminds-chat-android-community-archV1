@@ -73,31 +73,6 @@ class LMChatNotificationHandler {
             return notificationHandler!!
         }
 
-        fun getVoteAction(
-            context: Context,
-            notificationActionData: NotificationActionData,
-        ): NotificationCompat.Action {
-            val voteIntent =
-                Intent(context, NotificationActionBroadcastReceiver::class.java).apply {
-                    putExtra(
-                        NotificationActionBroadcastReceiver.BUNDLE_NEW_POLL_VOTE_CHAT_ROOM,
-                        notificationActionData
-                    )
-                    action = NotificationActionBroadcastReceiver.ACTION_NEW_CHATROOM_VOTE
-                }
-            val votePendingIntent: PendingIntent =
-                PendingIntent.getBroadcast(
-                    context,
-                    System.currentTimeMillis().toInt(),
-                    voteIntent,
-                    PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-                )
-
-            return NotificationCompat.Action.Builder(
-                R.drawable.lm_chat_ic_vote, "Vote", votePendingIntent
-            ).build()
-        }
-
         fun getFollowAction(
             context: Context,
             notificationActionData: NotificationActionData,
@@ -211,7 +186,8 @@ class LMChatNotificationHandler {
                 context,
                 route,
                 0,
-                LMAnalytics.Source.NOTIFICATION
+                LMAnalytics.Source.NOTIFICATION,
+                notificationId = notificationId
             )
 
             if (intent?.getBundleExtra("bundle") != null) {
@@ -239,16 +215,21 @@ class LMChatNotificationHandler {
                 )
             }
 
-            var resultPendingIntent: PendingIntent? = null
-            if (intent != null) {
-                resultPendingIntent = PendingIntent.getActivities(
+            return if (intent != null) {
+                PendingIntent.getActivities(
                     context,
                     notificationId,
                     arrayOf(launcherIntent, intent),
                     PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
                 )
+            } else {
+                PendingIntent.getActivity(
+                    context,
+                    notificationId,
+                    launcherIntent,
+                    PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                )
             }
-            return resultPendingIntent
         }
     }
 
@@ -375,19 +356,34 @@ class LMChatNotificationHandler {
             }
 
             title.isNotBlank() && subTitle.isNotBlank() && route.isNotBlank() -> {
-                //for other cases
+                when (routeHost) {
+                    //for poll chatroom
+                    Route.ROUTE_POLL_CHATROOM -> {
+                        sendNewPollChatRoomSingleNotification(
+                            mApplication,
+                            title,
+                            subTitle,
+                            route,
+                            category,
+                            subcategory
+                        )
+                    }
 
-                val chatroomIdReceivedFromRoute = getChatroomId(route)
-                val chatroomIdOpened = SDKApplication.getInstance().openedChatroomId
-                if (chatroomIdOpened != chatroomIdReceivedFromRoute) {
-                    sendNormalNotification(
-                        mApplication,
-                        title,
-                        subTitle,
-                        route,
-                        category,
-                        subcategory
-                    )
+                    //for other cases
+                    else -> {
+                        val chatroomIdReceivedFromRoute = getChatroomId(route)
+                        val chatroomIdOpened = SDKApplication.getInstance().openedChatroomId
+                        if (chatroomIdOpened != chatroomIdReceivedFromRoute) {
+                            sendNormalNotification(
+                                mApplication,
+                                title,
+                                subTitle,
+                                route,
+                                category,
+                                subcategory
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -506,6 +502,71 @@ class LMChatNotificationHandler {
         }
     }
 
+    private fun sendNewPollChatRoomSingleNotification(
+        context: Context,
+        title: String,
+        subTitle: String,
+        route: String,
+        category: String?,
+        subcategory: String?,
+    ) {
+        createNotificationChannel()
+        // notificationId is a unique int for each notification that you must define
+        val notificationId = route.hashCode()
+        val routeData = Route.getPollRouteQueryParameters(route)
+
+        val resultPendingIntent: PendingIntent? =
+            getRoutePendingIntent(
+                context,
+                notificationId,
+                route,
+                title,
+                subTitle,
+                category,
+                subcategory
+            )
+
+        val notificationBuilder = NotificationCompat.Builder(mApplication, CHATROOM_CHANNEL_ID)
+            .setContentTitle(title)
+            .setContentText(subTitle)
+            .setSmallIcon(notificationIcon)
+            .setAutoCancel(true)
+            .setColor(notificationTextColor)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(subTitle))
+            .setDefaults(NotificationCompat.DEFAULT_ALL)
+
+        if (!routeData.second) {
+            notificationBuilder
+                .addAction(
+                    NotificationCompat.Action.Builder(
+                        R.drawable.lm_chat_ic_vote,
+                        context.getString(R.string.lm_chat_vote),
+                        resultPendingIntent
+                    ).build()
+                )
+                .addAction(
+                    getMarkAsReadAction(
+                        context,
+                        gson,
+                        NotificationExtras.Builder()
+                            .chatroomId(routeData.first ?: "")
+                            .route(route)
+                            .childRoute(route)
+                            .notificationTitle(title)
+                            .notificationMessage(subTitle)
+                            .build()
+                    )
+                )
+        }
+
+        if (resultPendingIntent != null) {
+            notificationBuilder.setContentIntent(resultPendingIntent)
+        }
+        with(NotificationManagerCompat.from(mApplication)) {
+            notify(notificationId, notificationBuilder.build())
+        }
+    }
+
     private fun sendChatroomGroupNotification(
         context: Context,
         chatroom: ChatroomNotificationViewData,
@@ -534,12 +595,14 @@ class LMChatNotificationHandler {
             category,
             subcategory
         )
+
         val lockScreenSingleNotification =
             NotificationCompat.Builder(mApplication, GENERAL_CHANNEL_ID)
                 .setSmallIcon(notificationIcon)
                 .setColor(notificationTextColor)
                 .setContentTitle(mApplication.getString(R.string.lm_chat_app_name))
                 .setContentText(chatroomName)
+
         val chatroomPerson = Person.Builder()
             .setKey(chatroomId)
             .setName(chatroom.chatroomUserName)
@@ -607,6 +670,7 @@ class LMChatNotificationHandler {
         if (childPendingIntent != null) {
             singleNotification.setContentIntent(childPendingIntent)
         }
+
         //Group notification
         val groupPendingIntent: PendingIntent? = getRoutePendingIntent(
             context,
@@ -617,6 +681,7 @@ class LMChatNotificationHandler {
             category,
             subcategory
         )
+
         val lockScreenGroupNotification =
             NotificationCompat.Builder(mApplication, GENERAL_CHANNEL_ID)
                 .setSmallIcon(notificationIcon)
