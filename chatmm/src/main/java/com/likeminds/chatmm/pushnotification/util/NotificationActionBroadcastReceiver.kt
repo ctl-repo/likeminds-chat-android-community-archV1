@@ -84,7 +84,7 @@ class NotificationActionBroadcastReceiver : BroadcastReceiver() {
         createRockyComponent(context.applicationContext as Application)
         appComponent!!.inject(this)
 
-        notificationIcon = R.drawable.lm_chat_ic_notification
+        notificationIcon = R.drawable.ic_x_notification_logo
 
         // set notification text color as theme color
         notificationTextColor = LMTheme.getButtonsColor()
