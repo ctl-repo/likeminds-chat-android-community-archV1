@@ -49,7 +49,7 @@ object DownloadUtil {
     ): NotificationCompat.Builder {
         createNotificationChannel(context)
         val icon = if (notificationIcon == 0) {
-            R.drawable.lm_chat_ic_notification
+            R.drawable.ic_x_notification_logo
         } else {
             notificationIcon
         }
