@@ -333,6 +333,6 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
             .conversationId(chatroomDetailExtras.conversationId)
             .source(ChatroomDetailFragment.SOURCE_HOME_FEED)
             .build()
-        ChatroomDetailActivity.start(requireContext(), extra)
+        context?.let { ChatroomDetailActivity.start(it, extra) }
     }
 }
