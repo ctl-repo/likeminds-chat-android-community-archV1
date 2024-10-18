@@ -926,12 +926,14 @@ class ChatroomDetailFragment :
 
         if (viewModel.isWidgetEnabled()) {
             //add custom widget
+            /*
             val customWidgetAttachment = LMChatAttachmentPickerItemViewData.Builder()
                 .attachmentType(LMChatAttachmentType.CUSTOM_WIDGET)
                 .attachmentIcon(R.drawable.ic_create_custom_widget_a)
                 .attachmentName(requireContext().getString(R.string.lm_chat_custom_widget_a))
                 .build()
             supportedAttachments.add(customWidgetAttachment)
+            */
         }
 
         return supportedAttachments
