@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="lm_chat_app_name">LikeMinds</string>
+    <string name="lm_chat_app_name">Choice FinX</string>
     <string name="lm_chat_no_internet">No internet!</string>
     <string name="lm_chat_check_your_connection_and_try_again">Check your connection and try again.</string>
     <string name="lm_chat_not_now">Not now</string>
