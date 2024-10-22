@@ -695,6 +695,11 @@ class ChatroomDetailFragment :
                     reactionsPreferences,
                     this@ChatroomDetailFragment
                 ) {
+                    //requireActivity().finish()
+                    val resultIntent = Intent().apply {
+                        putExtra("redirect", true)
+                    }
+                    requireActivity().setResult(Activity.RESULT_OK, resultIntent)
                     requireActivity().finish()
                 }
             adapter = chatroomDetailAdapter
@@ -6215,12 +6220,36 @@ class ChatroomDetailFragment :
             }
         }
 
+    private val startSearchActivityForResultLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data: Intent? = result.data
+            val recommendation: Boolean? =
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    data?.getBooleanExtra(
+                        "redirect",
+                        false
+                    )
+                } else {
+                    data?.getBooleanExtra("redirect", false)
+                }
+
+            if (recommendation == true) {
+                requireActivity().finish()
+            }
+
+        } else {
+            Log.e("TAG", "Action canceled or failed")
+        }
+    }
+
     private fun searchConversations() {
         val extras = LMChatSearchExtras.Builder()
             .chatroomId(chatroomId)
             .build()
 
-        searchConversationsLauncher.launch(LMChatSearchActivity.getIntent(requireContext(), extras))
+        startSearchActivityForResultLauncher.launch(LMChatSearchActivity.getIntent(requireContext(), extras))
     }
 
     private fun openViewParticipantsActivity() {

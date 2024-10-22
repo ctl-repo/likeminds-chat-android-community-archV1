@@ -1,6 +1,9 @@
 package com.likeminds.chatmm.search.view
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Build
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
 import com.likeminds.chatmm.LMAnalytics
@@ -180,6 +183,32 @@ class LMChatSearchFragment : BaseFragment<LmChatFragmentSearchBinding, SearchVie
         )
     }
 
+    private val startActivityForResultLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data: Intent? = result.data
+            val recommendation: Boolean? =
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    data?.getBooleanExtra(
+                        "redirect",
+                        false
+                    )
+                } else {
+                    data?.getBooleanExtra("redirect", false)
+                }
+
+            if (recommendation == true) {
+                val resultIntent = Intent().apply {
+                    putExtra("redirect", true)
+                }
+                requireActivity().setResult(Activity.RESULT_OK, resultIntent)
+                requireActivity().finish()
+            }
+
+        }
+    }
+
     override fun onMessageClicked(searchConversationViewData: SearchConversationViewData) {
         super.onMessageClicked(searchConversationViewData)
         viewModel.sendMessageClickedEvent(
@@ -187,7 +216,7 @@ class LMChatSearchFragment : BaseFragment<LmChatFragmentSearchBinding, SearchVie
             searchConversationViewData.chatroom?.communityId
         )
 
-        startActivity(
+        startActivityForResultLauncher.launch(
             ChatroomDetailActivity.getIntent(
                 requireContext(), ChatroomDetailExtras.Builder()
                     .chatroomId(searchConversationViewData.chatroom?.id ?: "")

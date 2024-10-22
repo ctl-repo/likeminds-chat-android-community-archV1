@@ -69,6 +69,7 @@
             android:name=".search.view.LMChatSearchActivity"
             android:exported="false"
             android:screenOrientation="portrait"
+            android:launchMode="singleTask"
             android:theme="@style/LMAppTheme.NoActionBar.NoAnimation" />
         <activity
             android:name=".report.view.ReportActivity"
