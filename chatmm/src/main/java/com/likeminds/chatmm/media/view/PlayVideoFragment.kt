@@ -150,7 +150,7 @@ class PlayVideoFragment : BaseFragment<FragmentPlayVideoBinding, MediaViewModel>
 
     private fun saveToGallery() {
         val media = mediaExtras.medias?.firstOrNull() ?: return
-        val notificationIcon = R.drawable.ic_x_notification_logo
+        val notificationIcon = R.drawable.ic_x_notification_logo_2
         MediaViewUtils.saveToGallery(
             viewLifecycleOwner,
             requireActivity(),
