@@ -168,7 +168,7 @@ class MediaHorizontalListFragment :
     private fun saveToGallery() {
         val position = binding.viewPager.currentItem
         val media = mediaSwipeAdapter.items()[position] as? MediaSwipeViewData ?: return
-        val notificationIcon = R.drawable.ic_x_notification_logo_2
+        val notificationIcon = R.drawable.ic_x_notification_logo
         MediaViewUtils.saveToGallery(
             viewLifecycleOwner,
             requireActivity(),

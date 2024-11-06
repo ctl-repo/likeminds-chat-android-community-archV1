@@ -15,7 +15,9 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.databinding.FragmentPlayVideoBinding
-import com.likeminds.chatmm.media.model.*
+import com.likeminds.chatmm.media.model.MediaExtras
+import com.likeminds.chatmm.media.model.MediaSwipeViewData
+import com.likeminds.chatmm.media.model.VIDEO
 import com.likeminds.chatmm.media.util.MediaViewUtils
 import com.likeminds.chatmm.media.viewmodel.MediaViewModel
 import com.likeminds.chatmm.utils.SDKPreferences
@@ -150,7 +152,7 @@ class PlayVideoFragment : BaseFragment<FragmentPlayVideoBinding, MediaViewModel>
 
     private fun saveToGallery() {
         val media = mediaExtras.medias?.firstOrNull() ?: return
-        val notificationIcon = R.drawable.ic_x_notification_logo_2
+        val notificationIcon = R.drawable.ic_x_notification_logo
         MediaViewUtils.saveToGallery(
             viewLifecycleOwner,
             requireActivity(),

@@ -160,7 +160,7 @@ class MediaAudioForegroundService : Service(), MediaPlayerListener {
             CHANNEL_ID
         ).apply {
             setContentTitle(getString(R.string.lm_chat_audio_is_played))
-            setSmallIcon(R.drawable.ic_x_notification_logo_2)
+            setSmallIcon(R.drawable.ic_x_notification_logo)
             setAutoCancel(false)
             setSilent(true)
             setVisibility(NotificationCompat.VISIBILITY_PUBLIC)

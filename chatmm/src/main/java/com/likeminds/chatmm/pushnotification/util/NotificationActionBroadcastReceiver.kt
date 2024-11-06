@@ -2,23 +2,32 @@ package com.likeminds.chatmm.pushnotification.util
 
 import android.annotation.SuppressLint
 import android.app.Application
-import android.content.*
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
 import android.util.Log
-import androidx.core.app.*
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.app.Person
+import androidx.core.app.RemoteInput
 import com.google.gson.Gson
-import com.likeminds.chatmm.*
-import com.likeminds.chatmm.theme.model.LMTheme
+import com.likeminds.chatmm.LMAnalytics
+import com.likeminds.chatmm.R
+import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.di.DaggerLikeMindsChatComponent
 import com.likeminds.chatmm.di.LikeMindsChatComponent
 import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.pushnotification.model.NotificationActionData
 import com.likeminds.chatmm.pushnotification.model.NotificationExtras
 import com.likeminds.chatmm.pushnotification.viewmodel.LMNotificationViewModel
+import com.likeminds.chatmm.theme.model.LMTheme
 import com.likeminds.chatmm.utils.Route
 import com.likeminds.chatmm.utils.ViewDataConverter
 import com.likeminds.chatmm.utils.coroutine.launchIO
 import com.likeminds.likemindschat.LMChatClient
-import com.likeminds.likemindschat.chatroom.model.*
+import com.likeminds.likemindschat.chatroom.model.FollowChatroomRequest
+import com.likeminds.likemindschat.chatroom.model.MarkReadChatroomRequest
+import com.likeminds.likemindschat.chatroom.model.UpdateLastSeenAndDraftRequest
 import com.likeminds.likemindschat.conversation.model.PostConversationRequest
 import com.likeminds.likemindschat.conversation.model.SavePostedConversationRequest
 import kotlinx.coroutines.CoroutineScope
@@ -84,7 +93,7 @@ class NotificationActionBroadcastReceiver : BroadcastReceiver() {
         createRockyComponent(context.applicationContext as Application)
         appComponent!!.inject(this)
 
-        notificationIcon = R.drawable.ic_x_notification_logo_2
+        notificationIcon = R.drawable.ic_x_notification_logo
 
         // set notification text color as theme color
         notificationTextColor = LMTheme.getButtonsColor()
