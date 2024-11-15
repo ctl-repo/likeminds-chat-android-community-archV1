@@ -125,7 +125,8 @@ class ConversationWidgetItemViewDataBinder(
                     tvConversation,
                     tvDeleteMessage,
                     userPreferences.getUUID(),
-                    conversationViewData = data
+                    conversationViewData = data,
+                    viewReply
                 )
                 ivAddReaction.hide()
                 //For hiding FinXRecommendation custom widget when deleted by user
