@@ -1013,8 +1013,12 @@ class ChatroomDetailFragment :
         binding.layoutAttachments.apply {
             rvAttachments.adapter = attachmentBarAdapter
             rvAttachments.layoutManager = GridLayoutManager(requireContext(), 3)
-
-            attachmentBarAdapter.replace(getSupportedAttachmentTypes())
+            try {
+                attachmentBarAdapter.replace(getSupportedAttachmentTypes())
+            }catch (e:Exception){
+                Log.e("TAG", "Carsh : $e")
+                requireActivity().finish()
+            }
 
             clBottomBar.setOnClickListener {
                 initVisibilityOfAttachmentsBar(View.GONE)
