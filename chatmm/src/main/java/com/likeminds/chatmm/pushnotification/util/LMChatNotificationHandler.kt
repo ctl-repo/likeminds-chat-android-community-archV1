@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import androidx.annotation.Keep
 import androidx.core.app.*
 import androidx.core.app.Person
@@ -189,7 +190,7 @@ class LMChatNotificationHandler {
                 LMAnalytics.Source.NOTIFICATION,
                 notificationId = notificationId
             )
-
+            Log.e("TAG", "LMChatNotificationHandler: getRoutePendingIntent: $intent")
             if (intent?.getBundleExtra("bundle") != null) {
                 intent.getBundleExtra("bundle")!!.putParcelable(
                     NOTIFICATION_DATA,
@@ -216,6 +217,7 @@ class LMChatNotificationHandler {
             }
 
             return if (intent != null) {
+                Log.e("TAG", "LMChatNotificationHandler: getRoutePendingIntent: if intent != null $intent")
                 PendingIntent.getActivities(
                     context,
                     notificationId,
