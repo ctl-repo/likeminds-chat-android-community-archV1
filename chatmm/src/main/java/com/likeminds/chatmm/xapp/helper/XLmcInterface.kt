@@ -9,6 +9,5 @@ interface AuthChecker{
 }
 
 interface FinXNavigator{
-    fun startFinXActivity(context: Context,chatroomDetailExtras: ChatroomDetailExtras)
     fun startSplashActivity(context: Context,chatroomDetailExtras: ChatroomDetailExtras):Intent
 }

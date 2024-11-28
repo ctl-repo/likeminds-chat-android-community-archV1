@@ -3,12 +3,10 @@ package com.likeminds.chatmm.utils
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import com.facebook.common.util.UriUtil.HTTPS_SCHEME
 import com.facebook.common.util.UriUtil.HTTP_SCHEME
 import com.likeminds.chatmm.LMAnalytics
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailExtras
-import com.likeminds.chatmm.chatroom.detail.view.ChatroomDetailActivity
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.xapp.FinXDependencies
 
@@ -196,7 +194,6 @@ object Route {
         if (intent != null) {
             intent.flags = flags
         }
-        Log.e("TAG", "Route :getRouteIntent: Intent $intent")
         return intent
     }
 
@@ -233,16 +230,14 @@ object Route {
             }
         }
 
-        Log.e(
-            "TAG",
-            "Route : getRouteToChatroom: Chatmm Module ChatroomDetailExtra:${builder.build()}"
-        )
-        //return FinXDependencies.appFinXNavigator.startSplashActivity(context,builder.build())
-
-        return ChatroomDetailActivity.getIntent(
+        /*return ChatroomDetailActivity.getIntent(
             context,
             builder.build()
-        )
+        )*/
+
+        context.let {
+            return FinXDependencies.appFinXNavigator.startSplashActivity(it,builder.build())
+        }
     }
 
     /**
@@ -303,18 +298,14 @@ object Route {
             }
         }
 
-        val finXNavigator = FinXDependencies.appFinXNavigator
-        Log.e(
-            "TAG",
-            "Route : getRouteToChatroomDetail: Chatmm Module ChatroomDetailExtra:${builder.build()}"
-        )
-
-        return ChatroomDetailActivity.getIntent(
+        /*return ChatroomDetailActivity.getIntent(
             context,
             builder.build()
-        )
+        )*/
 
-        //return finXNavigator.startSplashActivity(chatroomDetailExtras = builder.build())
+        context.let {
+            return FinXDependencies.appFinXNavigator.startSplashActivity(it,builder.build())
+        }
     }
 
     //route://mail?to=<email>
@@ -345,23 +336,25 @@ object Route {
         val chatroomId = route.getQueryParameter("chatroom_id") ?: return null
         val communityId = route.getQueryParameter("community_id")
         val communityName = route.getQueryParameter(PARAM_COMMUNITY_NAME)
-        Log.e(
-            "TAG", "Route : getRouteToDirectMessage: ChatroomDetailExtra ${
-                ChatroomDetailExtras.Builder()
-                    .chatroomId(chatroomId)
-                    .communityId(communityId)
-                    .communityName(communityName)
-                    .build()
-            }"
-        )
-        return ChatroomDetailActivity.getIntent(
+
+        val chatroomDetailExtras = ChatroomDetailExtras.Builder()
+            .chatroomId(chatroomId)
+            .communityId(communityId)
+            .communityName(communityName)
+            .build()
+
+        context.let {
+            return FinXDependencies.appFinXNavigator.startSplashActivity(it,chatroomDetailExtras)
+        }
+
+        /*return ChatroomDetailActivity.getIntent(
             context,
             ChatroomDetailExtras.Builder()
                 .chatroomId(chatroomId)
                 .communityId(communityId)
                 .communityName(communityName)
                 .build()
-        )
+        )*/
     }
 
     //route://poll_chatroom?chatroom_id=<>&poll_end=<true/false>

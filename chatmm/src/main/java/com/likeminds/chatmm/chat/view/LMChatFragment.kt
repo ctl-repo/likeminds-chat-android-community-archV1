@@ -125,16 +125,6 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
         initData()
     }
 
-    override fun onStart() {
-        super.onStart()
-        Log.e("TAG", "LMChatFragment: onStart(): ")
-    }
-
-    override fun onStop() {
-        super.onStop()
-        Log.e("TAG", "LMChatFragment: onStop:(): ")
-    }
-
     override fun observeData() {
         super.observeData()
         // observes [userData] ;ive data
@@ -333,19 +323,6 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
                     snackBar.showNoInternet(view)
                 }
             }
-        }
-    }
-
-    fun redirectionToChatroom(chatroomDetailExtras: ChatroomDetailExtras) {
-        Log.e("TAG", "LMChatFragment :redirectionToChatroom: Force start $chatroomDetailExtras")
-        val extra = ChatroomDetailExtras.Builder()
-            .chatroomId(chatroomDetailExtras.chatroomId)
-            .communityId(chatroomDetailExtras.communityId)
-            .conversationId(chatroomDetailExtras.conversationId)
-            .build()
-        context?.let {
-            Log.e("TAG", "redirectionToChatroom: ChatroomDetailActivity")
-            ChatroomDetailActivity.start(it, extra)
         }
     }
 }

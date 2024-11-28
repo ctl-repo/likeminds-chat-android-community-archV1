@@ -517,16 +517,6 @@ class ChatroomDetailFragment :
             CHATROOM_DETAIL_EXTRAS,
             ChatroomDetailExtras::class.java
         ) ?: return
-        Log.e("TAG", "ChatroomDetailsFragment :setUpViews called before crash for extras")
-        val authChecker = FinXDependencies.authChecker
-        if (!authChecker.isUserLoggedIn()) {
-            Log.e("TAG", "ChatroomDetailsFragment :setUpViews Chatmm redirection called after user authChecker.isUserLoggedIn() login check")
-            val finXNavigator= FinXDependencies.appFinXNavigator
-            /*finXNavigator.startFinXActivity(this.requireContext(),chatroomDetailExtras = chatroomDetailExtras)
-            requireActivity().finish()*/
-            //Log.e("TAG", "setUpViews: Chatmm redirect activity finish called", )
-            //return
-        }
         isGuestUser = userPreferences.getIsGuestUser()
         checkForExplicitActions()
         fetchInitialData()
@@ -581,24 +571,8 @@ class ChatroomDetailFragment :
         return viewModel.getChatroomViewData()
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Log.e("TAG", "ChatroomDetailFragment: onCreate called")
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        Log.e("TAG", "ChatroomDetailFragment: onViewCreated: called")
-    }
-
-    override fun onStart() {
-        super.onStart()
-        Log.e("TAG", "ChatroomDetailFragment: onStart called")
-    }
-
     override fun setUpViews() {
         super.setUpViews()
-        Log.e("TAG", "ChatroomDetailFragment: setUpViews called")
         initToolbar()
         setHasOptionsMenu(true)
         initView()
@@ -620,20 +594,6 @@ class ChatroomDetailFragment :
         initVoiceNotes()
         initVoiceNoteControl()
         subscribeToChatEvent()
-        finXRedirection()
-        Log.e("TAG", "ChatroomDetailsFragment: setUpViews called after crash")
-    }
-
-    private fun finXRedirection() {
-        val authChecker = FinXDependencies.authChecker
-        val finXNavigator = FinXDependencies.appFinXNavigator
-
-        if (!authChecker.isUserLoggedIn()) {
-            Log.e("TAG", "ChatroomDetailsFragment :finXRedirection() setUpViews: isUserLoggedIn")
-            //finXNavigator.startFinXActivity(this.requireContext(),chatroomDetailExtras)
-        } else {
-            Log.e("TAG", "ChatroomDetailsFragment :finXRedirection() else setUpViews: isUserLoggedIn")
-        }
     }
 
     override fun doCleanup() {
@@ -1058,7 +1018,6 @@ class ChatroomDetailFragment :
                 attachmentBarAdapter.replace(getSupportedAttachmentTypes())
             }catch (e:Exception){
                 Log.e("TAG", "ChatroomDetailsFragment:Crash : $e")
-                requireActivity().finish()
             }
 
             clBottomBar.setOnClickListener {
@@ -6529,7 +6488,6 @@ class ChatroomDetailFragment :
     }
 
     override fun onStop() {
-        Log.e("TAG", "ChatroomDetailFragment: onStop called")
         setLastSeenTrueAndSaveDraftResponse()
         if (isVoiceNoteLocked) {
             isVoiceNoteLocked = false
@@ -6539,7 +6497,6 @@ class ChatroomDetailFragment :
     }
 
     override fun onDestroy() {
-        Log.e("TAG", "ChatroomDetailFragment: onDestroy called")
         if (blockedAccessPopUp != null && blockedAccessPopUp?.isShowing == true) {
             blockedAccessPopUp?.dismiss()
         }
