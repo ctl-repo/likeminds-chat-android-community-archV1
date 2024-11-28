@@ -6,9 +6,9 @@ import android.net.Uri
 import com.facebook.common.util.UriUtil.HTTPS_SCHEME
 import com.facebook.common.util.UriUtil.HTTP_SCHEME
 import com.likeminds.chatmm.LMAnalytics
+import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailExtras
 import com.likeminds.chatmm.member.model.MemberViewData
-import com.likeminds.chatmm.xapp.FinXDependencies
 
 object Route {
     private const val ROUTE_SCHEME = "route"
@@ -204,7 +204,7 @@ object Route {
         source: String?,
         deepLinkUrl: String?,
         notificationId: Int? = null
-    ): Intent {
+    ): Intent? {
         val chatroomId = route.getQueryParameter("collabcard_id")
         val sourceChatroomId = route.getQueryParameter(PARAM_CHATROOM_ID)
         val sourceCommunityId = route.getQueryParameter(PARAM_COMMUNITY_ID)
@@ -235,9 +235,8 @@ object Route {
             builder.build()
         )*/
 
-        context.let {
-            return FinXDependencies.appFinXNavigator.startSplashActivity(it,builder.build())
-        }
+        return SDKApplication.getLikeMindsCallback()
+            ?.getNotificationRedirectionActivityPendingIntent(builder.build())
     }
 
     /**
@@ -279,7 +278,7 @@ object Route {
         route: Uri,
         source: String?,
         deepLinkUrl: String?
-    ): Intent {
+    ): Intent? {
         val chatroomId = route.getQueryParameter("chatroom_id")
         val conversationId = route.getQueryParameter("conversation_id")
 
@@ -303,9 +302,8 @@ object Route {
             builder.build()
         )*/
 
-        context.let {
-            return FinXDependencies.appFinXNavigator.startSplashActivity(it,builder.build())
-        }
+        return SDKApplication.getLikeMindsCallback()
+            ?.getNotificationRedirectionActivityPendingIntent(builder.build())
     }
 
     //route://mail?to=<email>
@@ -343,9 +341,8 @@ object Route {
             .communityName(communityName)
             .build()
 
-        context.let {
-            return FinXDependencies.appFinXNavigator.startSplashActivity(it,chatroomDetailExtras)
-        }
+        return SDKApplication.getLikeMindsCallback()
+            ?.getNotificationRedirectionActivityPendingIntent(chatroomDetailExtras)
 
         /*return ChatroomDetailActivity.getIntent(
             context,

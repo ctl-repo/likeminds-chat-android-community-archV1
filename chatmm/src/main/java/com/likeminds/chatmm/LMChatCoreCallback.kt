@@ -18,7 +18,7 @@ interface LMChatCoreCallback {
         //implement to get widget data in conversation id
     }
 
-    fun getAnalyticsEvents(eventName: String, eventProperties: Map<String, String?> = mapOf()){
+    fun getAnalyticsEvents(eventName: String, eventProperties: Map<String, String?> = mapOf()) {
         //implement to get analytics events
     }
 
@@ -31,6 +31,15 @@ interface LMChatCoreCallback {
         return Pair(null, null)
     }
 
-    fun navigateToFinXSmPlaceOrder(recomData: FinXRecommendationMetadata, chatroomDetailExtras: ChatroomDetailExtras)
-    fun navigateToFinXSmCompany(recomData: FinXRecommendationMetadata, chatroomDetailExtras: ChatroomDetailExtras)
+    fun navigateToFinXSmPlaceOrder(
+        recomData: FinXRecommendationMetadata,
+        chatroomDetailExtras: ChatroomDetailExtras
+    )
+
+    fun navigateToFinXSmCompany(
+        recomData: FinXRecommendationMetadata,
+        chatroomDetailExtras: ChatroomDetailExtras
+    )
+
+    fun getNotificationRedirectionActivityPendingIntent(chatroomDetailExtras: ChatroomDetailExtras): android.content.Intent
 }

@@ -122,7 +122,6 @@ import com.likeminds.chatmm.utils.permissions.*
 import com.likeminds.chatmm.utils.recyclerview.LMSwipeController
 import com.likeminds.chatmm.utils.recyclerview.SwipeControllerActions
 import com.likeminds.chatmm.widget.model.WidgetViewData
-import com.likeminds.chatmm.xapp.FinXDependencies
 import com.likeminds.chatmm.xapp.XLmcAppInstance
 import com.likeminds.likemindschat.chatroom.model.ChatRequestState
 import com.likeminds.likemindschat.conversation.worker.CreateConversationWorker
