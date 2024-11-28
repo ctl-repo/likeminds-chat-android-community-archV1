@@ -116,13 +116,13 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
 
     override fun setUpViews() {
         super.setUpViews()
+        initData()
         checkForNotificationPermission()
         initTabLayout()
         setTheme()
         setupReceivers()
-        initToolbar()
+        //initToolbar()
         initPagerAdapter()
-        initData()
     }
 
     override fun observeData() {
@@ -226,28 +226,7 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
                 1 -> {
                     tab.apply {
                         text = getString(R.string.lm_chat_dms)
-                        removeBadge()
-//                        val unreadDMCount = dmMeta?.unreadDMCount ?: 0
-//                        if (unreadDMCount > 0) {
-//                            val badge = orCreateBadge
-//                            badge.apply {
-//                                horizontalOffset =
-//                                    resources.getDimension(R.dimen.lm_chat_dm_badge_horizontal_margin)
-//                                        .roundToInt()
-//                                verticalOffset =
-//                                    resources.getDimension(R.dimen.lm_chat_dm_badge_vertical_margin)
-//                                        .roundToInt()
-//
-//                                number = unreadDMCount
-//                                maxCharacterCount = 2
-//                                backgroundColor = LMTheme.getButtonsColor()
-//
-//                                badgeTextColor =
-//                                    ContextCompat.getColor(requireContext(), R.color.lm_chat_white)
-//                            }
-//                        } else {
-//                            removeBadge()
-//                        }
+                        setDmCount()
                     }
                 }
 
@@ -258,8 +237,34 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
         }.attach()
     }
 
+    private fun setDmCount() {
+        binding.tabChat.getTabAt(1)?.apply {
+            val unreadDMCount = dmMeta?.unreadDMCount ?: 0
+            if (unreadDMCount > 0) {
+                val badge = orCreateBadge
+                badge.apply {
+                    horizontalOffset =
+                        resources.getDimension(R.dimen.lm_chat_dm_badge_horizontal_margin)
+                            .roundToInt()
+                    verticalOffset =
+                        resources.getDimension(R.dimen.lm_chat_dm_badge_vertical_margin)
+                            .roundToInt()
+
+                    number = unreadDMCount
+                    maxCharacterCount = 2
+                    backgroundColor = LMTheme.getButtonsColor()
+
+                    badgeTextColor =
+                        ContextCompat.getColor(requireContext(), R.color.lm_chat_white)
+                }
+            } else
+                removeBadge()
+        }
+    }
+
     private fun setDMMeta(checkDMTabViewData: CheckDMTabViewData) {
         dmMeta = checkDMTabViewData
+        setDmCount()
     }
 
     //observe user data
