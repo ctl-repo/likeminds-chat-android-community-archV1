@@ -2,11 +2,15 @@ package com.likeminds.chatmm.chatroom.detail.view
 
 import android.app.Activity
 import android.app.NotificationManager
-import android.content.*
+import android.content.ClipData
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import com.likeminds.chatmm.*
+import com.likeminds.chatmm.LMAnalytics
+import com.likeminds.chatmm.R
+import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailExtras
 import com.likeminds.chatmm.databinding.ActivityChatroomDetailBinding
 import com.likeminds.chatmm.utils.ErrorUtil.emptyExtrasException
@@ -43,6 +47,7 @@ class ChatroomDetailActivity : BaseAppCompatActivity() {
                 intent.clipData = clipData
             }
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(intent)
         }
 
