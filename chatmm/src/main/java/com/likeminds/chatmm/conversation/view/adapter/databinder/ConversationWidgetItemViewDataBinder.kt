@@ -50,60 +50,6 @@ class ConversationWidgetItemViewDataBinder(
             viewReply.buttonColor = LMTheme.getButtonsColor()
             conversation = data
 
-            val context = root.context
-
-            //Custom Widget Data
-            val metadata = JSONObject(data.widgetViewData?.metadata.toString())
-            val recomData =
-                Gson().fromJson(metadata.toString(), FinXRecommendationMetadata::class.java)
-
-            with(recomData) {
-                tvFinXRecommendationTitle.text = searchRsp?.getScripName()
-                tvStopLossTitleValue.text = slPrice
-                tvEntryPriceValue.text = entryPrice
-                tvTargetPriceValue.text = targetPrice
-                btnFinXRecommendationBuy.let {
-                    it.text = if (isBuy == true) "Buy" else "Sell"
-                    it.setBackgroundColor(
-                        ContextCompat.getColor(
-                            context,
-                            if (isBuy == true) R.color.finx_primary1_dull else R.color.finx_negative1_dull
-                        )
-                    )
-
-                    it.setTextColor(
-                        ContextCompat.getColor(
-                            context,
-                            if (isBuy == true) R.color.finx_primary1 else R.color.finx_negative1
-                        )
-                    )
-                }
-
-                btnFinXRecommendationScripInfo.setBackgroundColor(
-                    ContextCompat.getColor(
-                        context,
-                        R.color.lm_chat_background_v1
-                    )
-                )
-
-            }
-
-            btnFinXRecommendationBuy.setOnClickListener {
-                adapterListener.onClickFinxSmPlaceOrder(
-                    recomData = recomData,
-                    conversationId = data.id
-                )
-                onClick.invoke()
-            }
-
-            btnFinXRecommendationScripInfo.setOnClickListener {
-                adapterListener.onClickFinxSmCompany(
-                    recomData = recomData,
-                    conversationId = data.id
-                )
-                onClick.invoke()
-            }
-
             ChatroomConversationItemViewDataBinderUtil.initConversationBubbleView(
                 clConversationRoot,
                 clConversationBubble,
@@ -132,6 +78,61 @@ class ConversationWidgetItemViewDataBinder(
                 //For hiding FinXRecommendation custom widget when deleted by user
                 clFinXRecommendation.hide()
             } else {
+
+                val context = root.context
+
+                //Custom Widget Data
+                val metadata = JSONObject(data.widgetViewData?.metadata.toString())
+                val recomData =
+                    Gson().fromJson(metadata.toString(), FinXRecommendationMetadata::class.java)
+
+                with(recomData) {
+                    tvFinXRecommendationTitle.text = searchRsp?.getScripName()
+                    tvStopLossTitleValue.text = slPrice
+                    tvEntryPriceValue.text = entryPrice
+                    tvTargetPriceValue.text = targetPrice
+                    btnFinXRecommendationBuy.let {
+                        it.text = if (isBuy == true) "Buy" else "Sell"
+                        it.setBackgroundColor(
+                            ContextCompat.getColor(
+                                context,
+                                if (isBuy == true) R.color.finx_primary1_dull else R.color.finx_negative1_dull
+                            )
+                        )
+
+                        it.setTextColor(
+                            ContextCompat.getColor(
+                                context,
+                                if (isBuy == true) R.color.finx_primary1 else R.color.finx_negative1
+                            )
+                        )
+                    }
+
+                    btnFinXRecommendationScripInfo.setBackgroundColor(
+                        ContextCompat.getColor(
+                            context,
+                            R.color.lm_chat_background_v1
+                        )
+                    )
+
+                }
+
+                btnFinXRecommendationBuy.setOnClickListener {
+                    adapterListener.onClickFinxSmPlaceOrder(
+                        recomData = recomData,
+                        conversationId = data.id
+                    )
+                    onClick.invoke()
+                }
+
+                btnFinXRecommendationScripInfo.setOnClickListener {
+                    adapterListener.onClickFinxSmCompany(
+                        recomData = recomData,
+                        conversationId = data.id
+                    )
+                    onClick.invoke()
+                }
+
                 clFinXRecommendation.show()
                 ChatroomConversationItemViewDataBinderUtil.initConversationBubbleTextView(
                     tvConversation,
