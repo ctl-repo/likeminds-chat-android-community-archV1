@@ -20,7 +20,7 @@ data class FinxSmSearchApiRsp(
     @SerializedName("SecName") var secName: String? = null,
     @SerializedName("SegmentId") var segment: Int? = null,
     @SerializedName("Series") var series: String? = null,
-    @SerializedName("StrikePrice") var strikePrice: Float? = null,
+    @SerializedName("StrikePrice") var strikePrice: Int? = null,
     @SerializedName("Symbol") var symbol: String? = null,
     @SerializedName("Token") var token: Int? = null,
     //@SerializedName("MWTag") var mwTag: String? = "",

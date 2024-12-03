@@ -8,6 +8,7 @@ import com.facebook.common.util.UriUtil.HTTP_SCHEME
 import com.likeminds.chatmm.LMAnalytics
 import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailExtras
+import com.likeminds.chatmm.chatroom.detail.view.ChatroomDetailActivity
 import com.likeminds.chatmm.member.model.MemberViewData
 
 object Route {
@@ -230,13 +231,9 @@ object Route {
             }
         }
 
-        /*return ChatroomDetailActivity.getIntent(
-            context,
-            builder.build()
-        )*/
-
         return SDKApplication.getLikeMindsCallback()
             ?.getNotificationRedirectionActivityPendingIntent(builder.build())
+            ?: ChatroomDetailActivity.getIntent(context, builder.build())
     }
 
     /**
@@ -297,13 +294,9 @@ object Route {
             }
         }
 
-        /*return ChatroomDetailActivity.getIntent(
-            context,
-            builder.build()
-        )*/
-
         return SDKApplication.getLikeMindsCallback()
             ?.getNotificationRedirectionActivityPendingIntent(builder.build())
+            ?: ChatroomDetailActivity.getIntent(context, builder.build())
     }
 
     //route://mail?to=<email>
@@ -343,15 +336,14 @@ object Route {
 
         return SDKApplication.getLikeMindsCallback()
             ?.getNotificationRedirectionActivityPendingIntent(chatroomDetailExtras)
-
-        /*return ChatroomDetailActivity.getIntent(
-            context,
-            ChatroomDetailExtras.Builder()
-                .chatroomId(chatroomId)
-                .communityId(communityId)
-                .communityName(communityName)
-                .build()
-        )*/
+            ?: ChatroomDetailActivity.getIntent(
+                context,
+                ChatroomDetailExtras.Builder()
+                    .chatroomId(chatroomId)
+                    .communityId(communityId)
+                    .communityName(communityName)
+                    .build()
+            )
     }
 
     //route://poll_chatroom?chatroom_id=<>&poll_end=<true/false>

@@ -41,5 +41,5 @@ interface LMChatCoreCallback {
         chatroomDetailExtras: ChatroomDetailExtras
     )
 
-    fun getNotificationRedirectionActivityPendingIntent(chatroomDetailExtras: ChatroomDetailExtras): android.content.Intent
+    fun getNotificationRedirectionActivityPendingIntent(chatroomDetailExtras: ChatroomDetailExtras): android.content.Intent?
 }

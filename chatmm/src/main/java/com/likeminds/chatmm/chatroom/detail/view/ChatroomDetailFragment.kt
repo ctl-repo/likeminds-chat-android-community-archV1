@@ -5034,7 +5034,7 @@ class ChatroomDetailFragment :
         val map = conversations.map { it.id }.toMutableList()
         var i = 0
         val max = conversations.size - 1
-        for (item in chatroomDetailAdapter.items().reversed()) {
+        for (item in chatroomDetailAdapter.items().asReversed().toList()) {
             if (i > max) {
                 break
             }
