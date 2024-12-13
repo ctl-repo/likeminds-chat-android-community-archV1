@@ -452,7 +452,9 @@ class ChatroomDetailFragment :
             recommendation?.let {
                 val metaData = JSONObject(Gson().toJson(it))
                 val message =
-                    "${if (it.isBuy == true) "Buy" else "Sell"} ${it.searchRsp?.getScripName()}"
+                    "${if (it.isBuy == true) "Buy" else "Sell"} ${it.searchRsp?.getScripName()}" +
+                            "\nEntry Price ${it.entryPrice} | Target ${it.targetPrice} | Stop Loss ${it.slPrice}"
+
                 postConversation(conversation = message, metadata = metaData)
             }
         } else {
@@ -1014,7 +1016,7 @@ class ChatroomDetailFragment :
             rvAttachments.layoutManager = GridLayoutManager(requireContext(), 3)
             try {
                 attachmentBarAdapter.replace(getSupportedAttachmentTypes())
-            }catch (e:Exception){
+            } catch (e: Exception) {
                 Log.e("TAG", "ChatroomDetailsFragment:Crash : $e")
             }
 
@@ -6338,7 +6340,12 @@ class ChatroomDetailFragment :
             .chatroomId(chatroomId)
             .build()
 
-        startSearchActivityForResultLauncher.launch(LMChatSearchActivity.getIntent(requireContext(), extras))
+        startSearchActivityForResultLauncher.launch(
+            LMChatSearchActivity.getIntent(
+                requireContext(),
+                extras
+            )
+        )
     }
 
     private fun openViewParticipantsActivity() {
