@@ -19,7 +19,7 @@ import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.pushnotification.model.NotificationActionData
 import com.likeminds.chatmm.pushnotification.model.NotificationExtras
 import com.likeminds.chatmm.pushnotification.viewmodel.LMNotificationViewModel
-import com.likeminds.chatmm.theme.model.LMTheme
+
 import com.likeminds.chatmm.utils.Route
 import com.likeminds.chatmm.utils.ViewDataConverter
 import com.likeminds.chatmm.utils.coroutine.launchIO

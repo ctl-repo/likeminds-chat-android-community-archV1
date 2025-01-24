@@ -77,8 +77,8 @@ class CommunityHybridChatFragment :
             userId: String,
             sessionId: String,
             isResearchPostAllowed: Boolean
-        ): LMChatFragment {
-            val fragment = LMChatFragment()
+        ): CommunityHybridChatFragment {
+            val fragment = CommunityHybridChatFragment()
             val args = Bundle()
             args.putString(ARG_USER_ID, userId)
             args.putString(ARG_SESSION_ID, sessionId)
@@ -253,7 +253,7 @@ class CommunityHybridChatFragment :
 
                     number = unreadDMCount
                     maxCharacterCount = 2
-                    backgroundColor = LMTheme.getButtonsColor()
+                    backgroundColor = LMChatAppearance.getButtonsColor()
 
                     badgeTextColor =
                         ContextCompat.getColor(requireContext(), R.color.lm_chat_white)
