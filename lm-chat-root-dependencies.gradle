@@ -51,7 +51,7 @@ lm_chat_versions.emoticons_keyboard = '0.7.0'
 lm_chat_versions.lottie = '5.2.0'
 lm_chat_versions.youtube_player = '11.0.1'
 lm_chat_versions.stream = '1.2.1'
-lm_chat_versions.giphy = '2.1.18'
+lm_chat_versions.giphy = '2.3.0'
 lm_chat_versions.color_picker = '2.3'
 ext.lm_chat_versions = lm_chat_versions
 
