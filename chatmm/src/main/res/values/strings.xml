@@ -13,7 +13,8 @@
     <string name="lm_chat_networking">Networking</string>
     <string name="lm_chat_access_denied">Access denied!</string>
     <string name="lm_chat_oops_you_don_t_seem_to_have_access_to_the_community">Oops! You don’t seem to have access to the community.</string>
-    <string name="lm_chat_explore">Explore</string>
+    <string name="lm_chat_explore">Explore Groups</string>
+    <string name="lm_chat_explore_desc">Connect, chat, and grow together</string>
     <string name="lm_chat_ninety_nine_plus_chatrooms">99+ Chatrooms</string>
     <string name="lm_chat_ninety_nine_plus_new">99+ NEW</string>
     <string name="lm_chat_new_chatroom_count">%d NEW</string>

@@ -191,7 +191,6 @@ class CommunityChatViewModel @Inject constructor(
     fun getHomeFeedList(context: Context): List<BaseViewType> {
         val dataList = mutableListOf<BaseViewType>()
 
-        /*
         // adds the explore view to the home feed
         dataList.add(
             HomeFeedExploreViewData.Builder()
@@ -200,8 +199,7 @@ class CommunityChatViewModel @Inject constructor(
                 .build()
         )
         // adds the line break between explore tab and Joined chat rooms
-        dataList.add(lineBreakViewData)
-        */
+        //dataList.add(lineBreakViewData)
 
         //Chat rooms
         dataList.add(HomeFeedUtil.getContentHeaderView(context.getString(R.string.lm_chat_joined_chatrooms)))
