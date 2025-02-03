@@ -13,6 +13,7 @@
         <item name="android:actionModeBackground">@color/finx_primary1</item>
         <item name="snackbarStyle">@style/Widget.App.Snackbar</item>
         <item name="android:windowActivityTransitions">true</item>
+        <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
     </style>
 
     <style name="BottomNavigationTextActive" parent="Widget.MaterialComponents.TextView">
