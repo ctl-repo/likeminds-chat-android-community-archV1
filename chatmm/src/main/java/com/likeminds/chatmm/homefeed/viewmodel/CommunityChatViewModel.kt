@@ -202,7 +202,7 @@ class CommunityChatViewModel @Inject constructor(
         //dataList.add(lineBreakViewData)
 
         //Chat rooms
-        dataList.add(HomeFeedUtil.getContentHeaderView(context.getString(R.string.lm_chat_joined_chatrooms)))
+        dataList.add(HomeFeedUtil.getContentHeaderView(context.getString(R.string.lm_joined_groups)))
 
         if (channelInvitesViewData.isNotEmpty()) {
             dataList.addAll(channelInvitesViewData)

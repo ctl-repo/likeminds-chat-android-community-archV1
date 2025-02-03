@@ -34,6 +34,7 @@
     <string name="lm_chat_chatroom_was_deleted">This chat room was deleted</string>
     <string name="lm_chat_empty_chat_room_title">It’s time to participate</string>
     <string name="lm_chat_joined_chatrooms">Joined chat rooms</string>
+    <string name="lm_joined_groups">Joined Groups</string>
     <string name="lm_chat_general_channel_name">General notifications</string>
     <string name="lm_chat_general_channel_description">All general notifications</string>
     <string name="lm_chat_new_caps">NEW</string>
@@ -42,6 +43,7 @@
     <string name="lm_chat_creator_cant_leave_message">The creator of a chatroom cannot leave the chatroom</string>
     <string name="lm_chat_pinned">Pinned</string>
     <string name="lm_chat_explore_chatroom">Explore Chatrooms</string>
+    <string name="lm_chat_explore_groups">Explore Groups</string>
     <string name="lm_chat_invalid_app_access">Invalid app access</string>
     <string name="lm_chat_community_manager">Community Manager</string>
     <string name="lm_chat_edited">Edited</string>
@@ -98,7 +100,7 @@
     <string name="lm_chat_add_message">Add message…</string>
     <string name="lm_chat_pdf">PDF</string>
     <string name="lm_chat_action_search">Search</string>
-    <string name="lm_chat_search_hint_text">Search…</string>
+    <string name="lm_chat_search_hint_text">Search your friends on FinX</string>
     <string name="lm_chat_ok">OK</string>
     <string name="lm_chat_sort">Sort</string>
     <string name="lm_chat_select_multiple">Select multiple</string>
