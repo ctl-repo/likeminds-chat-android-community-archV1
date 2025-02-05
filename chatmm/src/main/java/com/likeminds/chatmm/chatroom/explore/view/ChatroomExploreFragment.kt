@@ -74,6 +74,17 @@ class ChatroomExploreFragment :
                                 updateChatroomDetails(chatroomDetailResultExtras)
                             }
                         }
+                    }else {
+                        /**
+                         * This method is used when user redirect from explore to
+                         * company page or place-order the page/last activity gets pop-up(back-pressed)
+                         * but this creates 2-redirection :
+                         * 1. To the expected redirection i.e. place-order or company-page
+                         * 2. last-page i.e. explore-chatroom list
+                         * this 2-redirection gives us miscommunication
+                         * so finish the activity for this method declaration.
+                         * */
+                        requireActivity().finish()
                     }
                 }
             }
