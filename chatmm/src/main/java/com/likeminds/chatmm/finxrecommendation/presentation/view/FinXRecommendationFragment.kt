@@ -185,12 +185,17 @@ class FinXRecommendationFragment : Fragment() {
         binding.etTargetPriceValue.filters =
             arrayOf(DecimalDigitsInputFilter(maxDigitsBeforeDecimal, maxDigitsAfterDecimal))
 
+        /**
+         * Saving the value in big-decimal instead of double as for large 8-10 digit number(without decimal)
+         * the conversion to double gives the scientific notation i.e. E so to resolve this
+         * using the big-decimal and after convert it into plain-string (without scientific notation)
+         * */
         binding.btnPost.setOnClickListener {
             val entryPriceValue =
-                binding.etEntryPriceValue.text.toString().ifEmpty { " 0.0" }.toDouble()
-            val slPriceValue = binding.etSlPriceValue.text.toString().ifEmpty { " 0.0" }.toDouble()
+                binding.etEntryPriceValue.text.toString().ifEmpty { "0.0" }.toBigDecimal()
+            val slPriceValue = binding.etSlPriceValue.text.toString().ifEmpty { "0.0" }.toBigDecimal()
             val targetPriceValue =
-                binding.etTargetPriceValue.text.toString().ifEmpty { " 0.0" }.toDouble()
+                binding.etTargetPriceValue.text.toString().ifEmpty { "0.0" }.toBigDecimal()
 
             val message: String
             val isValid = if (orderType) {
@@ -204,9 +209,9 @@ class FinXRecommendationFragment : Fragment() {
 
             if (isValid && selectedScrip != null) {
                 finxRecommendationMetadata = FinXRecommendationMetadata(
-                    entryPrice = entryPriceValue.toString(),
-                    slPrice = slPriceValue.toString(),
-                    targetPrice = targetPriceValue.toString(),
+                    entryPrice = entryPriceValue.toPlainString(),
+                    slPrice = slPriceValue.toPlainString(),
+                    targetPrice = targetPriceValue.toPlainString(),
                     isBuy = orderType,
                     searchRsp = selectedScrip,
                     customWidgetType = "FinXRecommendation"
