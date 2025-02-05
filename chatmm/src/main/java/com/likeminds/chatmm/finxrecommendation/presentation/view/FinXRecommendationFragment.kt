@@ -13,9 +13,9 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -65,7 +65,7 @@ class FinXRecommendationFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         _binding = FragmentFinxRecommendationBinding.inflate(inflater, container, false)
         return binding.root
@@ -79,7 +79,7 @@ class FinXRecommendationFragment : Fragment() {
     }
 
     private fun setUpObservers() {
-        finXViewModel.searchScrip.observe(viewLifecycleOwner, Observer {
+        finXViewModel.searchScrip.observe(viewLifecycleOwner) {
             when (it) {
                 is ApiCallState.Loading -> {
                     binding.pgSearch.visible()
@@ -99,13 +99,14 @@ class FinXRecommendationFragment : Fragment() {
                     Log.e("TAG", "setUpObservers: Error ${it.errorMessage}")
                 }
             }
-        })
+        }
 
-        finXViewModel.multiTouchLineRes.observe(viewLifecycleOwner, Observer {
+        finXViewModel.multiTouchLineRes.observe(viewLifecycleOwner) {
             when (it) {
                 is ApiCallState.Loading -> {
                     binding.pgLtp.visible()
                 }
+
                 is ApiCallState.Success -> {
                     it.data?.let {
                         binding.pgLtp.gone()
@@ -127,7 +128,12 @@ class FinXRecommendationFragment : Fragment() {
                         binding.tvLtp.text = "${FinXScripInfo.ltp}"
                         binding.tvCcp.text = FinXScripInfo.getCcp()
                         //binding.tvCcp.setTextColor(ContextCompat.getColor(requireContext(), FinXScripInfo.getCcpColor()))
-                        binding.tvCcp.setTextColor(ContextCompat.getColor(requireContext(), FinXScripInfo.getCcpColor()))
+                        binding.tvCcp.setTextColor(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                FinXScripInfo.getCcpColor()
+                            )
+                        )
 
                         binding.etEntryPriceValue.setText(entryPrice)
                         binding.etSlPriceValue.setText(slPrice)
@@ -140,7 +146,7 @@ class FinXRecommendationFragment : Fragment() {
                     Log.e("TAG", "setUpObservers: Error ${it.errorMessage}")
                 }
             }
-        })
+        }
     }
 
     @SuppressLint("LogNotTimber")
@@ -153,6 +159,13 @@ class FinXRecommendationFragment : Fragment() {
             if (strLength >= 2) {
                 binding.ibClear.visible()
                 performSearch(it.toString())
+            }
+        }
+
+        binding.etSearch.setOnFocusChangeListener { view, hasFocus ->
+            if (!hasFocus) {
+                val imm = getSystemService(requireContext(),InputMethodManager::class.java)
+                imm?.hideSoftInputFromWindow(view.windowToken, 0)
             }
         }
 
@@ -242,6 +255,12 @@ class FinXRecommendationFragment : Fragment() {
             selectedScrip = selectedItem
             //binding.etSearch.setText(selectedItem.secName?.replace("|", " "))
             binding.etSearch.setText("")
+            binding.ibClear.gone()
+            binding.etSearch.isFocusable = false
+            /*view?.let {
+                val imm = getSystemService(InputMethodManager::class.java)
+                imm?.hideSoftInputFromWindow(view.windowToken, 0)
+            }*/
             binding.tvScripName.text = selectedItem.getScripName()
 
             showSearchList(false)
