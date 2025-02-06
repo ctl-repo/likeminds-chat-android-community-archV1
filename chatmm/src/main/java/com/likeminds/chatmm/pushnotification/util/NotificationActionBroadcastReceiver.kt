@@ -11,16 +11,15 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.Person
 import androidx.core.app.RemoteInput
 import com.google.gson.Gson
-import com.likeminds.chatmm.LMAnalytics
-import com.likeminds.chatmm.R
-import com.likeminds.chatmm.SDKApplication
+import com.likeminds.chatmm.*
+import com.likeminds.chatmm.theme.model.LMChatAppearance
 import com.likeminds.chatmm.di.DaggerLikeMindsChatComponent
 import com.likeminds.chatmm.di.LikeMindsChatComponent
 import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.pushnotification.model.NotificationActionData
 import com.likeminds.chatmm.pushnotification.model.NotificationExtras
 import com.likeminds.chatmm.pushnotification.viewmodel.LMNotificationViewModel
-import com.likeminds.chatmm.theme.model.LMTheme
+
 import com.likeminds.chatmm.utils.Route
 import com.likeminds.chatmm.utils.ViewDataConverter
 import com.likeminds.chatmm.utils.coroutine.launchIO
@@ -96,7 +95,7 @@ class NotificationActionBroadcastReceiver : BroadcastReceiver() {
         notificationIcon = R.drawable.ic_x_notification_logo
 
         // set notification text color as theme color
-        notificationTextColor = LMTheme.getButtonsColor()
+        notificationTextColor = LMChatAppearance.getButtonsColor()
 
         when (intent.action) {
             ACTION_CHATROOM_REPLY -> {

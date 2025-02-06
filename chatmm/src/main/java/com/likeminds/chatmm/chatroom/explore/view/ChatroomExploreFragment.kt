@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.likeminds.chatmm.LMAnalytics.Source.COMMUNITY_FEED
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
-import com.likeminds.chatmm.theme.model.LMTheme
+import com.likeminds.chatmm.theme.model.LMChatAppearance
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailExtras
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailResultExtras
 import com.likeminds.chatmm.chatroom.detail.view.ChatroomDetailActivity
@@ -74,6 +74,17 @@ class ChatroomExploreFragment :
                                 updateChatroomDetails(chatroomDetailResultExtras)
                             }
                         }
+                    }else {
+                        /**
+                         * This method is used when user redirect from explore to
+                         * company page or place-order the page/last activity gets pop-up(back-pressed)
+                         * but this creates 2-redirection :
+                         * 1. To the expected redirection i.e. place-order or company-page
+                         * 2. last-page i.e. explore-chatroom list
+                         * this 2-redirection gives us miscommunication
+                         * so finish the activity for this method declaration.
+                         * */
+                        requireActivity().finish()
                     }
                 }
             }
@@ -178,7 +189,7 @@ class ChatroomExploreFragment :
     // initializes the toolbar
     private fun initToolbar() {
         binding.apply {
-            toolbarColor = LMTheme.getToolbarColor()
+            toolbarColor = LMChatAppearance.getToolbarColor()
 
             (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
 

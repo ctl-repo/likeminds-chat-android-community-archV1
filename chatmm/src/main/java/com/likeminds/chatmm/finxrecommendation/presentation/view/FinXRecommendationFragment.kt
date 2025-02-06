@@ -2,7 +2,6 @@ package com.likeminds.chatmm.finxrecommendation.presentation.view
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -13,9 +12,9 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -46,11 +45,6 @@ class FinXRecommendationFragment : Fragment() {
     private val searchResults = mutableListOf<FinxSmSearchApiRsp>()
     private lateinit var adapter: SearchAdapter
 
-    // Variables to hold the input values
-    /*
-    private var slPrice: String? = null
-    private var targetPrice: String? = null
-    */
     private var entryPrice: String? = null
     private var slPrice: String? = null
     private var targetPrice: String? = null
@@ -65,7 +59,7 @@ class FinXRecommendationFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         _binding = FragmentFinxRecommendationBinding.inflate(inflater, container, false)
         return binding.root
@@ -79,7 +73,7 @@ class FinXRecommendationFragment : Fragment() {
     }
 
     private fun setUpObservers() {
-        finXViewModel.searchScrip.observe(viewLifecycleOwner, Observer {
+        finXViewModel.searchScrip.observe(viewLifecycleOwner) {
             when (it) {
                 is ApiCallState.Loading -> {
                     binding.pgSearch.visible()
@@ -99,13 +93,14 @@ class FinXRecommendationFragment : Fragment() {
                     Log.e("TAG", "setUpObservers: Error ${it.errorMessage}")
                 }
             }
-        })
+        }
 
-        finXViewModel.multiTouchLineRes.observe(viewLifecycleOwner, Observer {
+        finXViewModel.multiTouchLineRes.observe(viewLifecycleOwner) {
             when (it) {
                 is ApiCallState.Loading -> {
                     binding.pgLtp.visible()
                 }
+
                 is ApiCallState.Success -> {
                     it.data?.let {
                         binding.pgLtp.gone()
@@ -127,7 +122,12 @@ class FinXRecommendationFragment : Fragment() {
                         binding.tvLtp.text = "${FinXScripInfo.ltp}"
                         binding.tvCcp.text = FinXScripInfo.getCcp()
                         //binding.tvCcp.setTextColor(ContextCompat.getColor(requireContext(), FinXScripInfo.getCcpColor()))
-                        binding.tvCcp.setTextColor(ContextCompat.getColor(requireContext(), FinXScripInfo.getCcpColor()))
+                        binding.tvCcp.setTextColor(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                FinXScripInfo.getCcpColor()
+                            )
+                        )
 
                         binding.etEntryPriceValue.setText(entryPrice)
                         binding.etSlPriceValue.setText(slPrice)
@@ -140,7 +140,7 @@ class FinXRecommendationFragment : Fragment() {
                     Log.e("TAG", "setUpObservers: Error ${it.errorMessage}")
                 }
             }
-        })
+        }
     }
 
     @SuppressLint("LogNotTimber")
@@ -154,6 +154,13 @@ class FinXRecommendationFragment : Fragment() {
                 binding.ibClear.visible()
                 performSearch(it.toString())
             }
+        }
+
+        binding.etSearch.setOnFocusChangeListener { view, hasFocus ->
+            val imm = getSystemService(requireContext(), InputMethodManager::class.java)
+
+            if (hasFocus) imm?.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+            else imm?.hideSoftInputFromWindow(view.windowToken, 0)
         }
 
         binding.ibClear.setOnClickListener {
@@ -178,12 +185,17 @@ class FinXRecommendationFragment : Fragment() {
         binding.etTargetPriceValue.filters =
             arrayOf(DecimalDigitsInputFilter(maxDigitsBeforeDecimal, maxDigitsAfterDecimal))
 
+        /**
+         * Saving the value in big-decimal instead of double as for large 8-10 digit number(without decimal)
+         * the conversion to double gives the scientific notation i.e. E so to resolve this
+         * using the big-decimal and after convert it into plain-string (without scientific notation)
+         * */
         binding.btnPost.setOnClickListener {
             val entryPriceValue =
-                binding.etEntryPriceValue.text.toString().ifEmpty { " 0.0" }.toDouble()
-            val slPriceValue = binding.etSlPriceValue.text.toString().ifEmpty { " 0.0" }.toDouble()
+                binding.etEntryPriceValue.text.toString().ifEmpty { "0.0" }.toBigDecimal()
+            val slPriceValue = binding.etSlPriceValue.text.toString().ifEmpty { "0.0" }.toBigDecimal()
             val targetPriceValue =
-                binding.etTargetPriceValue.text.toString().ifEmpty { " 0.0" }.toDouble()
+                binding.etTargetPriceValue.text.toString().ifEmpty { "0.0" }.toBigDecimal()
 
             val message: String
             val isValid = if (orderType) {
@@ -197,9 +209,9 @@ class FinXRecommendationFragment : Fragment() {
 
             if (isValid && selectedScrip != null) {
                 finxRecommendationMetadata = FinXRecommendationMetadata(
-                    entryPrice = entryPriceValue.toString(),
-                    slPrice = slPriceValue.toString(),
-                    targetPrice = targetPriceValue.toString(),
+                    entryPrice = entryPriceValue.toPlainString(),
+                    slPrice = slPriceValue.toPlainString(),
+                    targetPrice = targetPriceValue.toPlainString(),
                     isBuy = orderType,
                     searchRsp = selectedScrip,
                     customWidgetType = "FinXRecommendation"
@@ -240,8 +252,12 @@ class FinXRecommendationFragment : Fragment() {
         //init RecyclerView
         adapter = SearchAdapter(emptyList()) { selectedItem ->
             selectedScrip = selectedItem
-            //binding.etSearch.setText(selectedItem.secName?.replace("|", " "))
+
+            binding.ibClear.gone()
+
             binding.etSearch.setText("")
+            binding.etSearch.clearFocus()
+
             binding.tvScripName.text = selectedItem.getScripName()
 
             showSearchList(false)
@@ -269,9 +285,6 @@ class FinXRecommendationFragment : Fragment() {
         }
 
         binding.etSearch.requestFocus()
-        val imgr = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imgr.showSoftInput(binding.etSearch, 0)
-        imgr.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
     }
 
     private fun funOnBackPressed() {
@@ -280,7 +293,6 @@ class FinXRecommendationFragment : Fragment() {
             msg = getString(R.string.do_you_want_to_save_changes),
             positiveText = R.string.lm_chat_create_chat_post,
             positiveClickListener = { dialog, _ ->
-                //requireActivity().finish()
                 binding.btnPost.callOnClick()
                 dialog.dismiss()
             },
