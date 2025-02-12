@@ -25,6 +25,11 @@
 -keep class com.likeminds.chatmm.widget.model.** { *; }
 -keep class androidx.databinding.DataBindingComponent {*;}
 
+-keep class com.likeminds.chatmm.finxrecommendation.domain.model.** { *; }
+
+# Keep all fields in PostConversationResponse and prevent obfuscation
+-keep class com.likeminds.likemindschat.conversation.model.PostConversationResponse { *; }
+
 # for parcelable classes
 -keepnames class * implements android.os.Parcelable
 
@@ -87,3 +92,6 @@
 # Retain generic signatures of TypeToken and its subclasses with R8 version 3.0 and higher.
 -keep,allowobfuscation,allowshrinking class com.google.gson.reflect.TypeToken
 -keep,allowobfuscation,allowshrinking class * extends com.google.gson.reflect.TypeToken
+
+# Keep Gson-related classes
+-keep class com.google.gson.** { *; }

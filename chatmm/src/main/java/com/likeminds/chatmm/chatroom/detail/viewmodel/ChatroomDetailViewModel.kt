@@ -10,6 +10,7 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.*
 import androidx.work.*
 import com.google.gson.Gson
+import com.google.gson.internal.LinkedTreeMap
 import com.google.gson.reflect.TypeToken
 import com.likeminds.chatmm.LMAnalytics
 import com.likeminds.chatmm.SDKApplication
@@ -2165,10 +2166,16 @@ class ChatroomDetailViewModel @Inject constructor(
     }
 
     fun parseCreateConversationResponse(responseString: String): LMResponse<PostConversationResponse>? {
-        val type = object : TypeToken<LMResponse<PostConversationResponse>>() {}.type
-        val lmResponse: LMResponse<PostConversationResponse> = Gson().fromJson(responseString, type)
-        return lmResponse
+        val type = object : TypeToken<LMResponse<LinkedTreeMap<String, Any>>>() {}.type
+        val lmResponse: LMResponse<LinkedTreeMap<String, Any>> = Gson().fromJson(responseString, type)
+
+        // Manually convert the `data` field to `PostConversationResponse`
+        val jsonElement = Gson().toJsonTree(lmResponse.data)
+        val parsedData = Gson().fromJson(jsonElement, PostConversationResponse::class.java)
+
+        return LMResponse(success = lmResponse.success, data = parsedData)
     }
+
 
     override fun onCleared() {
         previewLinkJob?.cancel()
