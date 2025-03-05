@@ -6,6 +6,7 @@ import com.amazonaws.mobile.client.*
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility
 import com.likeminds.chatmm.di.DaggerLikeMindsChatComponent
 import com.likeminds.chatmm.di.LikeMindsChatComponent
+import com.likeminds.chatmm.di.aichatbot.AIChatbotComponent
 import com.likeminds.chatmm.di.chat.ChatComponent
 import com.likeminds.chatmm.di.chatroomdetail.ChatroomDetailComponent
 import com.likeminds.chatmm.di.dm.DMComponent
@@ -22,6 +23,9 @@ import com.likeminds.chatmm.theme.model.LMChatAppearanceRequest
 import com.likeminds.chatmm.utils.user.LMChatUserMetaData
 import com.likeminds.likemindschat.LMChatClient
 import com.likeminds.likemindschat.LMChatSDKCallback
+import com.likeminds.likemindschat.conversation.model.ConversationState
+import com.likeminds.likemindschat.helper.model.LMChatInitiateLoggerRequest
+import com.likeminds.likemindschat.helper.model.LMSeverity
 import com.likeminds.likemindschat.user.model.InitiateUserRequest
 import com.vanniktech.emoji.EmojiManager
 import com.vanniktech.emoji.google.GoogleEmojiProvider
@@ -55,6 +59,7 @@ class SDKApplication : LMChatSDKCallback {
     private var dmComponent: DMComponent? = null
     private var memberComponent: MemberComponent? = null
     private var chatComponent: ChatComponent? = null
+    private var aiChatbotComponent: AIChatbotComponent? = null
 
     companion object {
         const val LOG_TAG = "LikeMindsChat"
@@ -83,7 +88,7 @@ class SDKApplication : LMChatSDKCallback {
         }
     }
 
-    fun initSDKApplication(
+    suspend fun initSDKApplication(
         application: Application,
         theme: LMChatTheme,
         lmChatCoreCallback: LMChatCoreCallback?,
@@ -91,9 +96,26 @@ class SDKApplication : LMChatSDKCallback {
         domain: String? = null,
         enablePushNotifications: Boolean = false,
         deviceId: String? = null,
+        shareLogsWithLM: Boolean,
+        excludeConversationStates: List<ConversationState> = emptyList()
     ) {
+        val initiateLoggerRequest = if (shareLogsWithLM) {
+            LMChatInitiateLoggerRequest.Builder()
+                .shareLogsWithLM(true)
+                .coreVersion("${BuildConfig.APP_MAJOR}.${BuildConfig.APP_MINOR}.${BuildConfig.APP_PATCH}")
+                .logLevel(LMSeverity.INFO)
+                .onErrorHandler { exception, trace ->
+                    lmChatCoreCallback?.onErrorHandler(exception, trace)
+                }
+                .build()
+        } else {
+            null
+        }
+
         mChatClient = LMChatClient.Builder(application)
             .lmChatSDKCallback(this)
+            .initiateLoggerRequest(initiateLoggerRequest)
+            .excludedConversationStates(excludeConversationStates)
             .build()
 
         selectedTheme = theme
@@ -251,6 +273,17 @@ class SDKApplication : LMChatSDKCallback {
         return chatComponent
     }
 
+    /**
+     * initiate and return AIChatbotComponent: All dependencies required for chatroom screen package
+     * */
+    fun aiChatbotComponent(): AIChatbotComponent? {
+        if (aiChatbotComponent == null) {
+            aiChatbotComponent = likeMindsChatComponent?.aiChatbotComponent()?.create()
+        }
+
+        return aiChatbotComponent
+    }
+
     override fun onAccessTokenExpiredAndRefreshed(accessToken: String, refreshToken: String) {
         lmChatCoreCallback?.onAccessTokenExpiredAndRefreshed(accessToken, refreshToken)
     }
@@ -262,12 +295,23 @@ class SDKApplication : LMChatSDKCallback {
             runBlocking {
                 val user = mChatClient.getLoggedInUser().data?.user
                 if (user != null) {
+                    val userMetaData = LMChatUserMetaData.getInstance()
+
                     val initiateUserRequest = InitiateUserRequest.Builder()
                         .apiKey(apiKey)
                         .userName(user.name)
                         .userId(user.sdkClientInfo?.uuid)
+                        .deviceId(userMetaData.deviceId)
                         .build()
                     val response = mChatClient.initiateUser(initiateUserRequest)
+
+                    LMAnalytics.track(
+                        LMAnalytics.Events.SDK_INITIATE,
+                        mapOf(
+                            "success" to response.success.toString(),
+                            LMAnalytics.Keys.UUID to user.sdkClientInfo?.uuid
+                        )
+                    )
 
                     if (response.success) {
                         val accessToken = response.data?.accessToken ?: ""

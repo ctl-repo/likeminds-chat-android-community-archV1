@@ -332,4 +332,5 @@
     <string name="do_you_want_to_save_changes">Do you want to save changes?</string>
     <string name="discard">Discard</string>
 
+    <string name="lm_chat_setting_up_ai_chatbot">Setting up AI chatbot…</string>
 </resources>

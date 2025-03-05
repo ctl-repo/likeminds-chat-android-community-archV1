@@ -42,4 +42,8 @@ interface LMChatCoreCallback {
     )
 
     fun getNotificationRedirectionActivityPendingIntent(chatroomDetailExtras: ChatroomDetailExtras): android.content.Intent?
+
+    fun onErrorHandler(exception: String, trace: String) {
+        //implement to get callback whenever an error is handled
+    }
 }
