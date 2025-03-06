@@ -36,7 +36,7 @@ class ExploreViewModel @Inject constructor(
     private val _menuActions: MutableLiveData<List<OverflowMenuItemViewData>> = MutableLiveData()
     val menuActions: LiveData<List<OverflowMenuItemViewData>> = _menuActions
 
-    private val _selectedOrder: MutableLiveData<String> = MutableLiveData(MENU_NEWEST)
+    private val _selectedOrder: MutableLiveData<String> = MutableLiveData(MENU_MOST_PARTICIPANTS)
     val selectedOrder: LiveData<String> = _selectedOrder
 
     //First -> ViewData and Second -> Position to be updated

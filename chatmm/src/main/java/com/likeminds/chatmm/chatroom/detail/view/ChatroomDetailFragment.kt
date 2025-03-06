@@ -718,6 +718,19 @@ class ChatroomDetailFragment :
         conversationId: String
     ) {
 
+        recomData.let {
+            LMAnalytics.track(
+                LMAnalytics.Events.FINX_RECOMMENDATAION_ON_PLACE_ORDER,
+                mapOf(
+                    "SearchResponse" to it.searchRsp.toString(),
+                    "entryPrice" to it.entryPrice,
+                    "slPrice" to it.slPrice,
+                    "targetPrice" to it.targetPrice,
+                    "orderType" to if(it.isBuy == true) "Buy" else "Sell",
+                )
+            )
+        }
+
         val extra = ChatroomDetailExtras.Builder()
             .chatroomId(chatroomDetailExtras.chatroomId)
             .communityId(chatroomDetailExtras.communityId)
@@ -736,6 +749,19 @@ class ChatroomDetailFragment :
         recomData: FinXRecommendationMetadata,
         conversationId: String
     ) {
+
+        recomData.let {
+            LMAnalytics.track(
+                LMAnalytics.Events.FINX_RECOMMENDATAION_ON_COMPANY_PAGE,
+                mapOf(
+                    "SearchResponse" to it.searchRsp.toString(),
+                    "entryPrice" to it.entryPrice,
+                    "slPrice" to it.slPrice,
+                    "targetPrice" to it.targetPrice,
+                    "orderType" to if(it.isBuy == true) "Buy" else "Sell",
+                )
+            )
+        }
 
         val extra = ChatroomDetailExtras.Builder()
             .chatroomId(chatroomDetailExtras.chatroomId)
@@ -1032,6 +1058,10 @@ class ChatroomDetailFragment :
 
     //on click function when custom widget A is clicked
     private fun onCustomWidgetAAttachmentClicked() {
+        LMAnalytics.track(
+            LMAnalytics.Events.FINX_RECOMMENDATATION_BTN
+        )
+
         val intent = Intent(requireActivity(), FinXRecommendationActivity::class.java)
         startActivityForResultLauncher.launch(intent)
     }
