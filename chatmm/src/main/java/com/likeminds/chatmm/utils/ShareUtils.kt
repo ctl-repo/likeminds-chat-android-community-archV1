@@ -5,7 +5,7 @@ import android.content.Intent
 import com.likeminds.chatmm.R
 
 object ShareUtils {
-    const val DOMAIN = "https://finx.choiceindia.com"
+    const val DOMAIN = "https://finx.choiceindia.com/commune"
 
     /**
      * Share post with url using default sharing in Android OS
