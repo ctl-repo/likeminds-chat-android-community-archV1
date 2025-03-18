@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.likeminds.chatmm.LMAnalytics
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.finxrecommendation.data.ApiCallState
 import com.likeminds.chatmm.finxrecommendation.data.FinXService
@@ -220,6 +221,20 @@ class FinXRecommendationFragment : Fragment() {
                 val resultIntent = Intent().apply {
                     putExtra("recommendationData", finxRecommendationMetadata)
                 }
+
+                finxRecommendationMetadata?.let {
+                    LMAnalytics.track(
+                        LMAnalytics.Events.FINX_RECOMMENDATAION,
+                        mapOf(
+                            "SearchResponse" to it.searchRsp.toString(),
+                            "entryPrice" to it.entryPrice,
+                            "slPrice" to it.slPrice,
+                            "targetPrice" to it.targetPrice,
+                            "orderType" to if(it.isBuy == true) "Buy" else "Sell",
+                        )
+                    )
+                }
+
                 requireActivity().setResult(Activity.RESULT_OK, resultIntent)
                 requireActivity().finish()
             } else {

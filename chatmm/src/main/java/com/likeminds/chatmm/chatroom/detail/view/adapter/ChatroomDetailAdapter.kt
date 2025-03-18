@@ -204,7 +204,6 @@ interface ChatroomDetailAdapterListener {
 
     fun onMultipleItemsExpanded(conversation: ConversationViewData, position: Int) {}
 
-    fun observeMediaUpload(uuid: UUID, conversation: ConversationViewData)
     fun onRetryConversationMediaUpload(conversationId: String, attachmentCount: Int)
     fun onFailedConversationClick(conversation: ConversationViewData, itemPosition: Int)
     fun showMemberProfile(member: MemberViewData)

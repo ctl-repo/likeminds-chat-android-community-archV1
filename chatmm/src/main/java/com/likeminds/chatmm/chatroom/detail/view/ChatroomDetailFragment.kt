@@ -33,7 +33,6 @@ import androidx.work.WorkManager
 import com.giphy.sdk.core.models.Media
 import com.giphy.sdk.ui.*
 import com.giphy.sdk.ui.themes.GPHTheme
-import com.giphy.sdk.ui.themes.GridType
 import com.giphy.sdk.ui.views.GiphyDialogFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.gson.Gson
@@ -107,8 +106,9 @@ import com.likeminds.chatmm.utils.chrometabs.CustomTabIntent
 import com.likeminds.chatmm.utils.customview.*
 import com.likeminds.chatmm.utils.databinding.ImageBindingUtil
 import com.likeminds.chatmm.utils.file.util.FileUtil
-import com.likeminds.chatmm.utils.mediauploader.worker.MediaUploadWorker
-import com.likeminds.chatmm.utils.mediauploader.worker.MediaUploadWorker.Companion.ARG_WORKER_RESULT_TAGGED_USER
+import com.likeminds.chatmm.utils.mediauploader.worker.ConversationWorker
+import com.likeminds.chatmm.utils.mediauploader.worker.ConversationWorker.Companion.ARG_MEDIA_INDEX_LIST
+import com.likeminds.chatmm.utils.mediauploader.worker.ConversationWorker.Companion.OUTPUT_POST_CONVERSATION_RESPONSE
 import com.likeminds.chatmm.utils.membertagging.MemberTaggingDecoder
 import com.likeminds.chatmm.utils.membertagging.model.MemberTaggingExtras
 import com.likeminds.chatmm.utils.membertagging.model.TagViewData
@@ -125,7 +125,9 @@ import com.likeminds.chatmm.utils.user.LMChatUserMetaData
 import com.likeminds.chatmm.widget.model.WidgetViewData
 import com.likeminds.chatmm.xapp.XLmcAppInstance
 import com.likeminds.likemindschat.chatroom.model.ChatRequestState
-import com.likeminds.likemindschat.conversation.worker.CreateConversationWorker
+import com.likeminds.likemindschat.conversation.model.ConversationState
+import com.likeminds.likemindschat.helper.LMChatLogger
+import com.likeminds.likemindschat.helper.model.LMSeverity
 import com.likeminds.likemindschat.user.model.MemberBlockState
 import com.vanniktech.emoji.EmojiPopup
 import kotlinx.coroutines.flow.onEach
@@ -472,6 +474,7 @@ class ChatroomDetailFragment :
 
         const val SCREEN_RECORD = "screen_record"
         const val SOURCE_HOME_FEED = "home_feed"
+        const val SOURCE_AI_CHATBOT = "ai_chatbot"
         const val SOURCE_TAGGED_AUTO_FOLLOWED = "tagged_auto_followed"
 
         const val MUTE_ACTION_TITLE = "Mute notifications"
@@ -715,6 +718,19 @@ class ChatroomDetailFragment :
         conversationId: String
     ) {
 
+        recomData.let {
+            LMAnalytics.track(
+                LMAnalytics.Events.FINX_RECOMMENDATAION_ON_PLACE_ORDER,
+                mapOf(
+                    "SearchResponse" to it.searchRsp.toString(),
+                    "entryPrice" to it.entryPrice,
+                    "slPrice" to it.slPrice,
+                    "targetPrice" to it.targetPrice,
+                    "orderType" to if(it.isBuy == true) "Buy" else "Sell",
+                )
+            )
+        }
+
         val extra = ChatroomDetailExtras.Builder()
             .chatroomId(chatroomDetailExtras.chatroomId)
             .communityId(chatroomDetailExtras.communityId)
@@ -733,6 +749,19 @@ class ChatroomDetailFragment :
         recomData: FinXRecommendationMetadata,
         conversationId: String
     ) {
+
+        recomData.let {
+            LMAnalytics.track(
+                LMAnalytics.Events.FINX_RECOMMENDATAION_ON_COMPANY_PAGE,
+                mapOf(
+                    "SearchResponse" to it.searchRsp.toString(),
+                    "entryPrice" to it.entryPrice,
+                    "slPrice" to it.slPrice,
+                    "targetPrice" to it.targetPrice,
+                    "orderType" to if(it.isBuy == true) "Buy" else "Sell",
+                )
+            )
+        }
 
         val extra = ChatroomDetailExtras.Builder()
             .chatroomId(chatroomDetailExtras.chatroomId)
@@ -805,7 +834,7 @@ class ChatroomDetailFragment :
             requireContext(),
             String(Base64.decode(InternalKeys.GIPHY_SDK, Base64.DEFAULT))
         )
-        val settings = GPHSettings(GridType.waterfall, GPHTheme.Light)
+        val settings = GPHSettings(GPHTheme.Light)
         settings.mediaTypeConfig = arrayOf(GPHContentType.recents, GPHContentType.gif)
         settings.selectedContentType = GPHContentType.gif
         val giphyDialog = GiphyDialogFragment.newInstance(settings)
@@ -1029,6 +1058,10 @@ class ChatroomDetailFragment :
 
     //on click function when custom widget A is clicked
     private fun onCustomWidgetAAttachmentClicked() {
+        LMAnalytics.track(
+            LMAnalytics.Events.FINX_RECOMMENDATATION_BTN
+        )
+
         val intent = Intent(requireActivity(), FinXRecommendationActivity::class.java)
         startActivityForResultLauncher.launch(intent)
     }
@@ -1871,7 +1904,7 @@ class ChatroomDetailFragment :
         val conversationIndex =
             chatroomDetailAdapter.items()
                 .indexOfLast { chatroomItem ->
-                    (chatroomItem is ConversationViewData && chatroomItem.state == STATE_DM_REJECTED)
+                    (chatroomItem is ConversationViewData && chatroomItem.state == ConversationState.DM_REQUEST_REJECTED.value)
                 }
 
         val conversationViewData =
@@ -1930,6 +1963,11 @@ class ChatroomDetailFragment :
                     cameraPath = file.absolutePath
                     file
                 } catch (ex: IOException) {
+                    LMChatLogger.getInstance()?.handleException(
+                        ex.message ?: "",
+                        ex.stackTraceToString(),
+                        LMSeverity.EMERGENCY
+                    )
                     Log.e("errorCreateFile", "errorCreateFile", ex)
                     null
                 }
@@ -1948,6 +1986,11 @@ class ChatroomDetailFragment :
                         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
                         cameraLauncher.launch(takePictureIntent)
                     } catch (e: Exception) {
+                        LMChatLogger.getInstance()?.handleException(
+                            e.message ?: "",
+                            e.stackTraceToString(),
+                            LMSeverity.EMERGENCY
+                        )
                         ViewUtils.showShortToast(requireContext(), "Image not found")
                         Log.e(SDKApplication.LOG_TAG, "provider not found, ${e.localizedMessage}")
                     }
@@ -2211,21 +2254,24 @@ class ChatroomDetailFragment :
                     replyChatData = inputBox.viewReply.chatReplyData
                 }
 
+                val conversationCreatedEpoch = System.currentTimeMillis()
+                val temporaryId = "-$conversationCreatedEpoch"
+
                 val uuidString = viewModel.postConversation(
                     requireContext(),
                     updatedConversation,
+                    conversationCreatedEpoch,
                     fileUris,
                     shareTextLink,
                     replyConversationId,
                     replyChatRoomId,
-                    memberTagging.getTaggedMembers(),
-                    replyChatData,
                     metadata
                 )
 
                 uuidString?.let { uuid ->
                     observeCreateConversationWorker(
                         uuid,
+                        temporaryId,
                         replyChatData,
                         replyConversationId,
                         replyChatRoomId
@@ -2248,6 +2294,7 @@ class ChatroomDetailFragment :
     //observes workinfo and related to create conversation worker
     private fun observeCreateConversationWorker(
         uuid: String,
+        conversationId: String,
         replyChatData: ChatReplyViewData?,
         replyConversationId: String?,
         replyChatRoomId: String?
@@ -2264,27 +2311,51 @@ class ChatroomDetailFragment :
                         WorkInfo.State.SUCCEEDED -> {
                             //get output data
                             val successResponseString =
-                                workInfo.outputData.getString(CreateConversationWorker.OUTPUT_POST_CONVERSATION_RESPONSE)
+                                workInfo.outputData.getString(OUTPUT_POST_CONVERSATION_RESPONSE)
 
                             successResponseString?.let {
                                 //convert to LMResponse
                                 val successResponse =
                                     viewModel.parseCreateConversationResponse(it)
 
-                                //get data 
-                                val data = successResponse?.data
+                                //get data
+                                val data = successResponse.data
                                 if (data != null) {
                                     //get conversation
                                     val createdConversation = data.conversation
+                                    val conversationViewData =
+                                        ViewDataConverter.convertConversation(createdConversation)
 
                                     //send analytics
-                                    viewModel.sendCreateConversationAnalytics(
-                                        createdConversation,
-                                        memberTagging.getTaggedMembers(),
-                                        replyChatData,
-                                        replyConversationId,
-                                        replyChatRoomId
-                                    )
+                                    conversationViewData?.let { conversation ->
+                                        viewModel.sendCreateConversationAnalytics(
+                                            conversation,
+                                            memberTagging.getTaggedMembers(),
+                                            replyChatData,
+                                            replyConversationId,
+                                            replyChatRoomId
+                                        )
+
+                                        //send analytics
+                                        val chatReplyData = binding.inputBox.viewReply.chatReplyData
+
+                                        if (chatReplyData != null) {
+                                            viewModel.sendMessageReplyEvent(
+                                                conversation,
+                                                chatReplyData.repliedMemberId,
+                                                chatReplyData.repliedMemberState,
+                                                conversation.replyConversation?.id,
+                                                chatReplyData.type
+                                            )
+                                        }
+                                        viewModel.sendChatroomResponded(
+                                            memberTagging.getTaggedMembers().map { it.name },
+                                            conversation
+                                        )
+                                        if (ChatroomUtil.getConversationType(conversation) == VOICE_NOTE) {
+                                            viewModel.sendVoiceNoteSent(conversation.id)
+                                        }
+                                    }
 
                                     //clear old values
                                     memberTagging.clearTaggedMembers()
@@ -2296,7 +2367,7 @@ class ChatroomDetailFragment :
                         WorkInfo.State.FAILED -> {
                             //get output data
                             val errorResponseString =
-                                workInfo.outputData.getString(CreateConversationWorker.OUTPUT_POST_CONVERSATION_RESPONSE)
+                                workInfo.outputData.getString(OUTPUT_POST_CONVERSATION_RESPONSE)
 
                             errorResponseString?.let {
                                 // convert to LMResponse
@@ -2306,12 +2377,75 @@ class ChatroomDetailFragment :
                                 //show error toast
                                 ViewUtils.showErrorMessageToast(
                                     requireContext(),
-                                    errorResponse?.errorMessage
+                                    errorResponse.errorMessage
                                 )
+                            }
+
+                            val failedMediaIndex =
+                                workInfo.outputData.getIntArray(ARG_MEDIA_INDEX_LIST)
+
+                            failedMediaIndex?.let { indexList ->
+                                val position = getIndexOfConversation(conversationId)
+                                if (position >= 0) {
+                                    val oldConversation = chatroomDetailAdapter[position]
+                                            as? ConversationViewData
+                                        ?: return@observe
+
+                                    val updatedConversation = oldConversation.toBuilder()
+                                        .attachments(
+                                            oldConversation.attachments?.map { attachment ->
+                                                if (indexList.contains(
+                                                        attachment.index ?: -1
+                                                    ) || !attachment.isUploaded
+                                                ) {
+                                                    attachment
+                                                } else {
+                                                    attachment.toBuilder()
+                                                        .awsFolderPath("")
+                                                        .build()
+                                                }
+                                            } as ArrayList<AttachmentViewData>?)
+                                        .build()
+                                    chatroomDetailAdapter.update(position, updatedConversation)
+                                }
+                            }
+                        }
+
+                        WorkInfo.State.CANCELLED -> {
+                            val position = getIndexOfConversation(conversationId)
+                            if (position >= 0) {
+                                chatroomDetailAdapter.notifyItemChanged(position)
                             }
                         }
 
                         else -> {
+                            val progress =
+                                ConversationWorker.getProgress(workInfo) ?: return@observe
+                            val position = getIndexOfConversation(conversationId)
+                            if (position.isValidIndex()) {
+                                val oldConversation = chatroomDetailAdapter[position]
+                                        as? ConversationViewData
+                                    ?: return@observe
+
+                                val updatedConversation =
+                                    if ((progress.first / (progress.second * 1.0)) == 1.0) {
+                                        oldConversation.toBuilder()
+                                            .attachmentsUploaded(true)
+                                            .attachmentUploadProgress(null)
+                                            .attachments(
+                                                oldConversation.attachments?.map { attachment ->
+                                                    attachment.toBuilder()
+                                                        .awsFolderPath("")
+                                                        .build()
+                                                } as ArrayList<AttachmentViewData>?)
+                                            .build()
+                                    } else {
+                                        oldConversation.toBuilder()
+                                            .attachmentUploadProgress(progress)
+                                            .build()
+                                    }
+                                chatroomDetailAdapter.update(position, updatedConversation)
+                            }
                             Log.i(
                                 TAG,
                                 "create conversation worker - state - ${workInfo.state}"
@@ -2685,7 +2819,7 @@ class ChatroomDetailFragment :
                         }
                     }
 
-                    topic.state == STATE_POLL -> {
+                    topic.state == ConversationState.POLL.value -> {
                         setTopViewMemberImage(topic.memberViewData)
 
                         val answer = ChatroomUtil.getTopicMediaData(requireContext(), topic)
@@ -2806,7 +2940,7 @@ class ChatroomDetailFragment :
                         }
                     }
 
-                    topic.state == STATE_POLL -> {
+                    topic.state == ConversationState.POLL.value -> {
                         topicImage.visibility = View.GONE
                     }
 
@@ -2846,6 +2980,11 @@ class ChatroomDetailFragment :
                 binding.inputBox.etAnswer.text?.toString()
             )
         } catch (e: Exception) {
+            LMChatLogger.getInstance()?.handleException(
+                e.message ?: "",
+                e.stackTraceToString(),
+                LMSeverity.CRITICAL
+            )
             Log.e(TAG, e.toString())
         }
     }
@@ -3211,7 +3350,7 @@ class ChatroomDetailFragment :
                         getNonPresentConversations(response.conversations).toMutableList()
 
                     val indexOfHeaderConversation = conversations.indexOfFirst { conversation ->
-                        conversation.state == STATE_HEADER
+                        conversation.state == ConversationState.FIRST_CONVERSATION.value
                     }
                     if (
                         indexOfHeaderConversation.isValidIndex() &&
@@ -3271,7 +3410,7 @@ class ChatroomDetailFragment :
                         }
 
                         //last new conversation DM REJECTED conversation
-                        if (lastNewConversation.state == STATE_DM_REJECTED
+                        if (lastNewConversation.state == ConversationState.DM_REQUEST_REJECTED.value
                             && viewModel.getLoggedInMemberId() ==
                             viewModel.getChatroomViewData()?.chatRequestedById
                         ) {
@@ -3342,7 +3481,7 @@ class ChatroomDetailFragment :
                         }
 
                         //add tap to undo if dm is rejected and the logged in member has rejected the DM request
-                        if (response.conversation.state == STATE_DM_REJECTED
+                        if (response.conversation.state == ConversationState.DM_REQUEST_REJECTED.value
                             && viewModel.getLoggedInMemberId() ==
                             viewModel.getChatroomViewData()?.chatRequestedById
                         ) {
@@ -3464,10 +3603,6 @@ class ChatroomDetailFragment :
     // updates the header name on chatroom
     private fun updateHeader(header: String, isSecretChatRoom: Boolean) {
         binding.apply {
-            val isAIBot = viewModel.isOtherUserAIBot()
-            tvAiBot.isVisible = isAIBot
-            tvAiBot.setBackgroundColor(LMChatAppearance.getButtonsColor())
-
             if (viewModel.isDmChatroom()) {
                 tvToolbarSubTitle.hide()
                 val member = viewModel.getOtherDmMember() ?: return
@@ -3757,7 +3892,7 @@ class ChatroomDetailFragment :
 
             val conversation =
                 viewModel.createTemporaryAutoFollowAndTopicConversation(
-                    STATE_TOPIC, answer
+                    ConversationState.TOPIC_CHANGED.value, answer
                 )
 
             val indexToAdd = getIndexOfAnyGraphicItem()
@@ -4680,22 +4815,28 @@ class ChatroomDetailFragment :
         )
     }
 
-    override fun observeMediaUpload(uuid: UUID, conversation: ConversationViewData) {
-        if (!workersMap.contains(uuid)) {
-            workersMap.add(uuid)
-            WorkManager.getInstance(requireContext()).getWorkInfoByIdLiveData(uuid)
-                .observe(viewLifecycleOwner) { workInfo ->
-                    observeConversationWorkerLiveData(workInfo, conversation)
-                }
-        }
-    }
-
     override fun onRetryConversationMediaUpload(conversationId: String, attachmentCount: Int) {
-        viewModel.createRetryConversationMediaWorker(
+        val uuid = viewModel.createRetryConversationMediaWorker(
             requireContext(),
             conversationId,
             attachmentCount
         )
+
+        if (uuid.isNotEmpty()) {
+            val conversation = getIndexedConversation(conversationId)?.second ?: return
+            val chatReplyViewData = ChatReplyUtil.getConversationReplyData(
+                conversation,
+                userPreferences.getUUID()
+            )
+
+            observeCreateConversationWorker(
+                uuid,
+                conversationId,
+                chatReplyViewData,
+                conversation.replyConversation?.id,
+                conversation.replyChatroomId
+            )
+        }
     }
 
     override fun onFailedConversationClick(
@@ -4928,6 +5069,11 @@ class ChatroomDetailFragment :
                 "${requireContext().externalCacheDir?.absolutePath}/VOC_${System.currentTimeMillis()}.mp3"
             voiceRecorder.startRecording(voiceNoteFilePath ?: "")
         } catch (e: IllegalStateException) {
+            LMChatLogger.getInstance()?.handleException(
+                e.message ?: "",
+                e.stackTraceToString(),
+                LMSeverity.CRITICAL
+            )
             voiceNoteUtils.stopVoiceNote(binding, RECORDING_RELEASED)
         }
     }
@@ -5060,7 +5206,7 @@ class ChatroomDetailFragment :
         val map = conversations.map { it.id }.toMutableList()
         var i = 0
         val max = conversations.size - 1
-        for (item in chatroomDetailAdapter.items().reversed()) {
+        for (item in chatroomDetailAdapter.items().asReversed()) {
             if (i > max) {
                 break
             }
@@ -5456,103 +5602,6 @@ class ChatroomDetailFragment :
         inAppVideoPlayerPopup = null
     }
 
-    private fun observeConversationWorkerLiveData(
-        workInfo: WorkInfo,
-        conversation: ConversationViewData,
-    ) {
-        when (workInfo.state) {
-            WorkInfo.State.SUCCEEDED -> {
-                val position = getIndexOfConversation(conversation.id)
-                if (position >= 0) {
-                    val oldConversation = chatroomDetailAdapter[position]
-                            as? ConversationViewData
-                        ?: return
-                    val updatedConversation = oldConversation.toBuilder()
-                        .attachmentsUploaded(true)
-                        .uploadWorkerUUID("")
-                        .attachmentUploadProgress(null)
-                        .attachments(
-                            oldConversation.attachments?.map { attachment ->
-                                attachment.toBuilder()
-                                    .awsFolderPath("")
-                                    .build()
-                            } as ArrayList<AttachmentViewData>?)
-                        .build()
-
-
-                    //send analytics
-                    val chatReplyData = binding.inputBox.viewReply.chatReplyData
-                    val listOfTaggedUser =
-                        workInfo.outputData.getStringArray(ARG_WORKER_RESULT_TAGGED_USER)?.toList()
-
-                    if (chatReplyData != null) {
-                        viewModel.sendMessageReplyEvent(
-                            updatedConversation,
-                            chatReplyData.repliedMemberId,
-                            chatReplyData.repliedMemberState,
-                            conversation.replyConversation?.id,
-                            chatReplyData.type
-                        )
-                    }
-                    viewModel.sendChatroomResponded(
-                        listOfTaggedUser ?: emptyList(),
-                        updatedConversation
-                    )
-                    if (ChatroomUtil.getConversationType(updatedConversation) == VOICE_NOTE) {
-                        viewModel.sendVoiceNoteSent(updatedConversation.id)
-                    }
-
-                    chatroomDetailAdapter.update(position, updatedConversation)
-                }
-            }
-
-            WorkInfo.State.FAILED -> {
-                val position = getIndexOfConversation(conversation.id)
-                if (position >= 0) {
-                    val oldConversation = chatroomDetailAdapter[position]
-                            as? ConversationViewData
-                        ?: return
-                    val indexList = workInfo.outputData.getIntArray(
-                        MediaUploadWorker.ARG_MEDIA_INDEX_LIST
-                    )
-                    val updatedConversation = oldConversation.toBuilder()
-                        .attachments(
-                            oldConversation.attachments?.map { attachment ->
-                                if (indexList?.contains(attachment.index ?: -1) == true) {
-                                    attachment
-                                } else {
-                                    attachment.toBuilder()
-                                        .awsFolderPath("")
-                                        .build()
-                                }
-                            } as ArrayList<AttachmentViewData>?)
-                        .build()
-                    chatroomDetailAdapter.update(position, updatedConversation)
-                }
-            }
-
-            WorkInfo.State.CANCELLED -> {
-                val position = getIndexOfConversation(conversation.id)
-                if (position >= 0) {
-                    chatroomDetailAdapter.notifyItemChanged(position)
-                }
-            }
-
-            else -> {
-                val progress = MediaUploadWorker.getProgress(workInfo) ?: return
-                val position = getIndexOfConversation(conversation.id)
-                if (position.isValidIndex()) {
-                    val oldConversation = chatroomDetailAdapter[position]
-                            as? ConversationViewData ?: return
-                    val updatedConversation = oldConversation.toBuilder()
-                        .attachmentUploadProgress(progress)
-                        .build()
-                    chatroomDetailAdapter.update(position, updatedConversation)
-                }
-            }
-        }
-    }
-
     private fun showFailedConversationMenu(
         conversation: ConversationViewData,
         position: Int,
@@ -5585,18 +5634,19 @@ class ChatroomDetailFragment :
             .build()
 
         val workerUUID = viewModel.postFailedConversation(requireContext(), updatedConversation)
-        workerUUID?.let { uuid ->
-            val chatReplyViewData = ChatReplyUtil.getConversationReplyData(
-                conversation,
-                userPreferences.getUUID()
-            )
-            observeCreateConversationWorker(
-                uuid,
-                chatReplyViewData,
-                conversation.replyConversation?.id,
-                conversation.replyChatroomId
-            )
-        }
+        val chatReplyViewData = ChatReplyUtil.getConversationReplyData(
+            conversation,
+            userPreferences.getUUID()
+        )
+
+        observeCreateConversationWorker(
+            workerUUID,
+            conversation.id,
+            chatReplyViewData,
+            conversation.replyConversation?.id,
+            conversation.replyChatroomId
+        )
+
         chatroomDetailAdapter.update(index, updatedConversation)
     }
 
@@ -6336,7 +6386,7 @@ class ChatroomDetailFragment :
                     LMChatSearchResult::class.java
                 ) ?: return@registerForActivityResult
 
-                val searchConversationId = resultExtras.conversationId;
+                val searchConversationId = resultExtras.conversationId
                 if (!searchConversationId.isNullOrEmpty()) {
                     scrolledConversationPosition =
                         getIndexOfConversation(searchConversationId)

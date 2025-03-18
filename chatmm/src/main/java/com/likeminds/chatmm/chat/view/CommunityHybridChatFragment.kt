@@ -35,6 +35,8 @@ import com.likeminds.chatmm.utils.connectivity.ConnectivityBroadcastReceiver
 import com.likeminds.chatmm.utils.connectivity.ConnectivityReceiverListener
 import com.likeminds.chatmm.utils.customview.BaseFragment
 import com.likeminds.chatmm.utils.snackbar.CustomSnackBar
+import com.likeminds.likemindschat.helper.LMChatLogger
+import com.likeminds.likemindschat.helper.model.LMSeverity
 import com.likeminds.chatmm.xapp.XLmcAppInstance
 import javax.inject.Inject
 import kotlin.math.roundToInt

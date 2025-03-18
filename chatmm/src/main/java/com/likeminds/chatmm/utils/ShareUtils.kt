@@ -18,7 +18,7 @@ object ShareUtils {
         chatroomId: String,
         domain: String
     ) {
-        val shareLink = "$domain/chatroom_detail?chatroom_id=$chatroomId"
+        val shareLink = "$domain/commune/chatroom_detail?chatroom_id=$chatroomId"
         val shareTitle = context.getString(R.string.lm_chat_share_chatroom)
         shareLink(context, shareLink, shareTitle)
     }

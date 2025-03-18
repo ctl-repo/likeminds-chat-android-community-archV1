@@ -8,6 +8,8 @@ import android.widget.EditText
 import android.widget.TextView
 import com.likeminds.chatmm.utils.membertagging.util.MemberTaggingClickableSpan
 import com.likeminds.chatmm.utils.membertagging.view.adapter.MemberTaggingDecoderListener
+import com.likeminds.likemindschat.helper.LMChatLogger
+import com.likeminds.likemindschat.helper.model.LMSeverity
 
 object MemberTaggingDecoder {
 
@@ -30,7 +32,7 @@ object MemberTaggingDecoder {
         }
         val matches = REGEX_USER_TAGGING.findAll(text, 0)
         textView.setText(text, TextView.BufferType.EDITABLE)
-        matches.toList().reversed().forEach { matchResult ->
+        matches.toList().asReversed().forEach { matchResult ->
             val start = matchResult.range.first
             val end = matchResult.range.last
             val value = matchResult.value
@@ -48,6 +50,11 @@ object MemberTaggingDecoder {
                                 ?: return@MemberTaggingClickableSpan
                             listener?.onTagClick(tagUri)
                         } catch (e: Exception) {
+                            LMChatLogger.getInstance()?.handleException(
+                                e.message ?: "",
+                                e.stackTraceToString(),
+                                LMSeverity.CRITICAL
+                            )
                             e.printStackTrace()
                         }
                     }, 0, memberName.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
@@ -80,7 +87,7 @@ object MemberTaggingDecoder {
         }
         val matches = REGEX_USER_TAGGING.findAll(text, 0)
         editText.setText(text, TextView.BufferType.EDITABLE)
-        matches.toList().reversed().forEach { matchResult ->
+        matches.toList().asReversed().forEach { matchResult ->
             val start = matchResult.range.first
             val end = matchResult.range.last
             val value = matchResult.value

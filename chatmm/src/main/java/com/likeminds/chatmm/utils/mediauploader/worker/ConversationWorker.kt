@@ -2,7 +2,9 @@ package com.likeminds.chatmm.utils.mediauploader.worker
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import androidx.work.*
+import com.google.gson.Gson
 import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.conversation.model.AttachmentViewData
 import com.likeminds.chatmm.conversation.model.ConversationViewData
@@ -10,18 +12,23 @@ import com.likeminds.chatmm.utils.ViewDataConverter
 import com.likeminds.chatmm.utils.mediauploader.model.*
 import com.likeminds.chatmm.utils.mediauploader.utils.WorkerUtil.getIntOrNull
 import com.likeminds.likemindschat.LMChatClient
-import com.likeminds.likemindschat.conversation.model.*
+import com.likeminds.likemindschat.conversation.model.PostConversationRequest
+import com.likeminds.likemindschat.conversation.model.UpdateConversationRequest
+import com.likeminds.likemindschat.helper.LMChatLogger
+import com.likeminds.likemindschat.helper.model.LMSeverity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import kotlin.coroutines.*
 
-abstract class MediaUploadWorker(
+abstract class ConversationWorker(
     appContext: Context,
     private val params: WorkerParameters
 ) : CoroutineWorker(appContext, params) {
 
     val lmChatClient = LMChatClient.getInstance()
+
+    private val gson = Gson()
 
     protected val transferUtility by lazy { SDKApplication.getInstance().transferUtility }
 
@@ -32,7 +39,6 @@ abstract class MediaUploadWorker(
     private val progressMap by lazy { HashMap<Int, Pair<Long, Long>>() }
 
     protected lateinit var conversation: ConversationViewData
-    protected lateinit var listOfTaggerUsers: List<String>
     protected var isOtherUserAI: Boolean = false
 
     abstract fun checkArgs()
@@ -42,7 +48,7 @@ abstract class MediaUploadWorker(
     companion object {
         const val ARG_MEDIA_INDEX_LIST = "ARG_MEDIA_INDEX_LIST"
         const val ARG_PROGRESS = "ARG_PROGRESS"
-        const val ARG_WORKER_RESULT_TAGGED_USER = "ARG_WORKER_RESULT_TAGGED_USER"
+        const val OUTPUT_POST_CONVERSATION_RESPONSE = "OUTPUT_POST_CONVERSATION_RESPONSE"
 
         fun getProgress(workInfo: WorkInfo): Pair<Long, Long>? {
             val progress = workInfo.progress.getLongArray(ARG_PROGRESS)
@@ -64,6 +70,11 @@ abstract class MediaUploadWorker(
             checkArgs()
             init()
         } catch (e: Exception) {
+            LMChatLogger.getInstance()?.handleException(
+                e.message ?: "",
+                e.stackTraceToString(),
+                LMSeverity.EMERGENCY
+            )
             e.printStackTrace()
             return Result.failure()
         }
@@ -73,6 +84,19 @@ abstract class MediaUploadWorker(
             }
             return@withContext when (result) {
                 WORKER_SUCCESS -> {
+                    // update the attachments uploaded variables in the local DB
+                    if (!conversation.attachments.isNullOrEmpty()) {
+                        conversation = conversation.toBuilder()
+                            .attachmentsUploaded(true)
+                            .attachmentsUploadedEpoch(System.currentTimeMillis())
+                            .build()
+                        val updateConversationRequest = UpdateConversationRequest.Builder()
+                            .conversation(ViewDataConverter.convertConversation(conversation))
+                            .build()
+
+                        lmChatClient.updateConversation(updateConversationRequest)
+                    }
+
                     //call create conversation
                     val postConversationRequestBuilder = PostConversationRequest.Builder()
                         .chatroomId(conversation.chatroomId ?: "")
@@ -97,14 +121,21 @@ abstract class MediaUploadWorker(
                     val postConversationResponse =
                         lmChatClient.postConversation(postConversationRequest)
                     if (postConversationResponse.success) {
-                        onConversationPosted(postConversationResponse.data)
-                        Result.success(
-                            workDataOf(
-                                ARG_WORKER_RESULT_TAGGED_USER to listOfTaggerUsers.toTypedArray()
-                            )
-                        )
+                        // Serialize response to JSON
+                        val outputJson = gson.toJson(postConversationResponse.data)
+
+                        // Pass the created conversation as output
+                        val outputData = workDataOf(OUTPUT_POST_CONVERSATION_RESPONSE to outputJson)
+
+                        Result.success(outputData)
                     } else {
-                        getFailureResult(failedIndex.toIntArray())
+                        // Serialize response to JSON
+                        val outputJson = gson.toJson(postConversationResponse.errorMessage)
+
+                        // Pass the created conversation as output
+                        val outputData = workDataOf(OUTPUT_POST_CONVERSATION_RESPONSE to outputJson)
+
+                        Result.failure(outputData)
                     }
                 }
 
@@ -198,11 +229,12 @@ abstract class MediaUploadWorker(
         return awsFileRequestList
     }
 
-    protected fun postConversation(
+    protected fun updateAttachmentUploaded(
         response: AWSFileResponse,
         urls: Pair<String?, String?>,
         totalFileCount: Int,
-        continuation: Continuation<Int>
+        continuation: Continuation<Int>,
+        isThumbnail: Boolean?
     ) {
         //updateConversation
         val attachments = conversation.attachments ?: return
@@ -212,11 +244,27 @@ abstract class MediaUploadWorker(
         }
 
         var attachment = attachments[index]
-        attachment = attachment.toBuilder()
+
+        // if the uploaded item is a thumbnail then we reset its aws folder path otherwise keep it the same
+        val thumbnailAWSFolderPath = if (isThumbnail == true) {
+            ""
+        } else {
+            attachment.thumbnailAWSFolderPath
+        }
+
+        val attachmentBuilder = attachment.toBuilder()
             .url(urls.first)
             .uri(Uri.parse(urls.first))
             .thumbnail(urls.second)
-            .build()
+            .thumbnailAWSFolderPath(thumbnailAWSFolderPath)
+
+        // if the current uploaded media is not a thumbnail that means our attachment has been uploaded successfully
+        if (isThumbnail != true) {
+            attachmentBuilder.isUploaded(true)
+        }
+
+        attachment = attachmentBuilder.build()
+
         attachments[index] = attachment
 
         conversation = conversation.toBuilder()
@@ -232,29 +280,6 @@ abstract class MediaUploadWorker(
         lmChatClient.updateConversation(updateConversationRequest)
 
         checkWorkerComplete(totalFileCount, continuation)
-    }
-
-    private fun onConversationPosted(data: PostConversationResponse?) {
-        val conversation = data?.conversation
-        if (conversation != null) {
-            //Get widget from widgetMap and add it to updatedConversation
-            val widgetId = conversation.widgetId
-            val widget = data.widgets[widgetId]
-
-            //update conversation with widget
-            val updatedConversation = conversation.toBuilder()
-                .widget(widget)
-                .build()
-
-            // request to save the posted conversation
-            val request = SavePostedConversationRequest.Builder()
-                .conversation(updatedConversation)
-                .isFromNotification(false)
-                .build()
-
-            // update db with response
-            lmChatClient.savePostedConversation(request)
-        }
     }
 
     protected fun checkWorkerComplete(
