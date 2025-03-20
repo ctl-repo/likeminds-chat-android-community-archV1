@@ -65,6 +65,7 @@ class CommunityHybridChatFragment :
 
         private const val ARG_USER_ID = "ARG_USER_ID"
         private const val ARG_SESSION_ID = "ARG_SESSION_ID"
+        private const val ARG_FAB_UUID = "ARG_FAB_UUID"
         private const val ARG_IS_RESEARCH_POST_ALLOWED = "ARG_RESEARCH_POST_ALLOWED"
 
         @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -78,12 +79,14 @@ class CommunityHybridChatFragment :
         fun newInstance(
             userId: String,
             sessionId: String,
-            isResearchPostAllowed: Boolean
+            isResearchPostAllowed: Boolean,
+            fabUUID : String
         ): CommunityHybridChatFragment {
             val fragment = CommunityHybridChatFragment()
             val args = Bundle()
             args.putString(ARG_USER_ID, userId)
             args.putString(ARG_SESSION_ID, sessionId)
+            args.putString(ARG_FAB_UUID, fabUUID)
             args.putBoolean(ARG_IS_RESEARCH_POST_ALLOWED, isResearchPostAllowed)
             fragment.arguments = args
             return fragment
@@ -97,7 +100,8 @@ class CommunityHybridChatFragment :
             XLmcAppInstance.setUserData(
                 userId = getString(ARG_USER_ID),
                 sessionId = getString(ARG_SESSION_ID),
-                isResearchPostAllowed = getBoolean(ARG_IS_RESEARCH_POST_ALLOWED, false)
+                isResearchPostAllowed = getBoolean(ARG_IS_RESEARCH_POST_ALLOWED, false),
+                fabUUID = getString(ARG_FAB_UUID)
             )
         }
     }

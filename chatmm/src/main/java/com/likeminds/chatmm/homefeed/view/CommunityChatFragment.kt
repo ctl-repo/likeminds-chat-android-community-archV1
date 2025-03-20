@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -23,6 +24,7 @@ import com.likeminds.chatmm.chatroom.detail.view.ChatroomDetailFragment
 import com.likeminds.chatmm.chatroom.explore.view.ChatroomExploreActivity
 import com.likeminds.chatmm.community.utils.LMChatCommunitySettingsUtil
 import com.likeminds.chatmm.databinding.FragmentCommunityChatBinding
+import com.likeminds.chatmm.dm.util.LMChatDMUtil
 import com.likeminds.chatmm.homefeed.model.*
 import com.likeminds.chatmm.homefeed.util.HomeFeedPreferences
 import com.likeminds.chatmm.homefeed.view.adapter.HomeFeedAdapter
@@ -41,10 +43,12 @@ import com.likeminds.chatmm.utils.connectivity.ConnectivityReceiverListener
 import com.likeminds.chatmm.utils.customview.BaseFragment
 import com.likeminds.chatmm.utils.observeInLifecycle
 import com.likeminds.chatmm.utils.snackbar.CustomSnackBar
+import com.likeminds.chatmm.xapp.XLmcAppInstance
 import com.likeminds.likemindschat.chatroom.model.ChannelInviteStatus
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Timer
 import javax.inject.Inject
 import kotlin.concurrent.schedule
@@ -113,6 +117,7 @@ class CommunityChatFragment : BaseFragment<FragmentCommunityChatBinding, Communi
         initRecyclerView()
         initToolbar()
         fetchData()
+        initPortfolioReviewListener()
     }
 
     //check permission for Post Notifications
@@ -296,9 +301,8 @@ class CommunityChatFragment : BaseFragment<FragmentCommunityChatBinding, Communi
     }
 
     private fun setTheme() {
-        binding.apply {
-            toolbarColor = LMChatAppearance.getToolbarColor()
-        }
+        binding.buttonColor = LMChatAppearance.getButtonsColor()
+        binding.toolbarColor = LMChatAppearance.getToolbarColor()
     }
 
     private fun initRecyclerView() {
@@ -337,6 +341,45 @@ class CommunityChatFragment : BaseFragment<FragmentCommunityChatBinding, Communi
 
     private fun fetchData() {
         viewModel.observeChatrooms()
+    }
+
+    private fun initPortfolioReviewListener() {
+        binding.fabPortfolioReview.setOnClickListener {
+            viewLifecycleOwner.lifecycleScope.launch {
+                val userUUID = XLmcAppInstance.fabUUID ?: ""
+
+                if(userUUID.isBlank()){
+                    Toast.makeText(
+                        context,
+                        "Empty User Id",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    return@launch
+                }
+
+                val response = withContext(Dispatchers.IO) {
+                    LMChatDMUtil.createOrGetExistingDMChatroom(userUUID)
+                }
+
+                //success then redirect to DM-chatroom
+                if (!response.first.isNullOrEmpty()) {
+                    val extra = ChatroomDetailExtras.Builder()
+                        .chatroomId(response.first ?: "")
+                        .source("FINX_ANDROID")
+                        .build()
+
+                    ChatroomDetailActivity.start(requireContext(), extra)
+                } else {//Error
+                    Toast.makeText(
+                        context,
+                        response.second ?: "An error occurred",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
+
     }
 
     override fun onChatRoomClicked(homeFeedItemViewData: HomeFeedItemViewData) {
