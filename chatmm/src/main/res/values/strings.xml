@@ -322,6 +322,7 @@
     <string name="finx_search_hint">Search eg: infy bse, nifty fut</string>
     <string name="finx_buy">Buy</string>
     <string name="finx_sell">Sell</string>
+    <string name="finx_portfolio_review">Portfolio Review</string>
 
     <!--Alert Dialog-->
     <string name="out_of_memory_err_1">Sorry cannot open, You are running Out of Memory.</string>

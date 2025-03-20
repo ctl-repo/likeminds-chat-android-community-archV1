@@ -108,23 +108,6 @@
             app:layout_constraintTop_toBottomOf="@id/toolbar"
             tools:listitem="@layout/item_followed_chat_room" />
 
-        <!--<com.google.android.material.textview.MaterialTextView
-            android:id="@+id/tvPortfolioReview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="20dp"
-            android:layout_marginBottom="20dp"
-            android:background="@drawable/bg_portfolio_review"
-            android:drawableStart="@drawable/ic_portfolio_review"
-            android:drawablePadding="10dp"
-            android:drawableTint="#FFF"
-            android:gravity="center"
-            android:padding="10dp"
-            android:text="Portfolio Review"
-            android:textColor="#FFF"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />-->
-
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
             android:id="@+id/fabPortfolioReview"
             android:layout_width="wrap_content"
@@ -136,7 +119,7 @@
             android:gravity="center"
             android:paddingHorizontal="16dp"
             android:paddingVertical="13dp"
-            android:text="Portfolio Review"
+            android:text="@string/finx_portfolio_review"
             android:textAllCaps="true"
             android:textColor="@color/lm_chat_white"
             android:textSize="13sp"
