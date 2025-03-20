@@ -349,12 +349,7 @@ class CommunityChatFragment : BaseFragment<FragmentCommunityChatBinding, Communi
                 val userUUID = XLmcAppInstance.fabUUID ?: ""
 
                 if(userUUID.isBlank()){
-                    Toast.makeText(
-                        context,
-                        "Empty User Id",
-                        Toast.LENGTH_SHORT
-                    ).show()
-
+                    Toast.makeText(context, "Empty User Id", Toast.LENGTH_SHORT).show()
                     return@launch
                 }
 
@@ -371,11 +366,7 @@ class CommunityChatFragment : BaseFragment<FragmentCommunityChatBinding, Communi
 
                     ChatroomDetailActivity.start(requireContext(), extra)
                 } else {//Error
-                    Toast.makeText(
-                        context,
-                        response.second ?: "An error occurred",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Toast.makeText(context, response.second ?: "An error occurred", Toast.LENGTH_SHORT).show()
                 }
             }
         }
