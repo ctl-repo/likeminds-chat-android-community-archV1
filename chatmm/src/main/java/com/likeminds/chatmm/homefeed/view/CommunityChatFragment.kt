@@ -360,6 +360,13 @@ class CommunityChatFragment : BaseFragment<FragmentCommunityChatBinding, Communi
             viewLifecycleOwner.lifecycleScope.launch {
                 val userUUID = XLmcAppInstance.portfolioReviewUuid ?: ""
 
+                LMAnalytics.track(
+                    "clickOnPortfolioReview",
+                    hashMapOf(
+                        "portfolioReviewUuid" to userUUID
+                    )
+                )
+
                 if(userUUID.isBlank()){
                     Toast.makeText(context, "Something went wrong, please try after sometime #357", Toast.LENGTH_SHORT).show()
                     return@launch

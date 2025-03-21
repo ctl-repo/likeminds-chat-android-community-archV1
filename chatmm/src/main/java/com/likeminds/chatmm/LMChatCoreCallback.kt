@@ -41,10 +41,6 @@ interface LMChatCoreCallback {
         chatroomDetailExtras: ChatroomDetailExtras
     )
 
-    fun onClickFabButton(
-        uuId : String
-    )
-
     fun getNotificationRedirectionActivityPendingIntent(chatroomDetailExtras: ChatroomDetailExtras): android.content.Intent?
 
     fun onErrorHandler(exception: String, trace: String) {
