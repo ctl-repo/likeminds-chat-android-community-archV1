@@ -22,9 +22,6 @@ import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.chat.adapter.ChatPagerAdapter
 import com.likeminds.chatmm.chat.viewmodel.ChatViewModel
-import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailExtras
-import com.likeminds.chatmm.chatroom.detail.view.ChatroomDetailActivity
-import com.likeminds.chatmm.chatroom.detail.view.ChatroomDetailFragment
 import com.likeminds.chatmm.databinding.FragmentCommunityHybridChatBinding
 import com.likeminds.chatmm.dm.model.CheckDMTabViewData
 import com.likeminds.chatmm.member.model.MemberViewData
@@ -35,8 +32,6 @@ import com.likeminds.chatmm.utils.connectivity.ConnectivityBroadcastReceiver
 import com.likeminds.chatmm.utils.connectivity.ConnectivityReceiverListener
 import com.likeminds.chatmm.utils.customview.BaseFragment
 import com.likeminds.chatmm.utils.snackbar.CustomSnackBar
-import com.likeminds.likemindschat.helper.LMChatLogger
-import com.likeminds.likemindschat.helper.model.LMSeverity
 import com.likeminds.chatmm.xapp.XLmcAppInstance
 import javax.inject.Inject
 import kotlin.math.roundToInt
@@ -65,7 +60,7 @@ class CommunityHybridChatFragment :
 
         private const val ARG_USER_ID = "ARG_USER_ID"
         private const val ARG_SESSION_ID = "ARG_SESSION_ID"
-        private const val ARG_FAB_UUID = "ARG_FAB_UUID"
+        private const val ARG_PORTFOLIO_REVIEW_UUID = "ARG_PORTFOLIO_REVIEW_UUID"
         private const val ARG_IS_RESEARCH_POST_ALLOWED = "ARG_RESEARCH_POST_ALLOWED"
 
         @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -80,13 +75,13 @@ class CommunityHybridChatFragment :
             userId: String,
             sessionId: String,
             isResearchPostAllowed: Boolean,
-            fabUUID : String
+            portfolioReviewUuid : String
         ): CommunityHybridChatFragment {
             val fragment = CommunityHybridChatFragment()
             val args = Bundle()
             args.putString(ARG_USER_ID, userId)
             args.putString(ARG_SESSION_ID, sessionId)
-            args.putString(ARG_FAB_UUID, fabUUID)
+            args.putString(ARG_PORTFOLIO_REVIEW_UUID, portfolioReviewUuid)
             args.putBoolean(ARG_IS_RESEARCH_POST_ALLOWED, isResearchPostAllowed)
             fragment.arguments = args
             return fragment
@@ -101,7 +96,7 @@ class CommunityHybridChatFragment :
                 userId = getString(ARG_USER_ID),
                 sessionId = getString(ARG_SESSION_ID),
                 isResearchPostAllowed = getBoolean(ARG_IS_RESEARCH_POST_ALLOWED, false),
-                fabUUID = getString(ARG_FAB_UUID)
+                portfolioReviewUuid = getString(ARG_PORTFOLIO_REVIEW_UUID)
             )
         }
     }

@@ -15,7 +15,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.WorkInfo
-import com.likeminds.chatmm.*
+import com.likeminds.chatmm.LMAnalytics
+import com.likeminds.chatmm.LMChatTheme
+import com.likeminds.chatmm.R
+import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.SDKApplication.Companion.LOG_TAG
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailExtras
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
@@ -25,7 +28,9 @@ import com.likeminds.chatmm.chatroom.explore.view.ChatroomExploreActivity
 import com.likeminds.chatmm.community.utils.LMChatCommunitySettingsUtil
 import com.likeminds.chatmm.databinding.FragmentCommunityChatBinding
 import com.likeminds.chatmm.dm.util.LMChatDMUtil
-import com.likeminds.chatmm.homefeed.model.*
+import com.likeminds.chatmm.homefeed.model.ChannelInviteViewData
+import com.likeminds.chatmm.homefeed.model.ChatroomInviteDialogExtras
+import com.likeminds.chatmm.homefeed.model.HomeFeedItemViewData
 import com.likeminds.chatmm.homefeed.util.HomeFeedPreferences
 import com.likeminds.chatmm.homefeed.view.adapter.HomeFeedAdapter
 import com.likeminds.chatmm.homefeed.view.adapter.HomeFeedAdapterListener
@@ -38,6 +43,7 @@ import com.likeminds.chatmm.theme.model.LMChatAppearance
 import com.likeminds.chatmm.utils.ValueUtils.isValidIndex
 import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatmm.utils.ViewUtils.hide
+import com.likeminds.chatmm.utils.ViewUtils.setVisible
 import com.likeminds.chatmm.utils.ViewUtils.show
 import com.likeminds.chatmm.utils.connectivity.ConnectivityReceiverListener
 import com.likeminds.chatmm.utils.customview.BaseFragment
@@ -116,8 +122,14 @@ class CommunityChatFragment : BaseFragment<FragmentCommunityChatBinding, Communi
         initData()
         initRecyclerView()
         initToolbar()
+        popUi()
         fetchData()
         initPortfolioReviewListener()
+    }
+
+    private fun popUi() {
+        //show only if its not blank
+        binding.fabPortfolioReview.setVisible((XLmcAppInstance.portfolioReviewUuid?:"").isNotBlank())
     }
 
     //check permission for Post Notifications
@@ -346,10 +358,10 @@ class CommunityChatFragment : BaseFragment<FragmentCommunityChatBinding, Communi
     private fun initPortfolioReviewListener() {
         binding.fabPortfolioReview.setOnClickListener {
             viewLifecycleOwner.lifecycleScope.launch {
-                val userUUID = XLmcAppInstance.fabUUID ?: ""
+                val userUUID = XLmcAppInstance.portfolioReviewUuid ?: ""
 
                 if(userUUID.isBlank()){
-                    Toast.makeText(context, "Empty User Id", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Something went wrong, please try after sometime #357", Toast.LENGTH_SHORT).show()
                     return@launch
                 }
 

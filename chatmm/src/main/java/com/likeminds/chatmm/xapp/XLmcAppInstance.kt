@@ -6,7 +6,7 @@ object XLmcAppInstance {
     var sessionId: String? = null
         private set
 
-    var fabUUID: String? = null
+    var portfolioReviewUuid: String? = null
         private set
 
     var isResearchPostAllowed: Boolean = false
@@ -16,11 +16,11 @@ object XLmcAppInstance {
         userId: String?,
         sessionId: String?,
         isResearchPostAllowed: Boolean,
-        fabUUID: String?
+        portfolioReviewUuid: String?
     ) {
         this.userId = userId
         this.sessionId = sessionId
-        this.fabUUID = fabUUID
+        this.portfolioReviewUuid = portfolioReviewUuid
         this.isResearchPostAllowed = isResearchPostAllowed
     }
 }
