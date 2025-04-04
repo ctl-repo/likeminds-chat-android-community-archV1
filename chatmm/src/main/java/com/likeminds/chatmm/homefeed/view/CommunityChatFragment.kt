@@ -129,7 +129,7 @@ class CommunityChatFragment : BaseFragment<FragmentCommunityChatBinding, Communi
 
     private fun popUi() {
         //show only if its not blank
-        binding.fabPortfolioReview.setVisible((XLmcAppInstance.portfolioReviewUuid?:"").isNotBlank())
+        //binding.fabPortfolioReview.setVisible((XLmcAppInstance.portfolioReviewUuid?:"").isNotBlank())
     }
 
     //check permission for Post Notifications
@@ -358,7 +358,10 @@ class CommunityChatFragment : BaseFragment<FragmentCommunityChatBinding, Communi
     private fun initPortfolioReviewListener() {
         binding.fabPortfolioReview.setOnClickListener {
             viewLifecycleOwner.lifecycleScope.launch {
-                val userUUID = XLmcAppInstance.portfolioReviewUuid ?: ""
+
+                SDKApplication.getLikeMindsCallback()?.redirectToFreshChat()
+
+                /*val userUUID = XLmcAppInstance.portfolioReviewUuid ?: ""
 
                 if(userUUID.isBlank()){
                     Toast.makeText(context, "Something went wrong, please try after sometime #357", Toast.LENGTH_SHORT).show()
@@ -379,7 +382,7 @@ class CommunityChatFragment : BaseFragment<FragmentCommunityChatBinding, Communi
                     ChatroomDetailActivity.start(requireContext(), extra)
                 } else {//Error
                     Toast.makeText(context, response.second ?: "An error occurred", Toast.LENGTH_SHORT).show()
-                }
+                }*/
             }
         }
 

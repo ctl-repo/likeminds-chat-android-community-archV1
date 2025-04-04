@@ -323,6 +323,7 @@
     <string name="finx_buy">Buy</string>
     <string name="finx_sell">Sell</string>
     <string name="finx_portfolio_review">Portfolio Review</string>
+    <string name="finx_chat_with_expert">Chat with Expert</string>
 
     <!--Alert Dialog-->
     <string name="out_of_memory_err_1">Sorry cannot open, You are running Out of Memory.</string>
