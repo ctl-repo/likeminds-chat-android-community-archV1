@@ -15,5 +15,13 @@ data class FinXRecommendationMetadata(
 
     //Scrip Data
     @SerializedName("searchRsp") val searchRsp: FinxSmSearchApiRsp? = null,
-    @SerializedName("customWidgetType") val customWidgetType: String? = ""
+    @SerializedName("customWidgetType") val customWidgetType: String? = "",
+
+    //MF-Scheme Data
+    @SerializedName("mfSchemeCode") val mfSchemeCode: Int? = 0,
+    @SerializedName("mfSchemePlanCode") val mfSchemePlanCode: Int? = 0,
+
+    //Redirection Type
+    @SerializedName("redirectionTypeOrderPlace") val redirectionTypeOrderPlace: String? = "",
+    @SerializedName("redirectionTypeCompanyPage") val redirectionTypeCompanyPage: String? = "",
 ) : Parcelable
