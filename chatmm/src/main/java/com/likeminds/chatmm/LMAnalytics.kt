@@ -85,6 +85,10 @@ object LMAnalytics {
 
         const val SDK_INITIATE = "SDK initiate"
         const val DM_CHATROOM_CREATED = "DM Chatroom created"
+
+        const val REELS_LIKED = "POST_LIKED"
+        const val PLACE_ORDER = "PLACE_ORDER"
+        const val COMPANY_PAGE = "COMPANY_PAGE"
     }
 
     object Keys {
