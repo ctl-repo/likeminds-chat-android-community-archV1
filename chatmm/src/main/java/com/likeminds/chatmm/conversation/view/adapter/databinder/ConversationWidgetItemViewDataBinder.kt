@@ -97,7 +97,12 @@ class ConversationWidgetItemViewDataBinder(
             val context = root.context
 
             //Custom Widget Data
-            val metadata = JSONObject(data.widgetViewData?.metadata.toString())
+            val metadata = if (data.widgetViewData?.metadata != null) {
+                JSONObject(data.widgetViewData.metadata.toString())
+            } else {
+                null
+            }
+            //val metadata = JSONObject(data.widgetViewData?.metadata.toString())
             val recomData: FinXRecommendationMetadata = try {
                 Gson().fromJson(metadata.toString(), FinXRecommendationMetadata::class.java)
             } catch (e: Exception) {

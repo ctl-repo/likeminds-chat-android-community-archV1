@@ -264,4 +264,5 @@ interface ChatroomDetailAdapterListener {
         recomData: FinXRecommendationMetadata,
         conversationId: String
     )
+    fun onReplyPrivatelyConversationClicked(sourceChatroomId: String, sourceConversationId: String) {}
 }
