@@ -22,6 +22,9 @@ interface LMChatCoreCallback {
         //implement to get analytics events
     }
 
+    //Used to redirect the user to Fresh-chat page
+    fun redirectToFreshChat(){}
+
     fun onAccessTokenExpiredAndRefreshed(accessToken: String, refreshToken: String) {
         //implement to handle access token refresh
     }

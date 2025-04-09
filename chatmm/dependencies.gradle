@@ -103,4 +103,6 @@ dependencies {
 
     //logging interceptor
     implementation "com.squareup.okhttp3:logging-interceptor:4.10.0"
+
+    implementation "androidx.activity:activity:1.10.0"
 }
