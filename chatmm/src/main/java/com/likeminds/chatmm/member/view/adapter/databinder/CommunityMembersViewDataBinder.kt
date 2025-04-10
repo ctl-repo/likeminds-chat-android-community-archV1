@@ -39,13 +39,11 @@ class CommunityMembersViewDataBinder @Inject constructor(
 
             tvMemberName.text = MemberUtil.getMemberNameForDisplay(data, userPreferences.getUUID())
 
-            //For removing Client id from new Dm search list
-            /*val subtitle = data.sdkClientInfo.uuid
-
+            val subtitle = data.sdkClientInfo.uuid
             tvSubtitle.apply {
                 text = subtitle
                 isVisible = subtitle.isNotEmpty()
-            }*/
+            }
         }
     }
 

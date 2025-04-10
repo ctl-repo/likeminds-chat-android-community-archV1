@@ -2,6 +2,7 @@ package com.likeminds.chatmm.chatroom.detail.view.adapter.databinder
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import com.likeminds.chatmm.chatroom.detail.view.adapter.ViewParticipantsAdapterListener
 import com.likeminds.chatmm.databinding.ItemViewParticipantBinding
 import com.likeminds.chatmm.member.model.MemberViewData
@@ -41,6 +42,14 @@ class ViewParticipantItemViewDataBinder constructor(
         binding.apply {
             memberViewData = data
             this.position = position
+
+            val subtitle = data.sdkClientInfo.uuid
+
+            tvClientId.apply {
+                text = subtitle
+                isVisible = subtitle.isNotEmpty()
+            }
+
             MemberImageUtil.setImage(
                 data.imageUrl,
                 data.name,
