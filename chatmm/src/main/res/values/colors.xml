@@ -5,11 +5,11 @@
     <color name="lm_chat_purple_700">#FF3700B3</color>
     <color name="lm_chat_teal_200">#FF03DAC5</color>
     <color name="lm_chat_teal_700">#FF018786</color>
-    <color name="lm_chat_colorPrimary">#004393</color>
-    <color name="lm_chat_colorPrimary_0f">#0f004393</color>
-    <color name="lm_chat_colorPrimary_99">#99004393</color>
-    <color name="lm_chat_colorPrimary_90">#E6004393</color>
-    <color name="lm_chat_colorPrimaryDark">#003c84</color>
+    <color name="lm_chat_colorPrimary">#2777F3</color>
+    <color name="lm_chat_colorPrimary_0f">#0f2777F3</color>
+    <color name="lm_chat_colorPrimary_99">#992777F3</color>
+    <color name="lm_chat_colorPrimary_90">#E62777F3</color>
+    <color name="lm_chat_colorPrimaryDark">#1D59B6</color>
     <color name="lm_chat_turquoise">#066EC3</color>
     <color name="lm_chat_dark_turquoise">#07375E</color>
     <color name="lm_chat_turquoise_10">#1906c3af</color>
@@ -135,11 +135,11 @@
     <color name="lm_chat_text_power">#484F67</color>
 
 
-    <color name="finx_primary1">#004393</color>
-    <color name="finx_primary1_dull">#b3c7df</color>
+    <color name="finx_primary1">#2777F3</color>
+    <color name="finx_primary1_dull">#C9DDFC</color>
 
-    <color name="finx_negative1">#D04439</color>
-    <color name="finx_negative1_dull">#ffebef</color>
+    <color name="finx_negative1">#DE493B</color>
+    <color name="finx_negative1_dull">#EE9A95</color>
 
     <color name="finx_1_toolbar_widget">#3E4050</color>
     <color name="finx_recommendation_background">#F4F8FF</color>
