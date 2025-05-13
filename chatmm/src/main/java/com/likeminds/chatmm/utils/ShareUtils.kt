@@ -37,7 +37,7 @@ object ShareUtils {
         domain: String
     ) {
         val shareLink =
-            "${domain}/chatroom_detail?chatroom_id=${conversation.chatroomId}&conversation_id=${conversation.id}"
+            "${domain}/commune/chatroom_detail?chatroom_id=${conversation.chatroomId}&conversation_id=${conversation.id}"
         val shareTitle = if (conversation.answer.isEmpty()) {
             "Message"
         } else {
