@@ -10,22 +10,22 @@
             android:pathData="M18.333,18.328H1.666"
             android:strokeWidth="1.5"
             android:fillColor="#00000000"
-            android:strokeColor="#004393"
+            android:strokeColor="@color/finx_primary1"
             android:strokeLineCap="round"/>
         <path
             android:pathData="M17.5,18.328V12.078C17.5,11.388 16.94,10.828 16.25,10.828H13.75C13.06,10.828 12.5,11.388 12.5,12.078V18.328"
             android:strokeWidth="1.5"
             android:fillColor="#00000000"
-            android:strokeColor="#004393"/>
+            android:strokeColor="@color/finx_primary1"/>
         <path
             android:pathData="M12.5,18.331V4.164C12.5,2.986 12.5,2.396 12.134,2.03C11.768,1.664 11.179,1.664 10,1.664C8.821,1.664 8.232,1.664 7.866,2.03C7.5,2.396 7.5,2.986 7.5,4.164V18.331"
             android:strokeWidth="1.5"
             android:fillColor="#00000000"
-            android:strokeColor="#004393"/>
+            android:strokeColor="@color/finx_primary1"/>
         <path
             android:pathData="M7.5,18.331V7.914C7.5,7.224 6.94,6.664 6.25,6.664H3.75C3.06,6.664 2.5,7.224 2.5,7.914V18.331"
             android:strokeWidth="1.5"
             android:fillColor="#00000000"
-            android:strokeColor="#004393"/>
+            android:strokeColor="@color/finx_primary1"/>
     </group>
 </vector>
