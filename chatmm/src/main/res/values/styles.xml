@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="LMAppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
@@ -13,7 +13,7 @@
         <item name="android:actionModeBackground">@color/finx_primary1</item>
         <item name="snackbarStyle">@style/Widget.App.Snackbar</item>
         <item name="android:windowActivityTransitions">true</item>
-        <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
+        <item name="android:windowOptOutEdgeToEdgeEnforcement" tools:targetApi="35">true</item>
     </style>
 
     <style name="BottomNavigationTextActive" parent="Widget.MaterialComponents.TextView">
