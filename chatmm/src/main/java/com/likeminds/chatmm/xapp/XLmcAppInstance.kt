@@ -6,21 +6,16 @@ object XLmcAppInstance {
     var sessionId: String? = null
         private set
 
-    var portfolioReviewUuid: String? = null
-        private set
-
     var isResearchPostAllowed: Boolean = false
         private set
 
     fun setUserData(
         userId: String?,
         sessionId: String?,
-        isResearchPostAllowed: Boolean,
-        portfolioReviewUuid: String?
+        isResearchPostAllowed: Boolean
     ) {
         this.userId = userId
         this.sessionId = sessionId
-        this.portfolioReviewUuid = portfolioReviewUuid
         this.isResearchPostAllowed = isResearchPostAllowed
     }
 }
