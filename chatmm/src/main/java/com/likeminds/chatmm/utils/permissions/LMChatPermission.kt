@@ -26,12 +26,6 @@ class LMChatPermission private constructor(
         private const val POST_NOTIFICATIONS = Manifest.permission.POST_NOTIFICATIONS
 
         @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-        private const val READ_MEDIA_VIDEO = Manifest.permission.READ_MEDIA_VIDEO
-
-        @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-        private const val READ_MEDIA_IMAGES = Manifest.permission.READ_MEDIA_IMAGES
-
-        @RequiresApi(Build.VERSION_CODES.TIRAMISU)
         private const val READ_MEDIA_AUDIO = Manifest.permission.READ_MEDIA_AUDIO
 
         @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
@@ -104,15 +98,10 @@ class LMChatPermission private constructor(
             val permissionsArray =
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                     arrayOf(
-                        READ_MEDIA_IMAGES,
-                        READ_MEDIA_VIDEO,
                         READ_MEDIA_VISUAL_USER_SELECTED
                     )
                 } else {
-                    arrayOf(
-                        READ_MEDIA_VIDEO,
-                        READ_MEDIA_IMAGES
-                    )
+                    arrayOf()
                 }
 
             return LMChatPermissionExtras.Builder()
