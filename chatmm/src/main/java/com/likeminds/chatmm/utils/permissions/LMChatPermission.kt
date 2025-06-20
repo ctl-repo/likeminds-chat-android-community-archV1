@@ -21,6 +21,7 @@ class LMChatPermission private constructor(
 
         private const val WRITE_STORAGE = Manifest.permission.WRITE_EXTERNAL_STORAGE
         private const val RECORD_AUDIO = Manifest.permission.RECORD_AUDIO
+        private const val CAMERA = Manifest.permission.CAMERA
 
         @RequiresApi(Build.VERSION_CODES.TIRAMISU)
         private const val POST_NOTIFICATIONS = Manifest.permission.POST_NOTIFICATIONS
@@ -37,6 +38,7 @@ class LMChatPermission private constructor(
         private const val REQUEST_NOTIFICATIONS = 10105
         const val REQUEST_GALLERY = 10106
         private const val REQUEST_AUDIO = 10107
+        private const val REQUEST_CAMERA = 10108
 
         fun getStoragePermissionData(): LMChatPermission {
             return LMChatPermission(
@@ -68,6 +70,16 @@ class LMChatPermission private constructor(
             } else {
                 getAudioPermissionExtras(context)
             }
+        }
+
+        fun getCameraPermissionData(): LMChatPermission {
+            return LMChatPermission(
+                CAMERA,
+                REQUEST_CAMERA,
+                "To easily send photos, videos and other files, allow Choice FinX access to your device’s camera.",
+                "To send photos, allow Choice FinX access to your device’s camera. Tap on Settings > Permission, and turn Storage on.",
+                R.drawable.lm_chat_ic_folder
+            )
         }
 
         // returns the [PermissionExtras] as per the required permission
