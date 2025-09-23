@@ -14,8 +14,6 @@ android {
     defaultConfig {
         minSdk lm_chat_versions.min_sdk
         targetSdk lm_chat_versions.target_sdk
-        versionCode lm_chat_versions.app_version_code
-        versionName "$lm_chat_versions.app_version_major.$lm_chat_versions.app_version_minor.$lm_chat_versions.app_version_patch"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -45,13 +43,12 @@ android {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
-    lintOptions {
-        disable 'TimberArgCount', 'TimberArgTypes', 'TimberTagLength', 'BinaryOperationInTimber',
-                'LogNotTimber', 'StringFormatInTimber', 'ThrowableNotAtBeginning'
-    }
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_17
         freeCompilerArgs = ["-Xstring-concat=inline"]
+    }
+    lint {
+        disable 'TimberArgCount', 'TimberArgTypes', 'TimberTagLength', 'BinaryOperationInTimber', 'LogNotTimber', 'StringFormatInTimber', 'ThrowableNotAtBeginning'
     }
 }
 
