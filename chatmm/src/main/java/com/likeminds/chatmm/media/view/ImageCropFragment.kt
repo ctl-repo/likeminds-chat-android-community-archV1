@@ -120,13 +120,14 @@ class ImageCropFragment : Fragment() {
 
     private fun cropImage() {
         val cropImageUri = Uri.fromFile(FileUtil.createImageFile(requireContext()))
-        binding.cropImageView.saveCroppedImageAsync(
+        //TODO do we need it or not ????
+        /*binding.cropImageView.saveCroppedImageAsync(
             cropImageUri,
             Bitmap.CompressFormat.JPEG,
             95,
             0,
             0
-        )
+        )*/
     }
 
     private fun cancelCrop() {

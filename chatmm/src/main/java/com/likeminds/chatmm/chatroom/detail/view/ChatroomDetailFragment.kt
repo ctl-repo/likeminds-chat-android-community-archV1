@@ -2401,7 +2401,7 @@ class ChatroomDetailFragment :
             WorkManager.getInstance(requireContext())
                 .getWorkInfoByIdLiveData(workerUUID)
                 .observe(viewLifecycleOwner) { workInfo ->
-                    when (workInfo.state) {
+                    when (workInfo?.state) {
                         WorkInfo.State.SUCCEEDED -> {
                             //get output data
                             val successResponseString =
@@ -2514,7 +2514,7 @@ class ChatroomDetailFragment :
 
                         else -> {
                             val progress =
-                                ConversationWorker.getProgress(workInfo) ?: return@observe
+                                ConversationWorker.getProgress(workInfo ?:  return@observe) ?: return@observe
                             val position = getIndexOfConversation(conversationId)
                             if (position.isValidIndex()) {
                                 val oldConversation = chatroomDetailAdapter[position]
