@@ -2,7 +2,9 @@ package com.likeminds.chatmm
 
 import android.app.Application
 import android.content.Context
-import com.amazonaws.mobile.client.*
+import com.amazonaws.mobile.client.AWSMobileClient
+import com.amazonaws.mobile.client.Callback
+import com.amazonaws.mobile.client.UserStateDetails
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility
 import com.likeminds.chatmm.di.DaggerLikeMindsChatComponent
 import com.likeminds.chatmm.di.LikeMindsChatComponent
@@ -99,35 +101,39 @@ class SDKApplication : LMChatSDKCallback {
         shareLogsWithLM: Boolean,
         excludeConversationStates: List<ConversationState> = emptyList()
     ) {
-        val initiateLoggerRequest = if (shareLogsWithLM) {
-            LMChatInitiateLoggerRequest.Builder()
-                .shareLogsWithLM(true)
-                .coreVersion("${BuildConfig.APP_MAJOR}.${BuildConfig.APP_MINOR}.${BuildConfig.APP_PATCH}")
-                .logLevel(LMSeverity.INFO)
-                .onErrorHandler { exception, trace ->
-                    lmChatCoreCallback?.onErrorHandler(exception, trace)
-                }
+        try {
+            val initiateLoggerRequest = if (shareLogsWithLM) {
+                LMChatInitiateLoggerRequest.Builder()
+                    .shareLogsWithLM(true)
+                    .coreVersion("${BuildConfig.APP_MAJOR}.${BuildConfig.APP_MINOR}.${BuildConfig.APP_PATCH}")
+                    .logLevel(LMSeverity.INFO)
+                    .onErrorHandler { exception, trace ->
+                        lmChatCoreCallback?.onErrorHandler(exception, trace)
+                    }
+                    .build()
+            } else {
+                null
+            }
+
+            mChatClient = LMChatClient.Builder(application)
+                .lmChatSDKCallback(this)
+                .initiateLoggerRequest(initiateLoggerRequest)
+                .excludedConversationStates(excludeConversationStates)
                 .build()
-        } else {
-            null
+
+            selectedTheme = theme
+
+            SDKApplication.lmChatCoreCallback = lmChatCoreCallback
+            setupTheme(lmChatAppearanceRequest)
+            initAppComponent(application)
+            EmojiManager.install(GoogleEmojiProvider())
+            initAWSMobileClient(application)
+
+            lmChatUserMetaData = LMChatUserMetaData.getInstance()
+            lmChatUserMetaData.init(domain, enablePushNotifications, deviceId)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-
-        mChatClient = LMChatClient.Builder(application)
-            .lmChatSDKCallback(this)
-            .initiateLoggerRequest(initiateLoggerRequest)
-            .excludedConversationStates(excludeConversationStates)
-            .build()
-
-        selectedTheme = theme
-
-        SDKApplication.lmChatCoreCallback = lmChatCoreCallback
-        setupTheme(lmChatAppearanceRequest)
-        initAppComponent(application)
-        EmojiManager.install(GoogleEmojiProvider())
-        initAWSMobileClient(application)
-
-        lmChatUserMetaData = LMChatUserMetaData.getInstance()
-        lmChatUserMetaData.init(domain, enablePushNotifications, deviceId)
     }
 
     // sets theme to the app
@@ -153,12 +159,16 @@ class SDKApplication : LMChatSDKCallback {
      * @param application : The client will pass instance application to the function
      * */
     private fun initAppComponent(application: Application) {
-        if (likeMindsChatComponent == null) {
-            likeMindsChatComponent = DaggerLikeMindsChatComponent.builder()
-                .application(application)
-                .build()
+        try {
+            if (likeMindsChatComponent == null) {
+                likeMindsChatComponent = DaggerLikeMindsChatComponent.builder()
+                    .application(application)
+                    .build()
+            }
+            likeMindsChatComponent!!.inject(this)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-        likeMindsChatComponent!!.inject(this)
     }
 
     /**
