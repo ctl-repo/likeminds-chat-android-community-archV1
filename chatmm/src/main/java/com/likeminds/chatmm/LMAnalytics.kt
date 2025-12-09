@@ -78,10 +78,10 @@ object LMAnalytics {
         const val THIRD_PARTY_SHARING = "Third party sharing"
         const val THIRD_PARTY_ABANDONED = "Third party abandoned"
 
-        const val FINX_RECOMMENDATATION_BTN = "Finx Recommendation Btn"
-        const val FINX_RECOMMENDATAION = "Finx Recommendation"
-        const val FINX_RECOMMENDATAION_ON_PLACE_ORDER = "Finx Recommendation Place Order"
-        const val FINX_RECOMMENDATAION_ON_COMPANY_PAGE = "Finx Recommendation Company Page"
+        const val FINX_RECOMMENDATATION_BTN = "FinX Recommendation Btn"
+        const val FINX_RECOMMENDATAION = "FinX Recommendation"
+        const val FINX_RECOMMENDATAION_ON_PLACE_ORDER = "FinX Recommendation Place Order"
+        const val FINX_RECOMMENDATAION_ON_COMPANY_PAGE = "FinX Recommendation Company Page"
 
         const val SDK_INITIATE = "SDK initiate"
         const val DM_CHATROOM_CREATED = "DM Chatroom created"
