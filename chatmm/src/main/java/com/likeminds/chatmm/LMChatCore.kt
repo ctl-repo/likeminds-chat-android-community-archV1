@@ -11,8 +11,12 @@ import com.likeminds.chatmm.utils.user.LMChatUserMetaData
 import com.likeminds.likemindschat.LMChatClient
 import com.likeminds.likemindschat.LMResponse
 import com.likeminds.likemindschat.conversation.model.ConversationState
-import com.likeminds.likemindschat.user.model.*
-import kotlinx.coroutines.*
+import com.likeminds.likemindschat.user.model.InitiateUserRequest
+import com.likeminds.likemindschat.user.model.LogoutRequest
+import com.likeminds.likemindschat.user.model.ValidateUserRequest
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 object LMChatCore {
     /**
@@ -39,23 +43,27 @@ object LMChatCore {
         shareLogsWithLM: Boolean = true,
         excludeConversationStates: List<ConversationState> = emptyList()
     ) {
-        Log.d(SDKApplication.LOG_TAG, "LMChatCore setup called")
+        try {
+            Log.d(SDKApplication.LOG_TAG, "LMChatCore setup called")
 
-        //create object of SDKApplication
-        val sdk = SDKApplication.getInstance()
+            //create object of SDKApplication
+            val sdk = SDKApplication.getInstance()
 
-        //call initSDKApplication to initialise sdk
-        sdk.initSDKApplication(
-            application,
-            theme,
-            lmChatCoreCallback,
-            lmChatAppearanceRequest,
-            domain,
-            enablePushNotifications,
-            deviceId,
-            shareLogsWithLM,
-            excludeConversationStates
-        )
+            //call initSDKApplication to initialise sdk
+            sdk.initSDKApplication(
+                application,
+                theme,
+                lmChatCoreCallback,
+                lmChatAppearanceRequest,
+                domain,
+                enablePushNotifications,
+                deviceId,
+                shareLogsWithLM,
+                excludeConversationStates
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     /**
