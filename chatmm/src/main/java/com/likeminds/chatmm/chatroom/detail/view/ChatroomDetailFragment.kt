@@ -15,8 +15,10 @@ import android.text.Spannable
 import android.text.style.ImageSpan
 import android.util.*
 import android.view.*
+import android.webkit.ValueCallback
 import android.widget.PopupMenu
 import android.widget.TextView
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
@@ -252,6 +254,8 @@ class ChatroomDetailFragment :
     private var isDMRequestSent = false
 
     private var showTapToUndoLocally = true
+
+    private var mFilePathCallback: ValueCallback<Array<Uri>>? = null
 
     private val mResearchCWVisibility: Boolean by lazy {
         viewModel.isWidgetEnabled() && XLmcAppInstance.isResearchPostAllowed
@@ -942,7 +946,8 @@ class ChatroomDetailFragment :
             supportedAttachments.add(documentAttachment)
         }
 
-        if (viewModel.isAudioSupportEnabled()) {
+        /*Commented by Rohit, 20th June 2025, do we need audio permission*/
+        /*if (viewModel.isAudioSupportEnabled()) {
             //add audio
             val audioAttachment = LMChatAttachmentPickerItemViewData.Builder()
                 .attachmentType(LMChatAttachmentType.AUDIO)
@@ -950,7 +955,7 @@ class ChatroomDetailFragment :
                 .attachmentName(requireContext().getString(R.string.lm_chat_audio))
                 .build()
             supportedAttachments.add(audioAttachment)
-        }
+        }*/
 
         if (viewModel.isMicroPollsEnabled() && !viewModel.isDmChatroom()) {
             //add poll
@@ -986,8 +991,12 @@ class ChatroomDetailFragment :
             LMChatAttachmentType.GALLERY -> {
                 initVisibilityOfAttachmentsBar(View.GONE)
                 onScreenChanged()
+                val intent2  =  Intent(MediaStore.ACTION_PICK_IMAGES).apply {
+                    putExtra(MediaStore.EXTRA_PICK_IMAGES_MAX, 1)
+                }
+                photoPickerLauncher.launch(intent2)
 
-                val extras = if (viewModel.isOtherUserAIBot()) {
+                /*val extras = if (viewModel.isOtherUserAIBot()) {
                     LMChatMediaPickerExtras.Builder()
                         .senderName(viewModel.chatroomDetail.chatroom?.header)
                         .allowMultipleSelect(false)
@@ -1001,7 +1010,7 @@ class ChatroomDetailFragment :
                 }
 
                 val intent = LMChatMediaPickerActivity.getIntent(requireContext(), extras)
-                galleryLauncher.launch(intent)
+                galleryLauncher.launch(intent)*/
             }
 
             LMChatAttachmentType.DOCUMENT -> {
@@ -1995,6 +2004,25 @@ class ChatroomDetailFragment :
     private fun initCameraAttachment() {
         initVisibilityOfAttachmentsBar(View.GONE)
         onScreenChanged()
+        LMChatPermissionManager.performTaskWithPermission(
+            activity as BaseAppCompatActivity,
+            { startCameraFlow() },
+            LMChatPermission.getCameraPermissionData(),
+            showInitialPopup = true,
+            showDeniedPopup = true,
+            lmChatPermissionDeniedCallback = object : LMChatPermissionDeniedCallback {
+                override fun onDeny() {
+
+                }
+
+                override fun onCancel() {
+
+                }
+            }
+        )
+    }
+
+    private fun startCameraFlow(){
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
             takePictureIntent.resolveActivity(requireContext().packageManager).also {
                 val cameraFile = try {
@@ -2373,7 +2401,7 @@ class ChatroomDetailFragment :
             WorkManager.getInstance(requireContext())
                 .getWorkInfoByIdLiveData(workerUUID)
                 .observe(viewLifecycleOwner) { workInfo ->
-                    when (workInfo.state) {
+                    when (workInfo?.state) {
                         WorkInfo.State.SUCCEEDED -> {
                             //get output data
                             val successResponseString =
@@ -2486,7 +2514,7 @@ class ChatroomDetailFragment :
 
                         else -> {
                             val progress =
-                                ConversationWorker.getProgress(workInfo) ?: return@observe
+                            ConversationWorker.getProgress(workInfo ?:  return@observe) ?: return@observe
                             val position = getIndexOfConversation(conversationId)
                             if (position.isValidIndex()) {
                                 val oldConversation = chatroomDetailAdapter[position]
@@ -6804,5 +6832,30 @@ class ChatroomDetailFragment :
                 }
             }
         }
+    }
+
+    // Photo picker launcher
+    private val photoPickerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        val results: Array<Uri>? = if (result.resultCode == AppCompatActivity.RESULT_OK) {
+            val data = result.data
+            data?.let {
+                when {
+                    it.clipData != null -> {
+                        Array(it.clipData!!.itemCount) { i -> it.clipData!!.getItemAt(i).uri }
+                    }
+
+                    it.data != null -> arrayOf(it.data!!)
+                    else -> null
+                }
+            }
+        } else null
+
+        mFilePathCallback?.onReceiveValue(results)
+        if(results?.isNotEmpty() == true){
+            results?.get(0)?.let{
+                showPickImagesListScreen(uriToSingleUri(it,IMAGE))
+            }
+        }
+        mFilePathCallback = null
     }
 }
