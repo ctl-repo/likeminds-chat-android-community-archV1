@@ -14,7 +14,8 @@
         android:id="@+id/cl_parent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/lm_chat_white">
+        android:background="@color/lm_chat_white"
+        android:fitsSystemWindows="true">
 
         <com.likeminds.chatmm.theme.customview.LikeMindsToolbar
             android:id="@+id/toolbar"
