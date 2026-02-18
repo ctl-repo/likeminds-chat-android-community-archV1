@@ -75,7 +75,7 @@ class ViewParticipantsActivity : BaseAppCompatActivity() {
             navHostFragment =
                 supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
             navController = navHostFragment.navController
-            navController.setGraph(R.navigation.lm_chat_nav_graph_view_participants, args)
+            //navController.setGraph(R.navigation.lm_chat_nav_graph_view_participants, args)
         } else {
             redirectActivity(true)
         }

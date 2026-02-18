@@ -129,7 +129,7 @@
     <string name="lm_chat_share_button">Share</string>
     <string name="lm_chat_add_participants">Add Participants</string>
     <string name="lm_chat_chat_room_created_info">Although this chat room is open and discoverable\nto all community members, you can choose to add\nthem yourself.</string>
-    <string name="lm_chat_uploading_progress_placeholder">%s / %s</string>
+    <string name="lm_chat_uploading_progress_placeholder">%1$s / %2$s</string>
     <string name="lm_chat_link">Link</string>
     <string name="lm_chat_tag_button_text">Tag ‘@’</string>
     <string name="lm_chat_added_to_your_joined_chat_rooms">Added to your joined chat rooms</string>
@@ -268,7 +268,7 @@
         <item quantity="other">%d%s members</item>
     </plurals>
     <string name="lm_chat_request_limit_exceeded">Request limit exceeded</string>
-    <string name="lm_chat_you_can_send_only_s_requests">You can send only %s DM requests per %s.</string>
+    <string name="lm_chat_you_can_send_only_s_requests">You can send only %1$s DM requests per %2$s.</string>
     <string name="lm_chat_try_again_in_s">Try again in %s.</string>
     <string name="lm_chat_send_a_dm_request_to_s">Send a DM request to %s by sending your 1st message</string>
     <string name="lm_chat_direct_messaging_among_members_has_been_disabled_by_the_community_manager"> Direct messaging among members has been disabled by the community manager.</string>
